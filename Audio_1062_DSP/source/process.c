@@ -21,34 +21,39 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 #include "process.h"
-#include "tremolo.h"
+//#include "tremolo.h"
 #include "freeverb.h"
 #include "schroeder_verb.h"
 #include "pitch_shift.h"
-#include "noise_gate.h"
+//#include "noise_gate.h"
 #include "computeFFT.h"
 #include "updateSettings.h"
 #include "arm_math.h"
-#include "overdrive.h"
-TREMOLO trem;
+
+//#include "overdrive.h"
+//TREMOLO trem;
 FREEVERB fvb;
 SCHROEDERVERB svb;
 HIGHPASS hp;
 PITCHSHIFT ps;
-NOISEGATE nGate;
-OVERDRIVE od;
+//NOISEGATE nGate;
+//OVERDRIVE od;
+
+#ifndef PHASEVOCODER
+#define PHASEVOCODER 0
+#endif
 
 const float INT16_TO_FLOAT = 1.0f / 32768.0f;
 
 void initializeEffects(float sampleRate) {
-	Tremolo_Init(&trem, 0.55f, 220.0f, sampleRate);
+	//Tremolo_Init(&trem, 0.55f, 220.0f, sampleRate);
 	initFreeverb(&fvb);
 	initSchroederVerb(&svb);
 	intializeFFT();
 
 	// distortion level of 50 yields high distortion.
-	overdriveInit(&od, sampleRate, 30.0f, 10.0f, 6400.0f, 0.6);
-	initializeNoiseGate(&nGate, 10.0f, 1.0f, 10.0f, sampleRate, 0.1f);
+	//overdriveInit(&od, sampleRate, 30.0f, 10.0f, 6400.0f, 0.6);
+	//initializeNoiseGate(&nGate, 10.0f, 1.0f, 10.0f, sampleRate, 0.1f);
 #if 1
 	initHighPass(&hp,
 				0.9862117951198142f,
@@ -56,7 +61,7 @@ void initializeEffects(float sampleRate) {
 				0.9862117951198142f,
 				-1.972233470205696f,
 				0.9726137102735608f);
-		initPitchShift(&ps, &hp, pitch_buf, PITCH_BUFFER_SIZE, 1.5f, 1.0f);
+		initPitchShift(&ps, &hp, pitch_buf, PITCH_BUFFER_SIZE, 0.5f, 1.0f);
 #endif
 
 }
@@ -75,24 +80,28 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRat
 		leftIn = bufIn[i] * INT16_TO_FLOAT ;
 		rightIn = bufIn[i+1] * INT16_TO_FLOAT;
 		leftOut = rightIn;
-
+#if !PHASEVOCODER
 //		leftOut = 1.4 * g_gain * arm_sin_f32(i * 10.0 / sampleRate);
 //		leftOut = 1.05f * Tremolo_Update(&trem, leftIn, false);
 //		rightOut = 1.05f * Tremolo_Update(&trem, rightIn, true);
 		//leftOut = 3.0 * g_gain * applyShroederVerb(&svb, rightIn);
-		leftOut = applyPitchShift(&ps, rightIn);
-		leftOut = 1.5f * applyNoiseGate(&nGate, rightIn);
-		leftOut = applyFreeverb(&fvb, rightIn);
-		//leftOut = 3.0 * overdriveUpdate(&od, rightIn);
-		leftOut = 1.05f * Tremolo_Update(&trem, rightIn, true);
+		//leftOut = 1.5f * applyNoiseGate(&nGate, rightIn);
 		leftOut = 3.0 * g_gain * applyShroederVerb(&svb, rightIn);
+		leftOut = applyFreeverb(&fvb, rightIn);
+		leftOut = 2.0 * applyPitchShift(&ps, rightIn);
+		//leftOut = 3.0 * overdriveUpdate(&od, rightIn);
+		//leftOut = 1.05f * Tremolo_Update(&trem, rightIn, true);
 		//leftOut = rightIn;
 		rightOut = leftOut;
 		bufOut[i]   = (int) (leftOut * 32768.0f);
 		bufOut[i+1] = (int) (rightOut * 32768.0f);
-		g_FFTInput[i/2] = rightIn;
+#else
+		cb_transferInFloat(&cbBufIn, rightIn);
+#endif
 	}
 	//memcpy(bufOut, bufIn, byteCount);
-	computeFFT();
+#if PHASEVOCODER
+	computeFFT(bufferOut, size);
+#endif
 }
 

@@ -26,15 +26,17 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 typedef struct {
 	float *storage;
 	uint32_t rd_ptr;
-	uint32_t end_ptr;
+	uint32_t wr_ptr;
 	uint32_t size;
 	uint32_t count;
-} CIRC_BUFFER;
+} CIRCBUFFER;
 
-uint32_t cb_transferInFloat(CIRC_BUFFER *cb, float input);
-uint32_t cb_transferIn(CIRC_BUFFER *cb, float * source, uint32_t size);
-uint32_t cb_transferOutWithHop(CIRC_BUFFER *cb, float * dest, uint32_t hop, uint32_t size);
-void cb_initialize(CIRC_BUFFER *cb, float * buf, uint32_t size);
-float cb_getFloat (CIRC_BUFFER *cb, uint32_t index);
+uint32_t cb_transferInFloat(CIRCBUFFER *cb, float input);
+uint32_t cb_transferIn(CIRCBUFFER *cb, float * source, uint32_t size);
+float cb_transferOut(CIRCBUFFER *cb);
+uint16_t cb_blockTransferOut(CIRCBUFFER *cb, float * ouput, uint32_t count);
+uint32_t cb_transferOutWithHop(CIRCBUFFER *cb, float * dest, uint32_t hop, uint32_t size);
+void cb_initialize(CIRCBUFFER *cb, float * buf, uint32_t size);
+float cb_getFloat (CIRCBUFFER *cb, uint32_t index);
 
 #endif /* CIRCULAR_BUFFER_H_ */

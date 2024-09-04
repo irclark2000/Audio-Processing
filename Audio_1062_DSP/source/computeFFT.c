@@ -21,17 +21,58 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "computeFFT.h"
 #include <cr_section_macros.h>
+#include "circular_buffer.h"
 
+CIRCBUFFER cbBufIn;
+#define WINDOW_LENGTH 64
+#define HOP 16
 arm_rfft_fast_instance_f32 fft_instance;
+__NOINIT(RAM3)  float32_t g_FFTAudio[FFT_LENGTH + WINDOW_LENGTH];
 __NOINIT(RAM3)  float32_t g_FFTInput[FFT_LENGTH];
 __NOINIT(RAM3)  float32_t g_FFTOutput[FFT_LENGTH];
 __NOINIT(RAM3)  float32_t g_FFTMag[FFT_LENGTH/2];
+__NOINIT(RAM3)  float32_t g_FFTPhase[FFT_LENGTH/2];
+
+// used by arm_atan2_f32() not sure why it is undefined
+int __signbitf(float x) {
+  return ((uint32_t) x & 0x80000000) >> 31;
+}
+
 void intializeFFT(void) {
 	arm_status status = ARM_MATH_SUCCESS;
 	status = arm_rfft_fast_init_f32(&fft_instance, (unsigned)FFT_LENGTH);
+	cb_initialize(&cbBufIn, g_FFTAudio, FFT_LENGTH + WINDOW_LENGTH);
 }
-void computeFFT(void) {
+
+void computeFFT(void * bufferOut, uint16_t size) {
+#if 1
+	cb_blockTransferOut(&cbBufIn, g_FFTInput, FFT_LENGTH);
+#else
+	for (int i=0; i < FFT_LENGTH; ++i) {
+		g_FFTInput[i] = cb_transferOut(&cbBufIn);
+	}
+#endif
 	arm_rfft_fast_f32(&fft_instance, g_FFTInput, g_FFTOutput, 0);
+	// calculate magnitude and phase of FFT
 	arm_cmplx_mag_f32(g_FFTOutput, g_FFTMag, FFT_LENGTH/2);
+	float32_t * destination = g_FFTPhase;
+	for (int i=0; i < FFT_LENGTH/2; ++i) {
+		arm_atan2_f32(g_FFTOutput[2*i+1], g_FFTOutput[2*i], destination);
+		destination++;
+	}
+	// reconstruct FFTOutput from magnitude and phase
+	for (int i=0; i < FFT_LENGTH/2; ++i) {
+		g_FFTOutput[2*i]   = g_FFTMag[i] * arm_cos_f32(g_FFTPhase[i]);
+		g_FFTOutput[2*i+1] = g_FFTMag[i] * arm_sin_f32(g_FFTPhase[i]);
+	}
 	arm_rfft_fast_f32(&fft_instance, g_FFTOutput, g_FFTInput, 1);
+	int16_t *bufOut = (int16_t *) bufferOut;
+#if 1
+	// fill the output buffer with the inverse FFT results
+	for(int i=0; i < size/2; i += 2) {
+		int16_t value = (int) (g_FFTInput[i/2] * 32768.0f);
+		bufOut[i] = value;
+		bufOut[i+1] = value;
+	}
+#endif
 }

@@ -27,7 +27,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 extern "C" {
 #endif
 
-
+#define PHASEVOCODER 1
 void processHalf(void * bufIn, void * bufOut, uint16_t count, float sampleRate);
 void initializeEffects(float sampleRate);
 #if defined(__cplusplus)
