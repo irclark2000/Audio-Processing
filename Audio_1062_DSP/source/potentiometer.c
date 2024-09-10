@@ -111,7 +111,24 @@ extern "C" void EXAMPLE_ADC_ETC_DONE1_Handler(void)
 /*!
  * @brief Main function.
  */
+void archMixPotentiometerInitPins (void) {
+	//GPIO_AD_B1_04
+	//GPIO_AD_B1_05
+	IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_04_GPIO1_IO20, 0U);      // Channel 9
+	IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_04_GPIO1_IO20, POTENTIOMETERPINVALUE);
+	IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_05_GPIO1_IO21, 0U);      // Channel 10
+	IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_05_GPIO1_IO21, POTENTIOMETERPINVALUE);
 
+	//GPIO_AD_B1_06
+	//GPIO_AD_B1_07
+	IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_06_GPIO1_IO22, 0U);      // Channel 9
+	IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_06_GPIO1_IO22, 0xB0U);
+	IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_07_GPIO1_IO23, 0U);      // Channel 10
+	IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_07_GPIO1_IO23, 0xB0U);
+	//GPIO_AD_B1_08
+	IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_08_GPIO1_IO24, 0U);      // Channel 10
+	IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_08_GPIO1_IO24, 0xB0U);
+}
 void  potentiometerInitPins (void) {
 	IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_10_GPIO1_IO26, 0U);      // Channel 15
 	IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_10_GPIO1_IO26, 0xB0U);
@@ -127,9 +144,6 @@ void  potentiometerInitPins (void) {
 	IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_04_GPIO1_IO20, 0xB0U);
 	IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_05_GPIO1_IO21, 0U);      // Channel 10
 	IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_05_GPIO1_IO21, 0xB0U);
-
-
-
 }
 void potentiometerReadInit()
 {

@@ -13,7 +13,7 @@
 
 #define EXAMPLE_LED_GPIO     BOARD_USER_LED_GPIO
 #define EXAMPLE_LED_GPIO_PIN BOARD_USER_LED_GPIO_PIN
-
+#define GPIODEFAULTPINVALUE 0x10B0U
 
 #if defined(__cplusplus)
 extern "C" {

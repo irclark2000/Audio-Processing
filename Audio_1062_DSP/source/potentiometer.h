@@ -39,6 +39,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define ADC_ETC_DONE1_FLAG (0x2U)
 #define ADC_ETC_DONE2_FLAG (0x4U)
 
+#define POTENTIOMETERPINVALUE 0xB0U
 /*******************************************************************************
  * Prototypes
  ******************************************************************************/
