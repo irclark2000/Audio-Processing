@@ -21,23 +21,27 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 #include "process.h"
-//#include "tremolo.h"
-#include "freeverb.h"
-#include "schroeder_verb.h"
+#include "tremolo.h"
+//#include "freeverb.h"
+//#include "schroeder_verb.h"
 #include "pitch_shift.h"
 //#include "noise_gate.h"
 #include "computeFFT.h"
 #include "updateSettings.h"
 #include "arm_math.h"
+#include "random_generator.h"
+#include "equalizing_filter.h"
 
 //#include "overdrive.h"
-//TREMOLO trem;
-FREEVERB fvb;
-SCHROEDERVERB svb;
+TREMOLO trem;
+//FREEVERB fvb;
+//SCHROEDERVERB svb;
 HIGHPASS hp;
-PITCHSHIFT ps;
+//PITCHSHIFT ps;
 //NOISEGATE nGate;
 //OVERDRIVE od;
+EQFILTER eqf;
+
 
 #ifndef PHASEVOCODER
 #define PHASEVOCODER 0
@@ -46,9 +50,12 @@ PITCHSHIFT ps;
 const float INT16_TO_FLOAT = 1.0f / 32768.0f;
 
 void initializeEffects(float sampleRate) {
-	//Tremolo_Init(&trem, 0.55f, 220.0f, sampleRate);
-	initFreeverb(&fvb);
-	initSchroederVerb(&svb);
+	Tremolo_Init(&trem, 0.55f, 220.0f, sampleRate);
+	//initFreeverb(&fvb);
+	//initSchroederVerb(&svb);
+	intitialize_random_number_generator();
+	EQFILTER_initialize(&eqf, 500.0f, sampleRate, 10.0f, 200.0f);
+
 	intializeFFT();
 
 	// distortion level of 50 yields high distortion.
@@ -61,7 +68,7 @@ void initializeEffects(float sampleRate) {
 				0.9862117951198142f,
 				-1.972233470205696f,
 				0.9726137102735608f);
-		initPitchShift(&ps, &hp, pitch_buf, PITCH_BUFFER_SIZE, 0.5f, 1.0f);
+		//initPitchShift(&ps, &hp, pitch_buf, PITCH_BUFFER_SIZE, 0.25f, 1.0f);
 #endif
 
 }
@@ -80,15 +87,16 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRat
 		leftIn = bufIn[i] * INT16_TO_FLOAT ;
 		rightIn = bufIn[i+1] * INT16_TO_FLOAT;
 		leftOut = rightIn;
+		rightIn = 0.05 * get_random_float(); // make white noise
 #if !PHASEVOCODER
 //		leftOut = 1.4 * g_gain * arm_sin_f32(i * 10.0 / sampleRate);
 //		leftOut = 1.05f * Tremolo_Update(&trem, leftIn, false);
 //		rightOut = 1.05f * Tremolo_Update(&trem, rightIn, true);
-		//leftOut = 3.0 * g_gain * applyShroederVerb(&svb, rightIn);
+		leftOut = EQFILTER_update(&eqf, rightIn);
 		//leftOut = 1.5f * applyNoiseGate(&nGate, rightIn);
-		leftOut = 3.0 * g_gain * applyShroederVerb(&svb, rightIn);
-		leftOut = applyFreeverb(&fvb, rightIn);
-		leftOut = 2.0 * applyPitchShift(&ps, rightIn);
+		//leftOut = 3.0 * g_gain * applyShroederVerb(&svb, rightIn);
+		//leftOut = applyFreeverb(&fvb, rightIn);
+		//leftOut = 1.5 * applyPitchShift(&ps, rightIn);
 		//leftOut = 3.0 * overdriveUpdate(&od, rightIn);
 		//leftOut = 1.05f * Tremolo_Update(&trem, rightIn, true);
 		//leftOut = rightIn;
@@ -101,7 +109,14 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRat
 	}
 	//memcpy(bufOut, bufIn, byteCount);
 #if PHASEVOCODER
-	computeFFT(bufferOut, size);
+	phaseVocoder (bufferOut, size);
 #endif
 }
 
+const static float inverse_time = 1.0f / 799.0f;
+
+void EQFILTER_test (uint32_t update_counter) {
+	// frequency sweep  over 4.6 octaves
+	float freq = 500 * powf (2.0f, 4.6f * (update_counter * inverse_time));
+	EQFILTER_setCenterFrequency(&eqf, freq, 200.0f);
+}

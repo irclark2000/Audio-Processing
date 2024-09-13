@@ -1,7 +1,7 @@
 /*
- * updateSettings.c
+ * equalizing filter.h
  *
- *  Created on: Aug 27, 2024
+ *  Created on: Sep 11, 2024
  *      Author: isaac
  */
 /*
@@ -19,21 +19,38 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CON
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#ifndef EQUALIZING_FILTER_H_
+#define EQUALIZING_FILTER_H_
 
-#include "updateSettings.h"
-#include "equalizing_filter.h"
-#define  GAININDEX 1
-void setGain (void);
-volatile float g_gain = 1.0;
+#include <stdint.h>
 
-void updateSettings() {
-	setGain();
-}
+typedef struct {
+	float a0;
+	float a1;
+	float a2;
+	float b0;
+	float b1;
+	float b2;
+} FILTERCOEF;
 
-volatile static uint32_t update_counter = 0;
-void setGain () {
-	g_gain = getPotentiometerValue (GAININDEX);
-	EQFILTER_test (update_counter);
-	update_counter++;
-	if (update_counter == 800) update_counter = 0;
-}
+typedef struct {
+
+	float sampleTime;
+	float eqfBufIn[3];
+	float eqfBufOut[3];
+	float eqfWct;
+	float eqfOut;
+
+	float gain;
+	float Q;
+
+	FILTERCOEF coefficients;
+
+} EQFILTER;
+
+void EQFILTER_initialize(EQFILTER *eqf, float centerFreq, float sampleRate, float gain, float bandwidth);
+float EQFILTER_update(EQFILTER *eqf, float input);
+void EQFILTER_setGain(EQFILTER *eqf, float gain);
+void EQFILTER_setCenterFrequency(EQFILTER *eqf, float centerFreq, float bandwidth);
+void EQFILTER_test (uint32_t update_counter);
+#endif /* EQUALIZING_FILTER_H_ */
