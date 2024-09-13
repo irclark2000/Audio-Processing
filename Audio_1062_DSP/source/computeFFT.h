@@ -40,7 +40,7 @@ extern CIRCBUFFER cbBufIn;
 extern "C" {
 #endif
 void intializeFFT(void);
-
+void phaseVocoder (void * bufferOut, uint16_t size);
 void computeFFT(void * bufferOut, uint16_t size);
 #if defined(__cplusplus)
 }
