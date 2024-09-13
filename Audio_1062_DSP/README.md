@@ -4,9 +4,11 @@ Effects include the following
 1. Shroeder Reverb
 2. Freeverb
 3. Pitch Shifting
-4. Tremolo
-5. Noise Gate
-6. Overdrive
+4. Peaking EQ Filter
+5. Tremolo
+6. Noise Gate
+7. Overdrive
+
 
 The code for the Tremolo, Noise Gate, and Overdrive effects are based on code provided by 
 Philip Salmony on his Phil's Lab YouTube channel, and is provided with his permission.
