@@ -19,8 +19,8 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CON
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef COMB_FILTER_H_
-#define COMB_FILTER_H_
+#ifndef EFFECTS_COMB_FILTER_H_
+#define EFFECTS_COMB_FILTER_H_
 
 typedef struct {
 	float damp;
@@ -40,4 +40,4 @@ void initCombFilter(LPFCOMB_FILTER * comb, float *buffer, int size, float damp, 
 void upDateCombFilter(LPFCOMB_FILTER * comb, float limitFactor);
 float applyCombFilter(LPFCOMB_FILTER * comb, float input);
 
-#endif /* COMB_FILTER_H_ */
+#endif /* EFFECTS_COMB_FILTER_H_ */

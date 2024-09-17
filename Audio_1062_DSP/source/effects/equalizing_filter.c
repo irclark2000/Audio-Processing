@@ -68,8 +68,14 @@ float EQFILTER_update(EQFILTER *eqf, float input) {
 }
 
 void EQFILTER_setGain(EQFILTER *eqf, float gain) {
-   eqf->gain = gain;
-   calculateCoefficients(eqf);
+	eqf->gain = gain;
+	float Q = eqf->Q;
+	float K = tanf(eqf->eqfWct/2.0f);
+	float inv_a0 = 1.0f/(1.0f + K/Q + K*K);
+	eqf->coefficients.b0 =  (1.0f + eqf->gain*K/Q + K*K)*inv_a0;
+	eqf->coefficients.b2 =  (1.0f - eqf->gain*K/Q + K*K)*inv_a0;
+	eqf->coefficients.a2 = (1.0f - K/Q + K*K)*inv_a0;
+
 }
 void EQFILTER_setCenterFrequency(EQFILTER *eqf, float centerFreq, float bandwidth) {
 	eqf->eqfWct = 2.0f*PI*centerFreq * eqf->sampleTime;

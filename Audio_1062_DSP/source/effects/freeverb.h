@@ -22,8 +22,8 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef FREEVERB_H_
 #define FREEVERB_H_
 
-#include "all_pass.h"
-#include "comb_filter.h"
+#include <effects/all_pass.h>
+#include <effects/comb_filter.h>
 
 typedef struct {
 	ALLPASS allpass[4];

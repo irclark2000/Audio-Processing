@@ -26,13 +26,9 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "fsl_pit.h"
 #include "fsl_xbara.h"
 #include "fsl_debug_console.h"
-#include "fsl_common.h"
 #include "fsl_edma.h"
 #include "fsl_common.h"
 #include "fsl_iomuxc.h"
-#include "fsl_gpio.h"
-#include "clock_config.h"
-#include "board.h"
 #include "dma_functions.h"
 
 #define ADC_ETC_DONE0_FLAG (0x1U)

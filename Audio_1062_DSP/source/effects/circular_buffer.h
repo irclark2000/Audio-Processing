@@ -19,8 +19,8 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CON
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef CIRCULAR_BUFFER_H_
-#define CIRCULAR_BUFFER_H_
+#ifndef EFFECTS_CIRCULAR_BUFFER_H_
+#define EFFECTS_CIRCULAR_BUFFER_H_
 #include "fsl_common.h"
 
 typedef struct {
@@ -40,4 +40,4 @@ void cb_initialize(CIRCBUFFER *cb, float * buf, uint32_t size);
 uint16_t cb_addOverlap(CIRCBUFFER *cb, float * buf, uint32_t hop_size, uint32_t window_size);
 float cb_getFloat (CIRCBUFFER *cb, uint32_t index);
 
-#endif /* CIRCULAR_BUFFER_H_ */
+#endif /* EFFECTS_CIRCULAR_BUFFER_H_ */

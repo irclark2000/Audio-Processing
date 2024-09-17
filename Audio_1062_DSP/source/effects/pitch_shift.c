@@ -79,7 +79,9 @@ float applyPitchShift(PITCHSHIFT *ps, float input) {
 
 	return input;
 }
+void setPitchShift(PITCHSHIFT *ps, float potentiometer) {
 
+}
 static int round (float value) {
 	if (value < 0) {
 		return (int)(value - 0.5);

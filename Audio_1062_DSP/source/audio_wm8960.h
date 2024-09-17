@@ -8,8 +8,8 @@
 #ifndef AUDIO_WM8960_H_
 #define AUDIO_WM8960_H_
 
-#include "pin_mux.h"
-#include "clock_config.h"
+//#include "pin_mux.h"
+//#include "clock_config.h"
 #include "board.h"
 
 #include "fsl_debug_console.h"

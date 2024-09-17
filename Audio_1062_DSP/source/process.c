@@ -20,17 +20,13 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
+#include <effects/equalizing_filter.h>
+#include <effects/pitch_shift.h>
+#include <effects/tremolo.h>
+#include <phase vocoder/computeFFT.h>
 #include "process.h"
-#include "tremolo.h"
-//#include "freeverb.h"
-//#include "schroeder_verb.h"
-#include "pitch_shift.h"
-//#include "noise_gate.h"
-#include "computeFFT.h"
 #include "updateSettings.h"
-#include "arm_math.h"
 #include "random_generator.h"
-#include "equalizing_filter.h"
 
 //#include "overdrive.h"
 TREMOLO trem;
@@ -40,8 +36,10 @@ HIGHPASS hp;
 //PITCHSHIFT ps;
 //NOISEGATE nGate;
 //OVERDRIVE od;
-EQFILTER eqf;
-
+EQFILTER eqf0;
+EQFILTER eqf1;
+EQFILTER eqf2;
+EQFILTER eqf3;
 
 #ifndef PHASEVOCODER
 #define PHASEVOCODER 0
@@ -54,8 +52,10 @@ void initializeEffects(float sampleRate) {
 	//initFreeverb(&fvb);
 	//initSchroederVerb(&svb);
 	intitialize_random_number_generator();
-	EQFILTER_initialize(&eqf, 500.0f, sampleRate, 10.0f, 200.0f);
-
+	EQFILTER_initialize(&eqf0, 4000.0f, sampleRate, 10.0f, 200.0f);
+	EQFILTER_initialize(&eqf1, 12000.0f, sampleRate, 10.0f, 200.0f);
+	EQFILTER_initialize(&eqf2, 12000.0f, sampleRate, 1.0f, 200.0f);
+	EQFILTER_initialize(&eqf3, 500.0f, sampleRate, 1.0f, 200.0f);
 	intializeFFT();
 
 	// distortion level of 50 yields high distortion.
@@ -86,13 +86,17 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRat
 	for (int i=0; i < size/2; i+= 2) {
 		leftIn = bufIn[i] * INT16_TO_FLOAT ;
 		rightIn = bufIn[i+1] * INT16_TO_FLOAT;
-		leftOut = rightIn;
 		rightIn = 0.05 * get_random_float(); // make white noise
+		leftOut = rightIn;
 #if !PHASEVOCODER
 //		leftOut = 1.4 * g_gain * arm_sin_f32(i * 10.0 / sampleRate);
 //		leftOut = 1.05f * Tremolo_Update(&trem, leftIn, false);
 //		rightOut = 1.05f * Tremolo_Update(&trem, rightIn, true);
-		leftOut = EQFILTER_update(&eqf, rightIn);
+		float filterOut = EQFILTER_update(&eqf0, rightIn);
+		filterOut = EQFILTER_update(&eqf1, filterOut);
+		filterOut = EQFILTER_update(&eqf2, filterOut);
+		leftOut = EQFILTER_update(&eqf3, filterOut);
+		//leftOut = EQFILTER_update(&eqf0, rightIn);
 		//leftOut = 1.5f * applyNoiseGate(&nGate, rightIn);
 		//leftOut = 3.0 * g_gain * applyShroederVerb(&svb, rightIn);
 		//leftOut = applyFreeverb(&fvb, rightIn);
@@ -116,7 +120,14 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRat
 const static float inverse_time = 1.0f / 799.0f;
 
 void EQFILTER_test (uint32_t update_counter) {
+#if 1
 	// frequency sweep  over 4.6 octaves
-	float freq = 500 * powf (2.0f, 4.6f * (update_counter * inverse_time));
-	EQFILTER_setCenterFrequency(&eqf, freq, 200.0f);
+	float freq0 = 500 * powf (2.0f, 4.6f * (update_counter * inverse_time));
+	float freq1 = 500 * powf (2.0f, 4.6f * (1.0f - update_counter * inverse_time));
+	EQFILTER_setCenterFrequency(&eqf0, freq0, 200.0f);
+	EQFILTER_setCenterFrequency(&eqf3, freq0, 200.0f);
+	EQFILTER_setCenterFrequency(&eqf1, freq1, 200.0f);
+	EQFILTER_setCenterFrequency(&eqf2, freq1, 200.0f);
+#endif
+	//EQFILTER_setGain (&eqf0, 10.0 * update_counter * inverse_time);
 }

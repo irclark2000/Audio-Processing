@@ -21,6 +21,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #ifndef COMPUTEFFT_H_
 #define COMPUTEFFT_H_
+
 #ifndef ARM_MATH_CM7
 #define ARM_MATH_CM7
 #endif
@@ -30,7 +31,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <arm_math.h>
 #include "arm_const_structs.h"
 #include "audio_wm8960.h"
-#include "circular_buffer.h"
+#include <effects/circular_buffer.h>
 
 
 #define FFT_LENGTH HALF_BUFFER_SIZE/4

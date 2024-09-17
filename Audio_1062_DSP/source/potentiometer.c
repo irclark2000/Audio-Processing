@@ -82,35 +82,6 @@ static uint16_t *s_readings;
 /*******************************************************************************
  * Code
  ******************************************************************************/
-#if 0
-extern "C" void POTENTIOMETER_ADC_ETC_DONE0_Handler(void)
-{
-    g_sampleCount++;
-    if (g_sampleCount >= 100) {
-    	 g_AdcConversionDoneFlag |= ADC_ETC_DONE0_FLAG;
-    	 g_sampleCount = 0;
-    }
-    ADC_ETC_ClearInterruptStatusFlags(DEMO_ADC_ETC_BASE, kADC_ETC_Trg0TriggerSource, kADC_ETC_Done0StatusFlagMask);
-    /* Get trigger0 chain0 result. */
-//    uint16_t * adc = getADCBuffer();
-    s_readings[0] = ADC_ETC_GetADCConversionValue(DEMO_ADC_ETC_BASE, 0U, 0U);
-    s_readings[1] = ADC_ETC_GetADCConversionValue(DEMO_ADC_ETC_BASE, 0U, 1U);
-    s_readings[2] = ADC_ETC_GetADCConversionValue(DEMO_ADC_ETC_BASE, 0U, 2U);
-    s_readings[3] = ADC_ETC_GetADCConversionValue(DEMO_ADC_ETC_BASE, 0U, 3U);
-    __DSB();
-}
-
-extern "C" void EXAMPLE_ADC_ETC_DONE1_Handler(void)
-{
-    g_AdcConversionDoneFlag |= ADC_ETC_DONE1_FLAG;
-    ADC_ETC_ClearInterruptStatusFlags(DEMO_ADC_ETC_BASE, kADC_ETC_Trg0TriggerSource, kADC_ETC_Done1StatusFlagMask);
-    __DSB();
-}
-#endif
-
-/*!
- * @brief Main function.
- */
 void archMixPotentiometerInitPins (void) {
 	//GPIO_AD_B1_04
 	//GPIO_AD_B1_05
@@ -145,6 +116,7 @@ void  potentiometerInitPins (void) {
 	IOMUXC_SetPinMux(IOMUXC_GPIO_AD_B1_05_GPIO1_IO21, 0U);      // Channel 10
 	IOMUXC_SetPinConfig(IOMUXC_GPIO_AD_B1_05_GPIO1_IO21, 0xB0U);
 }
+
 void potentiometerReadInit()
 {
     adc_etc_config_t adcEtcConfig;
@@ -222,7 +194,7 @@ void potentiometerReadInit()
      adcEtcTriggerChainConfig.ADCHCRegisterSelect = 1U << DEMO_ADC_CHANNEL_GROUP1; /* Select ADC_HC1 register to trigger. */
      adcEtcTriggerChainConfig.ADCChannelSelect = DEMO_ADC_ETC_CHANNEL3; /* ADC_HC1 will be triggered to sample Corresponding channel. */
      adcEtcTriggerChainConfig.InterruptEnable = kADC_ETC_Done1InterruptEnable; /* Enable the Done1 interrupt. */
-     ADC_ETC_SetTriggerChainConfig(ADC_ETC, 1U, DEMO_ADC_CHANNEL_GROUP1, &adcEtcTriggerChainConfig); /* Configure the trigger0 chain3. */
+     ADC_ETC_SetTriggerChainConfig(ADC_ETC, 1U, DEMO_ADC_CHANNEL_GROUP1, &adcEtcTriggerChainConfig); /* Configure the trigger1 chain3. */
 
      /* Enable the NVIC. */
     //EnableIRQ(ADC_ETC_IRQ0_IRQn);
@@ -310,14 +282,14 @@ static void PIT_Configuration(void)
     PIT_Init(PIT, &pitConfig);
 
     /* Set timer period for channel 0 */
-    // about 50 times per second
+    // set potentiometer can rate to about 100 times per second
     PIT_SetTimerPeriod(PIT, kPIT_Chnl_0, USEC_TO_COUNT(8000U, PIT_SOURCE_CLOCK));
 }
-const float INT_TO_POTENTIOMETER = 1.0f / 4096.0f;
+const float INT_TO_POTENTIOMETER_FLOAT = 1.0f / 4096.0f;
 
 float getPotentiometerValue (int channel) {
 	if (channel > 0 && channel <= POTENTIOMETER_COUNT)
-		return s_readings[channel-1] * INT_TO_POTENTIOMETER;
+		return s_readings[channel-1] * INT_TO_POTENTIOMETER_FLOAT;
 	else return 0.0f;
 }
 

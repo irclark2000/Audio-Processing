@@ -7,15 +7,15 @@
  */
 
 #include <stdio.h>
-#include "pin_mux.h"
-#include "clock_config.h"
-#include "board.h"
+//#include "pin_mux.h"
+//#include "clock_config.h"
+//#include "board.h"
 #include "fsl_debug_console.h"
-#include "fsl_sai_edma.h"
-#include "fsl_codec_common.h"
-#include "fsl_wm8960.h"
-#include "fsl_codec_adapter.h"
-#include "fsl_dmamux.h"
+//#include "fsl_sai_edma.h"
+//#include "fsl_codec_common.h"
+//#include "fsl_wm8960.h"
+//#include "fsl_codec_adapter.h"
+//#include "fsl_dmamux.h"
 
 #include "audio_wm8960.h"
 #include "dma_functions.h"
@@ -24,13 +24,13 @@
 #include "blink.h"
 #include "process.h"
 #include "updateSettings.h"
-#include "core_cm7.h"
-//#include "gpt1_timer.h"
+#include "core_cm7.h"    // required for processor cycle counting
+
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
-#define EXAMPLE_LED_GPIO     BOARD_USER_LED_GPIO
-#define EXAMPLE_LED_GPIO_PIN BOARD_USER_LED_GPIO_PIN
+//#define EXAMPLE_LED_GPIO     BOARD_USER_LED_GPIO
+//#define EXAMPLE_LED_GPIO_PIN BOARD_USER_LED_GPIO_PIN
 
 /*******************************************************************************
  * Code
@@ -40,8 +40,6 @@
  */
 int main(void)
 {
-    //sai_transfer_t xfer;
-    //gpio_pin_config_t led_config = {kGPIO_DigitalOutput, 0, kGPIO_NoIntmode};
 
     board_startup();
     initialize_dma_system();
@@ -49,13 +47,13 @@ int main(void)
     potentiometerReadInit();
     initializeEffects(DEMO_AUDIO_SAMPLE_RATE);
     initializeLED();
-    //gpt1_init();  // for testing timing only.
+
     uint32_t result = 0;
     uint16_t timer_counter = 0;
 
-    //GPIO_PinWrite(EXAMPLE_LED_GPIO, EXAMPLE_LED_GPIO_PIN, 1U);
     int count = 0;
     toggleLED();
+    // main processing loop
     while (1)
     {
     	// using single half-complete interrupt with SAI
@@ -66,20 +64,19 @@ int main(void)
     		DWT->LAR = 0xc5acce55; // unlock access to DWT registers
     		DWT->CYCCNT = 0;
     		DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk; // enable the cycle counter
-    		//start_time = us_count();
     		processHalf(g_bufIn, g_bufOut, HALF_BUFFER_SIZE, DEMO_AUDIO_SAMPLE_RATE);
-    		result += DWT->CYCCNT;
+    		result += DWT->CYCCNT;  // add cycle count to result
     		timer_counter++;
     		g_Transfer_Done = false;
-    		//result = us_count() - start_time;
+
     		if (timer_counter % 100 == 0 && timer_counter > 0 && timer_counter < 1100) {
     			PRINTF("processHalf took %d cycles.\r\n", result);
     			result = 0;
     		}
     	}
-
+    	// new potentiometer readings are available
     	else if (g_AdcConversionDoneFlag) {
-    		if (count == 100) {  // slow down the blinking by factor of 100
+    		if (count == 100) {  // slow down the led blinking by factor of 100
     			toggleLED();
     			count = 0;
     		}

@@ -19,9 +19,9 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CON
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "computeFFT.h"
 #include <cr_section_macros.h>
-#include "circular_buffer.h"
+#include <effects/circular_buffer.h>
+#include <phase vocoder/computeFFT.h>
 
 CIRCBUFFER cbBufIn;
 CIRCBUFFER cbBufOut;

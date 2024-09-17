@@ -46,5 +46,6 @@ typedef struct {
 
 void initPitchShift(PITCHSHIFT *ps, HIGHPASS *hp, float *buf, int size, float shift, float crossfade);
 float applyPitchShift(PITCHSHIFT *ps, float input);
+void setPitchShift(PITCHSHIFT *ps, float potentiometer);
 
 #endif /* PITCH_SHIFT_H_ */
