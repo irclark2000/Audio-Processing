@@ -33,8 +33,8 @@ wm8960_config_t wm8960Config = {
 		.playSource       = kWM8960_PlaySourceDAC,
 		.slaveAddress     = WM8960_I2C_ADDR,
 		.bus              = kWM8960_BusI2S,
-		//    .format = {.mclk_HZ = 6144000U, .sampleRate = DEMO_AUDIO_SAMPLE_RATE, .bitWidth = kWM8960_AudioBitWidth16bit},
-		.format = {.mclk_HZ = DEMO_WM8960_MCLK, .sampleRate = DEMO_AUDIO_SAMPLE_RATE, .bitWidth = kWM8960_AudioBitWidth16bit},
+		//    .format = {.mclk_HZ = 6144000U, .sampleRate = AUD_AUDIO_SAMPLE_RATE, .bitWidth = kWM8960_AudioBitWidth16bit},
+		.format = {.mclk_HZ = AUD_WM8960_MCLK, .sampleRate = AUD_AUDIO_SAMPLE_RATE, .bitWidth = kWM8960_AudioBitWidth16bit},
 		.master_slave = false,
 };
 
@@ -154,13 +154,13 @@ void setup_SAI_EDMA() {
 
 	CLOCK_InitAudioPll(&audioPllConfig);
 	/*Clock setting for LPI2C*/
-	CLOCK_SetMux(kCLOCK_Lpi2cMux, DEMO_LPI2C_CLOCK_SOURCE_SELECT);
-	CLOCK_SetDiv(kCLOCK_Lpi2cDiv, DEMO_LPI2C_CLOCK_SOURCE_DIVIDER);
+	CLOCK_SetMux(kCLOCK_Lpi2cMux, AUD_LPI2C_CLOCK_SOURCE_SELECT);
+	CLOCK_SetDiv(kCLOCK_Lpi2cDiv, AUD_LPI2C_CLOCK_SOURCE_DIVIDER);
 
 	/*Clock setting for SAI1*/
-	CLOCK_SetMux(kCLOCK_Sai1Mux, DEMO_SAI1_CLOCK_SOURCE_SELECT);
-	CLOCK_SetDiv(kCLOCK_Sai1PreDiv, DEMO_SAI1_CLOCK_SOURCE_PRE_DIVIDER);
-	CLOCK_SetDiv(kCLOCK_Sai1Div, DEMO_SAI1_CLOCK_SOURCE_DIVIDER);
+	CLOCK_SetMux(kCLOCK_Sai1Mux, AUD_SAI1_CLOCK_SOURCE_SELECT);
+	CLOCK_SetDiv(kCLOCK_Sai1PreDiv, AUD_SAI1_CLOCK_SOURCE_PRE_DIVIDER);
+	CLOCK_SetDiv(kCLOCK_Sai1Div, AUD_SAI1_CLOCK_SOURCE_DIVIDER);
 
 	/*Enable MCLK clock*/
 	BOARD_EnableSaiMclkOutput(true);
@@ -178,29 +178,29 @@ void setup_SAI_EDMA() {
 		assert(false);
 	}
 	if (CODEC_SetVolume(&codecHandle, kCODEC_PlayChannelHeadphoneLeft | kCODEC_PlayChannelHeadphoneRight,
-			DEMO_CODEC_VOLUME) != kStatus_Success)
+			AUD_CODEC_VOLUME) != kStatus_Success)
 	{
 		assert(false);
 	}
 }
 void setupSAI () {
     /* SAI init */
-    SAI_Init(DEMO_SAI);
+    SAI_Init(AUD_SAI);
 
     /* I2S mode configurations */
-    SAI_GetClassicI2SConfig(&s_saiConfig, DEMO_AUDIO_BIT_WIDTH, kSAI_Stereo, 1U << DEMO_SAI_CHANNEL);
-    s_saiConfig.syncMode    = DEMO_SAI_TX_SYNC_MODE;
-    s_saiConfig.masterSlave = DEMO_SAI_MASTER_SLAVE;
-    SAI_TxSetConfig(DEMO_SAI, &s_saiConfig);
-    s_saiConfig.masterSlave = DEMO_SAI_MASTER_SLAVE;
-    s_saiConfig.syncMode    = DEMO_SAI_RX_SYNC_MODE;
-    SAI_RxSetConfig(DEMO_SAI, &s_saiConfig);
+    SAI_GetClassicI2SConfig(&s_saiConfig, AUD_AUDIO_BIT_WIDTH, kSAI_Stereo, 1U << AUD_SAI_CHANNEL);
+    s_saiConfig.syncMode    = AUD_SAI_TX_SYNC_MODE;
+    s_saiConfig.masterSlave = AUD_SAI_MASTER_SLAVE;
+    SAI_TxSetConfig(AUD_SAI, &s_saiConfig);
+    s_saiConfig.masterSlave = AUD_SAI_MASTER_SLAVE;
+    s_saiConfig.syncMode    = AUD_SAI_RX_SYNC_MODE;
+    SAI_RxSetConfig(AUD_SAI, &s_saiConfig);
 
     /* set bit clock divider */
-    SAI_TxSetBitClockRate(DEMO_SAI, DEMO_AUDIO_MASTER_CLOCK, DEMO_AUDIO_SAMPLE_RATE, DEMO_AUDIO_BIT_WIDTH,
-                          DEMO_AUDIO_DATA_CHANNEL);
-    SAI_RxSetBitClockRate(DEMO_SAI, DEMO_AUDIO_MASTER_CLOCK, DEMO_AUDIO_SAMPLE_RATE, DEMO_AUDIO_BIT_WIDTH,
-                          DEMO_AUDIO_DATA_CHANNEL);
+    SAI_TxSetBitClockRate(AUD_SAI, AUD_AUDIO_MASTER_CLOCK, AUD_AUDIO_SAMPLE_RATE, AUD_AUDIO_BIT_WIDTH,
+                          AUD_AUDIO_DATA_CHANNEL);
+    SAI_RxSetBitClockRate(AUD_SAI, AUD_AUDIO_MASTER_CLOCK, AUD_AUDIO_SAMPLE_RATE, AUD_AUDIO_BIT_WIDTH,
+                          AUD_AUDIO_DATA_CHANNEL);
 
     /* master clock configurations */
     BOARD_MASTER_CLOCK_CONFIG();
@@ -212,7 +212,7 @@ void setupSAI () {
     }
 
     /* delay for codec output stable */
-    DelayMS(DEMO_CODEC_INIT_DELAY_MS);
+    DelayMS(AUD_CODEC_INIT_DELAY_MS);
 
     AUDIO_StartRXPingPongBuffer(s_bufferIn, HALF_BUFFER_SIZE*2);
     AUDIO_StartTXPingPongBuffer(s_bufferOut, HALF_BUFFER_SIZE*2);
@@ -220,90 +220,81 @@ void setupSAI () {
 void setupDMA () {
 	edma_config_t dmaConfig = {0};
     /* Init DMAMUX */
-    //DMAMUX_Init(DEMO_DMAMUX); handled elsewhere so it is not called twice
-    DMAMUX_SetSource(DEMO_DMAMUX, DEMO_AUDIO_TX_EDMA_CHANNEL, (uint8_t)DEMO_SAI_TX_SOURCE);
-    DMAMUX_EnableChannel(DEMO_DMAMUX, DEMO_AUDIO_TX_EDMA_CHANNEL);
-    DMAMUX_SetSource(DEMO_DMAMUX, DEMO_AUDIO_RX_EDMA_CHANNEL, (uint8_t)DEMO_SAI_RX_SOURCE);
-    DMAMUX_EnableChannel(DEMO_DMAMUX, DEMO_AUDIO_RX_EDMA_CHANNEL);
+    //DMAMUX_Init(AUD_DMAMUX); handled elsewhere so it is not called twice
+    DMAMUX_SetSource(AUD_DMAMUX, AUD_AUDIO_TX_EDMA_CHANNEL, (uint8_t)AUD_SAI_TX_SOURCE);
+    DMAMUX_EnableChannel(AUD_DMAMUX, AUD_AUDIO_TX_EDMA_CHANNEL);
+    DMAMUX_SetSource(AUD_DMAMUX, AUD_AUDIO_RX_EDMA_CHANNEL, (uint8_t)AUD_SAI_RX_SOURCE);
+    DMAMUX_EnableChannel(AUD_DMAMUX, AUD_AUDIO_RX_EDMA_CHANNEL);
 
     PRINTF("SAI EDMA ping pong buffer example started!\n\r");
-    PRINTF("SAI Clock: %d\n\r", (int) DEMO_SAI_CLK_FREQ);
-    PRINTF("I2C Clock: %d\n\r", (int) DEMO_I2C_CLK_FREQ);
+    PRINTF("SAI Clock: %d\n\r", (int) AUD_SAI_CLK_FREQ);
+    PRINTF("I2C Clock: %d\n\r", (int) AUD_I2C_CLK_FREQ);
     PRINTF("Audio PLL Clock: %d\n\r", (int) CLOCK_GetFreq(kCLOCK_AudioPllClk));
 
     memset(s_bufferIn, 0, HALF_BUFFER_SIZE*2);
     memset(s_bufferOut, 0, HALF_BUFFER_SIZE*2);
 
-    /* Create EDMA handle */
-    /*
-     * dmaConfig.enableRoundRobinArbitration = false;
-     * dmaConfig.enableHaltOnError = true;
-     * dmaConfig.enableContinuousLinkMode = false;
-     * dmaConfig.enableDebugMode = false;
-     */
-    //EDMA_GetDefaultConfig(&dmaConfig);
-    //EDMA_Init(DEMO_DMA, &dmaConfig);
-    EDMA_CreateHandle(&s_dmaTxHandle, DEMO_DMA, DEMO_AUDIO_TX_EDMA_CHANNEL);
-    EDMA_CreateHandle(&s_dmaRxHandle, DEMO_DMA, DEMO_AUDIO_RX_EDMA_CHANNEL);
+    EDMA_CreateHandle(&s_dmaTxHandle, AUD_DMA, AUD_AUDIO_TX_EDMA_CHANNEL);
+    EDMA_CreateHandle(&s_dmaRxHandle, AUD_DMA, AUD_AUDIO_RX_EDMA_CHANNEL);
     EDMA_SetCallback(&s_dmaTxHandle, EDMA_TX_Callback, NULL);
     EDMA_SetCallback(&s_dmaRxHandle, EDMA_RX_Callback, NULL);
-    EDMA_ResetChannel(DEMO_DMA, DEMO_AUDIO_TX_EDMA_CHANNEL);
-    EDMA_ResetChannel(DEMO_DMA, DEMO_AUDIO_RX_EDMA_CHANNEL);
+    EDMA_ResetChannel(AUD_DMA, AUD_AUDIO_TX_EDMA_CHANNEL);
+    EDMA_ResetChannel(AUD_DMA, AUD_AUDIO_RX_EDMA_CHANNEL);
 }
 static void AUDIO_StartRXPingPongBuffer(void *buffer, uint32_t bufferSize)
 {
     edma_transfer_config_t transferConfig = {0};
-    uint32_t srcAddr                      = SAI_RxGetDataRegisterAddress(DEMO_SAI, DEMO_SAI_CHANNEL);
+    uint32_t srcAddr                      = SAI_RxGetDataRegisterAddress(AUD_SAI, AUD_SAI_CHANNEL);
 
     /* Configure and submit transfer structure 1 */
-    EDMA_PrepareTransfer(&transferConfig, (void *)srcAddr, DEMO_AUDIO_BIT_WIDTH / 8U, buffer,
-                         DEMO_AUDIO_BIT_WIDTH / 8U,
-                         (FSL_FEATURE_SAI_FIFO_COUNTn(0) - s_saiConfig.fifo.fifoWatermark) * (DEMO_AUDIO_BIT_WIDTH / 8U),
+    EDMA_PrepareTransfer(&transferConfig, (void *)srcAddr, AUD_AUDIO_BIT_WIDTH / 8U, buffer,
+                         AUD_AUDIO_BIT_WIDTH / 8U,
+                         (FSL_FEATURE_SAI_FIFO_COUNTn(0) - s_saiConfig.fifo.fifoWatermark) * (AUD_AUDIO_BIT_WIDTH / 8U),
                          bufferSize, kEDMA_PeripheralToMemory);
 
     EDMA_TcdSetTransferConfig(&s_emdaTcd[2], &transferConfig, &s_emdaTcd[3]);
-    EDMA_PrepareTransfer(&transferConfig, (void *)srcAddr, DEMO_AUDIO_BIT_WIDTH / 8U, buffer,
-                         DEMO_AUDIO_BIT_WIDTH / 8U,
-                         (FSL_FEATURE_SAI_FIFO_COUNTn(0) - s_saiConfig.fifo.fifoWatermark) * (DEMO_AUDIO_BIT_WIDTH / 8U),
+    EDMA_PrepareTransfer(&transferConfig, (void *)srcAddr, AUD_AUDIO_BIT_WIDTH / 8U, buffer,
+                         AUD_AUDIO_BIT_WIDTH / 8U,
+                         (FSL_FEATURE_SAI_FIFO_COUNTn(0) - s_saiConfig.fifo.fifoWatermark) * (AUD_AUDIO_BIT_WIDTH / 8U),
                          bufferSize, kEDMA_PeripheralToMemory);
     EDMA_TcdSetTransferConfig(&s_emdaTcd[3], &transferConfig, &s_emdaTcd[2]);
     EDMA_TcdEnableInterrupts(&s_emdaTcd[2], kEDMA_MajorInterruptEnable | kEDMA_HalfInterruptEnable);
     EDMA_TcdEnableInterrupts(&s_emdaTcd[3], kEDMA_MajorInterruptEnable | kEDMA_HalfInterruptEnable);
-    EDMA_InstallTCD(DEMO_DMA, s_dmaRxHandle.channel, &s_emdaTcd[2]);
+    EDMA_InstallTCD(AUD_DMA, s_dmaRxHandle.channel, &s_emdaTcd[2]);
     EDMA_StartTransfer(&s_dmaRxHandle);
     /* Enable DMA enable bit */
-    SAI_RxEnableDMA(DEMO_SAI, kSAI_FIFORequestDMAEnable, true);
+    SAI_RxEnableDMA(AUD_SAI, kSAI_FIFORequestDMAEnable, true);
     /* Enable SAI Tx clock */
-    SAI_RxEnable(DEMO_SAI, true);
+    SAI_RxEnable(AUD_SAI, true);
     /* Enable the channel FIFO */
-    SAI_RxSetChannelFIFOMask(DEMO_SAI, 1U << DEMO_SAI_CHANNEL);
+    SAI_RxSetChannelFIFOMask(AUD_SAI, 1U << AUD_SAI_CHANNEL);
 }
 
 static void AUDIO_StartTXPingPongBuffer(void *buffer, uint32_t bufferSize)
 {
     edma_transfer_config_t transferConfig = {0};
-    uint32_t destAddr                     = SAI_TxGetDataRegisterAddress(DEMO_SAI, DEMO_SAI_CHANNEL);
+    uint32_t destAddr                     = SAI_TxGetDataRegisterAddress(AUD_SAI, AUD_SAI_CHANNEL);
 
     /* Configure and submit transfer structure 1 */
-    EDMA_PrepareTransfer(&transferConfig, buffer, DEMO_AUDIO_BIT_WIDTH / 8U, (void *)destAddr,
-                         DEMO_AUDIO_BIT_WIDTH / 8U,
-                         (FSL_FEATURE_SAI_FIFO_COUNTn(0) - s_saiConfig.fifo.fifoWatermark) * (DEMO_AUDIO_BIT_WIDTH / 8U),
+    EDMA_PrepareTransfer(&transferConfig, buffer, AUD_AUDIO_BIT_WIDTH / 8U, (void *)destAddr,
+                         AUD_AUDIO_BIT_WIDTH / 8U,
+                         (FSL_FEATURE_SAI_FIFO_COUNTn(0) - s_saiConfig.fifo.fifoWatermark) * (AUD_AUDIO_BIT_WIDTH / 8U),
                          bufferSize, kEDMA_MemoryToPeripheral);
 
     EDMA_TcdSetTransferConfig(&s_emdaTcd[0], &transferConfig, &s_emdaTcd[1]);
-    EDMA_PrepareTransfer(&transferConfig, buffer, DEMO_AUDIO_BIT_WIDTH / 8U, (void *)destAddr,
-                         DEMO_AUDIO_BIT_WIDTH / 8U,
-                         (FSL_FEATURE_SAI_FIFO_COUNTn(0) - s_saiConfig.fifo.fifoWatermark) * (DEMO_AUDIO_BIT_WIDTH / 8U),
+    EDMA_PrepareTransfer(&transferConfig, buffer, AUD_AUDIO_BIT_WIDTH / 8U, (void *)destAddr,
+                         AUD_AUDIO_BIT_WIDTH / 8U,
+                         (FSL_FEATURE_SAI_FIFO_COUNTn(0) - s_saiConfig.fifo.fifoWatermark) * (AUD_AUDIO_BIT_WIDTH / 8U),
                          bufferSize, kEDMA_MemoryToPeripheral);
     EDMA_TcdSetTransferConfig(&s_emdaTcd[1], &transferConfig, &s_emdaTcd[0]);
     EDMA_TcdEnableInterrupts(&s_emdaTcd[0], kEDMA_MajorInterruptEnable | kEDMA_HalfInterruptEnable);
     EDMA_TcdEnableInterrupts(&s_emdaTcd[1], kEDMA_MajorInterruptEnable | kEDMA_HalfInterruptEnable);
-    EDMA_InstallTCD(DEMO_DMA, s_dmaTxHandle.channel, &s_emdaTcd[0]);
+    EDMA_InstallTCD(AUD_DMA, s_dmaTxHandle.channel, &s_emdaTcd[0]);
     EDMA_StartTransfer(&s_dmaTxHandle);
     /* Enable DMA enable bit */
-    SAI_TxEnableDMA(DEMO_SAI, kSAI_FIFORequestDMAEnable, true);
+    SAI_TxEnableDMA(AUD_SAI, kSAI_FIFORequestDMAEnable, true);
     /* Enable SAI Tx clock */
-    SAI_TxEnable(DEMO_SAI, true);
+    SAI_TxEnable(AUD_SAI, true);
     /* Enable the channel FIFO */
-    SAI_TxSetChannelFIFOMask(DEMO_SAI, 1U << DEMO_SAI_CHANNEL);
+    SAI_TxSetChannelFIFOMask(AUD_SAI, 1U << AUD_SAI_CHANNEL);
 }

@@ -25,24 +25,24 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
-#define DEMO_ADC_BASE           ADC1
-#define DEMO_ADC_USER_CHANNEL   16U
-#define DEMO_ADC_CHANNEL_GROUP0 0U
-#define DEMO_ADC_CHANNEL_GROUP1 1U
-#define DEMO_ADC_CHANNEL_GROUP2 2U
-#define DEMO_ADC_CHANNEL_GROUP3 3U
-#define DEMO_ADC_CHANNEL_GROUP4 4U
-#define DEMO_ADC_CHANNEL_GROUP5 5U
+#define POTENTIOMETER_ADC_BASE           ADC1
+#define POTENTIOMETER_ADC_USER_CHANNEL   16U
+#define POTENTIOMETER_ADC_CHANNEL_GROUP0 0U
+#define POTENTIOMETER_ADC_CHANNEL_GROUP1 1U
+#define POTENTIOMETER_ADC_CHANNEL_GROUP2 2U
+#define POTENTIOMETER_ADC_CHANNEL_GROUP3 3U
+#define POTENTIOMETER_ADC_CHANNEL_GROUP4 4U
+#define POTENTIOMETER_ADC_CHANNEL_GROUP5 5U
 
-#define DEMO_ADC_ETC_BASE             ADC_ETC
+#define POTENTIOMETER_ADC_ETC_BASE             ADC_ETC
 #define ADC_ETC_TRIG_GRP0_CHAIN_LENGTH 4U    /* Chain length 5 */
 #define ADC_ETC_TRIG_GRP1_CHAIN_LENGTH 0U    /* Chain length 1 */
-#define DEMO_ADC_ETC_CHANNEL0          15U
-#define DEMO_ADC_ETC_CHANNEL1          0U
-#define DEMO_ADC_ETC_CHANNEL2          7U
-#define DEMO_ADC_ETC_CHANNEL3          8U
-#define DEMO_ADC_ETC_CHANNEL4          9U
-#define DEMO_ADC_ETC_CHANNEL5          10U
+#define POTENTIOMETER_ADC_ETC_CHANNEL0          15U
+#define POTENTIOMETER_ADC_ETC_CHANNEL1          0U
+#define POTENTIOMETER_ADC_ETC_CHANNEL2          7U
+#define POTENTIOMETER_ADC_ETC_CHANNEL3          8U
+#define POTENTIOMETER_ADC_ETC_CHANNEL4          9U
+#define POTENTIOMETER_ADC_ETC_CHANNEL5          10U
 
 #define POTENTIOMETER_ADC_ETC_DONE0_Handler ADC_ETC_IRQ0_IRQHandler
 #define EXAMPLE_ADC_ETC_DONE1_Handler ADC_ETC_IRQ1_IRQHandler
@@ -50,9 +50,9 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #define POTENTIOMETER_COUNT 6
 
-#define DEMO_XBARA_BASE           XBARA1
-#define DEMO_XBARA_INPUT_PITCH0   kXBARA1_InputPitTrigger0
-#define DEMO_XBARA_OUTPUT_ADC_ETC kXBARA1_OutputAdcEtcXbar0Trig0
+#define POTENTIOMETER_XBARA_BASE           XBARA1
+#define POTENTIOMETER_XBARA_INPUT_PITCH0   kXBARA1_InputPitTrigger0
+#define POTENTIOMETER_XBARA_OUTPUT_ADC_ETC kXBARA1_OutputAdcEtcXbar0Trig0
 
 #define PIT_SOURCE_CLOCK CLOCK_GetFreq(kCLOCK_OscClk)
 
@@ -133,7 +133,7 @@ void potentiometerReadInit()
 
     ADC_Configuration();
     XBARA_Configuration();
-    ADC_EnableDMA(DEMO_ADC_BASE, true);
+    ADC_EnableDMA(POTENTIOMETER_ADC_BASE, true);
     DMAMUX_EDMA_SetupForPotentiometers();
     PIT_Configuration();
     s_readings =  getADCBuffer();
@@ -142,7 +142,7 @@ void potentiometerReadInit()
     ADC_ETC_GetDefaultConfig(&adcEtcConfig);
     adcEtcConfig.XBARtriggerMask = 1U; /* Enable the external XBAR trigger0. */
     adcEtcConfig.enableTSCBypass = false;
-    ADC_ETC_Init(DEMO_ADC_ETC_BASE, &adcEtcConfig);
+    ADC_ETC_Init(POTENTIOMETER_ADC_ETC_BASE, &adcEtcConfig);
 
     /* Set the external XBAR trigger0 configuration. */
     adcEtcTriggerConfig.enableSyncMode      = false;
@@ -151,7 +151,7 @@ void potentiometerReadInit()
     adcEtcTriggerConfig.triggerPriority     = 1U;
     adcEtcTriggerConfig.sampleIntervalDelay = 0U;
     adcEtcTriggerConfig.initialDelay        = 0U;
-    ADC_ETC_SetTriggerConfig(DEMO_ADC_ETC_BASE, 0U, &adcEtcTriggerConfig);
+    ADC_ETC_SetTriggerConfig(POTENTIOMETER_ADC_ETC_BASE, 0U, &adcEtcTriggerConfig);
 
     /* Set the external XBAR trigger1 configuration. */
     adcEtcTriggerConfig.triggerChainLength = ADC_ETC_TRIG_GRP1_CHAIN_LENGTH; /* Chain length is 1. */
@@ -163,38 +163,38 @@ void potentiometerReadInit()
     /* ADC1 Trigger group 0 */
     adcEtcTriggerChainConfig.enableB2BMode = true;
 
-    adcEtcTriggerChainConfig.ADCHCRegisterSelect = 1U << DEMO_ADC_CHANNEL_GROUP0; /* Select ADC_HC0 register to trigger. */
-    adcEtcTriggerChainConfig.ADCChannelSelect = DEMO_ADC_ETC_CHANNEL0; /* ADC_HC0 will be triggered to sample Corresponding channel. */
+    adcEtcTriggerChainConfig.ADCHCRegisterSelect = 1U << POTENTIOMETER_ADC_CHANNEL_GROUP0; /* Select ADC_HC0 register to trigger. */
+    adcEtcTriggerChainConfig.ADCChannelSelect = POTENTIOMETER_ADC_ETC_CHANNEL0; /* ADC_HC0 will be triggered to sample Corresponding channel. */
     adcEtcTriggerChainConfig.InterruptEnable = kADC_ETC_InterruptDisable; /* Disable the Done0 interrupt. */
-    ADC_ETC_SetTriggerChainConfig(ADC_ETC, 0U, DEMO_ADC_CHANNEL_GROUP0, &adcEtcTriggerChainConfig); /* Configure the trigger0 chain0. */
+    ADC_ETC_SetTriggerChainConfig(ADC_ETC, 0U, POTENTIOMETER_ADC_CHANNEL_GROUP0, &adcEtcTriggerChainConfig); /* Configure the trigger0 chain0. */
 
-    adcEtcTriggerChainConfig.ADCHCRegisterSelect = 1U << DEMO_ADC_CHANNEL_GROUP1; /* Select ADC_HC1 register to trigger. */
-    adcEtcTriggerChainConfig.ADCChannelSelect = DEMO_ADC_ETC_CHANNEL1; /* ADC_HC1 will be triggered to sample Corresponding channel. */
+    adcEtcTriggerChainConfig.ADCHCRegisterSelect = 1U << POTENTIOMETER_ADC_CHANNEL_GROUP1; /* Select ADC_HC1 register to trigger. */
+    adcEtcTriggerChainConfig.ADCChannelSelect = POTENTIOMETER_ADC_ETC_CHANNEL1; /* ADC_HC1 will be triggered to sample Corresponding channel. */
     adcEtcTriggerChainConfig.InterruptEnable = kADC_ETC_InterruptDisable; /* Disable the Done1 interrupt. */
-    ADC_ETC_SetTriggerChainConfig(ADC_ETC, 0U, DEMO_ADC_CHANNEL_GROUP1, &adcEtcTriggerChainConfig); /* Configure the trigger0 chain1. */
+    ADC_ETC_SetTriggerChainConfig(ADC_ETC, 0U, POTENTIOMETER_ADC_CHANNEL_GROUP1, &adcEtcTriggerChainConfig); /* Configure the trigger0 chain1. */
 
-    adcEtcTriggerChainConfig.ADCHCRegisterSelect = 1U << DEMO_ADC_CHANNEL_GROUP2; /* Select ADC_HC0 register to trigger. */
-    adcEtcTriggerChainConfig.ADCChannelSelect = DEMO_ADC_ETC_CHANNEL4; /* ADC_HC0 will be triggered to sample Corresponding channel. */
+    adcEtcTriggerChainConfig.ADCHCRegisterSelect = 1U << POTENTIOMETER_ADC_CHANNEL_GROUP2; /* Select ADC_HC0 register to trigger. */
+    adcEtcTriggerChainConfig.ADCChannelSelect = POTENTIOMETER_ADC_ETC_CHANNEL4; /* ADC_HC0 will be triggered to sample Corresponding channel. */
     adcEtcTriggerChainConfig.InterruptEnable = kADC_ETC_InterruptDisable; /* Disable the Done0 interrupt. */
-    ADC_ETC_SetTriggerChainConfig(ADC_ETC, 0U, DEMO_ADC_CHANNEL_GROUP2, &adcEtcTriggerChainConfig); /* Configure the trigger0 chain0. */
+    ADC_ETC_SetTriggerChainConfig(ADC_ETC, 0U, POTENTIOMETER_ADC_CHANNEL_GROUP2, &adcEtcTriggerChainConfig); /* Configure the trigger0 chain0. */
 
-    adcEtcTriggerChainConfig.ADCHCRegisterSelect = 1U << DEMO_ADC_CHANNEL_GROUP3; /* Select ADC_HC1 register to trigger. */
-    adcEtcTriggerChainConfig.ADCChannelSelect = DEMO_ADC_ETC_CHANNEL5; /* ADC_HC1 will be triggered to sample Corresponding channel. */
+    adcEtcTriggerChainConfig.ADCHCRegisterSelect = 1U << POTENTIOMETER_ADC_CHANNEL_GROUP3; /* Select ADC_HC1 register to trigger. */
+    adcEtcTriggerChainConfig.ADCChannelSelect = POTENTIOMETER_ADC_ETC_CHANNEL5; /* ADC_HC1 will be triggered to sample Corresponding channel. */
     adcEtcTriggerChainConfig.InterruptEnable = kADC_ETC_InterruptDisable; /* Disable the Done1 interrupt. */
-    ADC_ETC_SetTriggerChainConfig(ADC_ETC, 0U, DEMO_ADC_CHANNEL_GROUP3, &adcEtcTriggerChainConfig); /* Configure the trigger0 chain1. */
+    ADC_ETC_SetTriggerChainConfig(ADC_ETC, 0U, POTENTIOMETER_ADC_CHANNEL_GROUP3, &adcEtcTriggerChainConfig); /* Configure the trigger0 chain1. */
 
 #if 1
-     adcEtcTriggerChainConfig.ADCHCRegisterSelect = 1U << DEMO_ADC_CHANNEL_GROUP4; /* Select ADC_HC1 register to trigger. */
-     adcEtcTriggerChainConfig.ADCChannelSelect = DEMO_ADC_ETC_CHANNEL2; /* ADC_HC1 will be triggered to sample Corresponding channel. */
+     adcEtcTriggerChainConfig.ADCHCRegisterSelect = 1U << POTENTIOMETER_ADC_CHANNEL_GROUP4; /* Select ADC_HC1 register to trigger. */
+     adcEtcTriggerChainConfig.ADCChannelSelect = POTENTIOMETER_ADC_ETC_CHANNEL2; /* ADC_HC1 will be triggered to sample Corresponding channel. */
      adcEtcTriggerChainConfig.InterruptEnable = kADC_ETC_InterruptDisable; /* Enable the Done1 interrupt. */
-     ADC_ETC_SetTriggerChainConfig(ADC_ETC, 0U, DEMO_ADC_CHANNEL_GROUP4, &adcEtcTriggerChainConfig); /* Configure the trigger0 chain3. */
+     ADC_ETC_SetTriggerChainConfig(ADC_ETC, 0U, POTENTIOMETER_ADC_CHANNEL_GROUP4, &adcEtcTriggerChainConfig); /* Configure the trigger0 chain3. */
 #endif
     /* ADC1 Trigger group 1 */
 
-     adcEtcTriggerChainConfig.ADCHCRegisterSelect = 1U << DEMO_ADC_CHANNEL_GROUP1; /* Select ADC_HC1 register to trigger. */
-     adcEtcTriggerChainConfig.ADCChannelSelect = DEMO_ADC_ETC_CHANNEL3; /* ADC_HC1 will be triggered to sample Corresponding channel. */
+     adcEtcTriggerChainConfig.ADCHCRegisterSelect = 1U << POTENTIOMETER_ADC_CHANNEL_GROUP1; /* Select ADC_HC1 register to trigger. */
+     adcEtcTriggerChainConfig.ADCChannelSelect = POTENTIOMETER_ADC_ETC_CHANNEL3; /* ADC_HC1 will be triggered to sample Corresponding channel. */
      adcEtcTriggerChainConfig.InterruptEnable = kADC_ETC_Done1InterruptEnable; /* Enable the Done1 interrupt. */
-     ADC_ETC_SetTriggerChainConfig(ADC_ETC, 1U, DEMO_ADC_CHANNEL_GROUP1, &adcEtcTriggerChainConfig); /* Configure the trigger1 chain3. */
+     ADC_ETC_SetTriggerChainConfig(ADC_ETC, 1U, POTENTIOMETER_ADC_CHANNEL_GROUP1, &adcEtcTriggerChainConfig); /* Configure the trigger1 chain3. */
 
      /* Enable the NVIC. */
     //EnableIRQ(ADC_ETC_IRQ0_IRQn);
@@ -220,7 +220,7 @@ static void ADC_ETC_Setup(adc_etc_trigger_chain_config_t *adcEtcTriggerChainConf
 #if defined(FSL_FEATURE_ADC_ETC_HAS_TRIGm_CHAIN_a_b_IEn_EN) && FSL_FEATURE_ADC_ETC_HAS_TRIGm_CHAIN_a_b_IEn_EN
 	adcEtcTriggerChainConfig->enableIrq = enableInterrupt; /* Enable the IRQ. */
 #endif                                         /* FSL_FEATURE_ADC_ETC_HAS_TRIGm_CHAIN_a_b_IEn_EN */
-	ADC_ETC_SetTriggerChainConfig(DEMO_ADC_ETC_BASE, 0U, index,
+	ADC_ETC_SetTriggerChainConfig(POTENTIOMETER_ADC_ETC_BASE, 0U, index,
                               adcEtcTriggerChainConfig); /* Configure the trigger0 chain0. */
 }
 
@@ -234,20 +234,20 @@ void ADC_Configuration(void)
 
     /* Initialize the ADC module. */
     ADC_GetDefaultConfig(&k_adcConfig);
-    ADC_Init(DEMO_ADC_BASE, &k_adcConfig);
-    ADC_EnableHardwareTrigger(DEMO_ADC_BASE, true);
+    ADC_Init(POTENTIOMETER_ADC_BASE, &k_adcConfig);
+    ADC_EnableHardwareTrigger(POTENTIOMETER_ADC_BASE, true);
 
-    adcChannelConfigStruct.channelNumber = DEMO_ADC_USER_CHANNEL; /* External channel selection from ADC_ETC. */
+    adcChannelConfigStruct.channelNumber = POTENTIOMETER_ADC_USER_CHANNEL; /* External channel selection from ADC_ETC. */
     adcChannelConfigStruct.enableInterruptOnConversionCompleted = false;
-    ADC_SetChannelConfig(DEMO_ADC_BASE, DEMO_ADC_CHANNEL_GROUP0, &adcChannelConfigStruct);
-    ADC_SetChannelConfig(DEMO_ADC_BASE, DEMO_ADC_CHANNEL_GROUP1, &adcChannelConfigStruct);
-    ADC_SetChannelConfig(DEMO_ADC_BASE, DEMO_ADC_CHANNEL_GROUP2, &adcChannelConfigStruct);
-    ADC_SetChannelConfig(DEMO_ADC_BASE, DEMO_ADC_CHANNEL_GROUP3, &adcChannelConfigStruct);
-    ADC_SetChannelConfig(DEMO_ADC_BASE, DEMO_ADC_CHANNEL_GROUP4, &adcChannelConfigStruct);
-    ADC_SetChannelConfig(DEMO_ADC_BASE, DEMO_ADC_CHANNEL_GROUP5, &adcChannelConfigStruct);
+    ADC_SetChannelConfig(POTENTIOMETER_ADC_BASE, POTENTIOMETER_ADC_CHANNEL_GROUP0, &adcChannelConfigStruct);
+    ADC_SetChannelConfig(POTENTIOMETER_ADC_BASE, POTENTIOMETER_ADC_CHANNEL_GROUP1, &adcChannelConfigStruct);
+    ADC_SetChannelConfig(POTENTIOMETER_ADC_BASE, POTENTIOMETER_ADC_CHANNEL_GROUP2, &adcChannelConfigStruct);
+    ADC_SetChannelConfig(POTENTIOMETER_ADC_BASE, POTENTIOMETER_ADC_CHANNEL_GROUP3, &adcChannelConfigStruct);
+    ADC_SetChannelConfig(POTENTIOMETER_ADC_BASE, POTENTIOMETER_ADC_CHANNEL_GROUP4, &adcChannelConfigStruct);
+    ADC_SetChannelConfig(POTENTIOMETER_ADC_BASE, POTENTIOMETER_ADC_CHANNEL_GROUP5, &adcChannelConfigStruct);
 
     /* Do auto hardware calibration. */
-    if (kStatus_Success == ADC_DoAutoCalibration(DEMO_ADC_BASE))
+    if (kStatus_Success == ADC_DoAutoCalibration(POTENTIOMETER_ADC_BASE))
     {
         PRINTF("ADC_DoAutoCalibration() Done.\r\n");
     }
@@ -263,10 +263,10 @@ void ADC_Configuration(void)
 static void XBARA_Configuration(void)
 {
     /* Init xbara module. */
-    XBARA_Init(DEMO_XBARA_BASE);
+    XBARA_Init(POTENTIOMETER_XBARA_BASE);
 
     /* Configure the XBARA signal connections. */
-    XBARA_SetSignalsConnection(DEMO_XBARA_BASE, DEMO_XBARA_INPUT_PITCH0, DEMO_XBARA_OUTPUT_ADC_ETC);
+    XBARA_SetSignalsConnection(POTENTIOMETER_XBARA_BASE, POTENTIOMETER_XBARA_INPUT_PITCH0, POTENTIOMETER_XBARA_OUTPUT_ADC_ETC);
 }
 
 /*!

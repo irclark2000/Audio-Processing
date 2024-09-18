@@ -45,7 +45,7 @@ int main(void)
     initialize_dma_system();
     setup_SAI_EDMA();
     potentiometerReadInit();
-    initializeEffects(DEMO_AUDIO_SAMPLE_RATE);
+    initializeEffects(AUD_AUDIO_SAMPLE_RATE);
     initializeLED();
 
     uint32_t result = 0;
@@ -64,7 +64,7 @@ int main(void)
     		DWT->LAR = 0xc5acce55; // unlock access to DWT registers
     		DWT->CYCCNT = 0;
     		DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk; // enable the cycle counter
-    		processHalf(g_bufIn, g_bufOut, HALF_BUFFER_SIZE, DEMO_AUDIO_SAMPLE_RATE);
+    		processHalf(g_bufIn, g_bufOut, HALF_BUFFER_SIZE, AUD_AUDIO_SAMPLE_RATE);
     		result += DWT->CYCCNT;  // add cycle count to result
     		timer_counter++;
     		g_Transfer_Done = false;
