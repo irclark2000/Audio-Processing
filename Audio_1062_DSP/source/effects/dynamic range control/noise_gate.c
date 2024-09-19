@@ -8,7 +8,7 @@
  */
 
 
-#include "noise_gate.h"
+#include <dynamic range control/noise_gate.h>
 
 // Copyright 2021 Johan Rade (johan.rade@gmail.com)
 // Distributed under the MIT license (https://opensource.org/licenses/MIT)
