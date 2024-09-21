@@ -14,8 +14,10 @@
 #include <string.h>
 
 extern const float ln10;
+extern const float logE;
 float fastLN(float x);
 float fastExp(float x);
 #define fastPow10(x) fastExp(ln10 * x)
+#define fastLog10(x) (logE * fastLN(x))
 
 #endif /* FAST_MATH_FAST_MATH_H_ */

@@ -27,7 +27,8 @@ float fastExp(float x)
     return x;
 }
 
-const float ln10 = 2.30258509299;
+const float ln10 = 2.30258509299f;
+const float logE = 0.4342944819f;
 
 float fastLN(float x) {
   unsigned int bx = * (unsigned int *) (&x);
