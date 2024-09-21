@@ -226,7 +226,7 @@ void setupDMA () {
     DMAMUX_SetSource(AUD_DMAMUX, AUD_AUDIO_RX_EDMA_CHANNEL, (uint8_t)AUD_SAI_RX_SOURCE);
     DMAMUX_EnableChannel(AUD_DMAMUX, AUD_AUDIO_RX_EDMA_CHANNEL);
 
-    PRINTF("SAI EDMA ping pong buffer example started!\n\r");
+    PRINTF("SAI EDMA ping pong buffer started!\n\r");
     PRINTF("SAI Clock: %d\n\r", (int) AUD_SAI_CLK_FREQ);
     PRINTF("I2C Clock: %d\n\r", (int) AUD_I2C_CLK_FREQ);
     PRINTF("Audio PLL Clock: %d\n\r", (int) CLOCK_GetFreq(kCLOCK_AudioPllClk));
