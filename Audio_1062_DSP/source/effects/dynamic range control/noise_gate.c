@@ -9,29 +9,12 @@
 
 
 #include <dynamic range control/noise_gate.h>
+#include "fast_math.h"
 
 // Copyright 2021 Johan Rade (johan.rade@gmail.com)
 // Distributed under the MIT license (https://opensource.org/licenses/MIT)
 #define EXP(x) fastExp(x)
 
-float fastExp(float x)
-{
-    float a = (1 << 23) / 0.69314718f;
-    float b = (1 << 23) * (127 - 0.043677448f);
-    x = a * x + b;
-
-#if 0
-    // Remove these lines if bounds checking is not needed
-    constexpr float c = (1 << 23);
-    constexpr float d = (1 << 23) * 255;
-    if (x < c || x > d)
-        x = (x < c) ? 0.0f : d;
-#endif
-    // With C++20 one can use std::bit_cast instead
-    uint32_t n = (uint32_t)(x);
-    memcpy(&x, &n, 4);
-    return x;
-}
 
 
 void initializeNoiseGate(NOISEGATE *ng, float attackTimeMs, float releaseTimeMs, float holdTimeMs, float sampleRate, float threshold) {
