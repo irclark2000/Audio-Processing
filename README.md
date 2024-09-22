@@ -8,6 +8,9 @@ Effects include the following
 5. Tremolo
 6. Noise Gate
 7. Overdrive
+8. Expander
+9. Compressor
+10. Limiter
 
 
 The code for the Tremolo, Noise Gate, and Overdrive effects are based on code provided by 

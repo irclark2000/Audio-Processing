@@ -28,7 +28,7 @@ extern "C" {
 #endif
 
 #ifndef PHASEVOCODER
-#define PHASEVOCODER 0
+#define PHASEVOCODER 1
 #endif
 void processHalf(void * bufIn, void * bufOut, uint16_t count, float sampleRate);
 void initializeEffects(float sampleRate);

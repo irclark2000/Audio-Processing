@@ -49,7 +49,7 @@ void intializeFFT(void) {
 	arm_status status = ARM_MATH_SUCCESS;
 	status = arm_rfft_fast_init_f32(&fft_instance, (unsigned)WINDOW_LENGTH);
 	cb_initialize(&cbBufIn, g_FFTAudioIn, FFT_LENGTH + WINDOW_LENGTH);
-	cb_initialize(&cbBufOut, g_FFTAudioOut, FFT_LENGTH + WINDOW_LENGTH);
+	cb_initialize(&cbBufOut, g_FFTAudioOut, 2*(FFT_LENGTH + WINDOW_LENGTH));
 	s_FFTPhase_current = g_FFTPhase1;
 	s_FFTPhase_previous = g_FFTPhase2;
 }

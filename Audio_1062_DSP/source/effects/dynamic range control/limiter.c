@@ -56,29 +56,27 @@ float update_limiter(LIMITER *limiter, float input) {
 	limiter->compress_out = glin * input;
 	return limiter->compress_out;
 }
-// private helper function
-float limiter_gain_calc_smoothing(LIMITER *limiter, float xdb, float *xscOut) {
-	float xsc;
+
+float limiter_gain_calc_smoothing(LIMITER *limiter, float xdb, float *xsc) {
 	if (limiter->hard_knee) {
 		if (xdb < limiter->threshold) {
-			xsc = xdb;
+			*xsc = xdb;
 		} else {
-			xsc = limiter->threshold;
+			*xsc = limiter->threshold;
 		}
 	} else {
 		if (xdb < (limiter->threshold - limiter->knee / 2.0f)) {
-			xsc = xdb;
+			*xsc = xdb;
 		} else if (xdb > (limiter->threshold + limiter->knee / 2.0f)) {
-			xsc = limiter->threshold;
+			*xsc = limiter->threshold;
 		} else {
-			xsc = xdb
+			*xsc = xdb
 					- (xdb - limiter->threshold + limiter->knee / 2.0f)
 					* (xdb - limiter->threshold + limiter->knee / 2.0f) / 2.0f
 							/ limiter->knee;
 		}
 	}
-	*xscOut = xsc;
-	float gc = xsc - xdb;
+	float gc = *xsc - xdb;
 	// gain smoothing
 	if (gc <= limiter->gs) {
 		limiter->gs = limiter->alphaA * limiter->gs + (1.0f - limiter->alphaA) * gc;

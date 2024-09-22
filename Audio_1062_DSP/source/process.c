@@ -86,16 +86,18 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRat
 	for (int i=0; i < size/2; i+= 2) {
 		leftIn = bufIn[i] * INT16_TO_FLOAT ;
 		rightIn = bufIn[i+1] * INT16_TO_FLOAT;
-		rightIn = 0.05 * get_random_float(); // make white noise
+		//rightIn = 0.05 * get_random_float(); // make white noise
 		leftOut = rightIn;
 #if !PHASEVOCODER
 //		leftOut = 1.4 * g_gain * arm_sin_f32(i * 10.0 / sampleRate);
 //		leftOut = 1.05f * Tremolo_Update(&trem, leftIn, false);
 //		rightOut = 1.05f * Tremolo_Update(&trem, rightIn, true);
+		// test EQ filter using freq scan
 		float filterOut = EQFILTER_update(&eqf0, rightIn);
 		filterOut = EQFILTER_update(&eqf1, filterOut);
 		filterOut = EQFILTER_update(&eqf2, filterOut);
 		leftOut = EQFILTER_update(&eqf3, filterOut);
+
 		//leftOut = EQFILTER_update(&eqf0, rightIn);
 		//leftOut = 1.5f * applyNoiseGate(&nGate, rightIn);
 		//leftOut = 3.0 * g_gain * applyShroederVerb(&svb, rightIn);
@@ -120,7 +122,7 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRat
 const static float inverse_time = 1.0f / 799.0f;
 
 void EQFILTER_test (uint32_t update_counter) {
-#if 1
+#if 0
 	// frequency sweep  over 4.6 octaves
 	float freq0 = 500 * powf (2.0f, 4.6f * (update_counter * inverse_time));
 	float freq1 = 500 * powf (2.0f, 4.6f * (1.0f - update_counter * inverse_time));
