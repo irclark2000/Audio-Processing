@@ -22,15 +22,13 @@
 #include <effects/circular_buffer.h>
 
 uint16_t cb_transferInFloat(CIRCBUFFER *cb, float input) {
-	if (cb->count < cb->size) {
 		cb->storage[cb->wr_ptr++] = input;
 		if (cb->wr_ptr == cb->size)
 			cb->wr_ptr = 0;
-		cb->count++;
+		if (cb->count < cb->size) {
+			cb->count++;
+		}
 		return 1;
-	} else {
-		return 0;
-	}
 }
 float cb_transferOut(CIRCBUFFER *cb) {
 	if (cb->count > 0) {
@@ -73,6 +71,13 @@ float cb_getFloat(CIRCBUFFER *cb, uint32_t index) {
 	index = (cb->rd_ptr + index) % cb->size;
 	return cb->storage[index];
 }
+float cb_getFloatAtIndex(CIRCBUFFER *cb, int32_t index) {
+	index = (index + 5 * cb->size) % cb->size;
+	return cb->storage[index];
+}
+void cb_setFloatAtWritePointer(CIRCBUFFER *cb, float value) {
+	cb->storage[cb->wr_ptr] = value;
+}
 
 uint32_t cb_transferIn(CIRCBUFFER *cb, float *source, uint32_t count) {
 	if (count + cb->count <= cb->size) {
@@ -99,7 +104,12 @@ uint32_t cb_transferIn(CIRCBUFFER *cb, float *source, uint32_t count) {
 				memset(cb->storage, 0, count2 * bytesPerFloat);
 			}
 		}
+		if (cb->count + count <= cb->size) {
 		cb->count += count;
+		}
+		else {
+			cb->count = cb->size;
+		}
 		cb->wr_ptr = (cb->wr_ptr + count) % cb->size;
 		return count;
 	} else { // not enough room;
