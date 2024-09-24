@@ -5,8 +5,8 @@
  *      Author: isaac
  */
 
-#ifndef EFFECTS_ALL_PASS_H_
-#define EFFECTS_ALL_PASS_H_
+#ifndef EFFECTS_FILTERS_ALL_PASS_H_
+#define EFFECTS_FILTERS_ALL_PASS_H_
 
 typedef struct {
 	float	feedback;
@@ -22,4 +22,4 @@ typedef struct {
 void initAllpassFilter(ALLPASS * pass, float *buffer, int size, float feedback);
 float applyAllpassFilter(ALLPASS *pass, float input);
 
-#endif /* EFFECTS_ALL_PASS_H_ */
+#endif /* EFFECTS_FILTERS_ALL_PASS_H_ */

@@ -20,8 +20,8 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
+#include <filters/equalizing_filter.h>
 #include "updateSettings.h"
-#include "equalizing_filter.h"
 #define  GAININDEX 1
 void setGain (void);
 volatile float g_gain = 1.0;

@@ -5,7 +5,7 @@
  *      Author: isaac
  */
 
-#include "high_pass.h"
+#include <filters/high_pass.h>
 
 void initHighPass(HIGHPASS *hp, float a0, float a1, float a2, float b1, float b2) {
 	hp->a0 = a0;

@@ -5,7 +5,7 @@
  *      Author: isaac
  */
 
-#include <effects/all_pass.h>
+#include <filters/all_pass.h>
 #include "denormals.h"
 
 static void mute (ALLPASS *pass);

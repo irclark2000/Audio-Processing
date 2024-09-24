@@ -20,9 +20,9 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#include <effects/equalizing_filter.h>
 #include <effects/pitch_shift.h>
 #include <effects/tremolo.h>
+#include <filters/equalizing_filter.h>
 #include <phase vocoder/computeFFT.h>
 #include "delay based/echo.h"
 #include "process.h"
@@ -109,14 +109,14 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRat
 		//filterOut = EQFILTER_update(&eqf2, filterOut);
 		//leftOut = EQFILTER_update(&eqf3, filterOut);
 
-		leftOut = update_Echo (&echo, rightIn);
+		//leftOut = update_Echo (&echo, rightIn);
 		//leftOut = EQFILTER_update(&eqf0, rightIn);
 		//leftOut = 1.5f * applyNoiseGate(&nGate, rightIn);
 		//leftOut = 3.0 * g_gain * applyShroederVerb(&svb, rightIn);
 		//leftOut = applyFreeverb(&fvb, rightIn);
 		//leftOut = 1.5 * applyPitchShift(&ps, rightIn);
 		//leftOut = 3.0 * overdriveUpdate(&od, rightIn);
-		//leftOut = 1.05f * Tremolo_Update(&trem, rightIn, true);
+		leftOut = 1.05f * Tremolo_Update(&trem, rightIn, true);
 		//leftOut = rightIn;
 		rightOut = leftOut;
 		bufOut[i]   = (int) (leftOut * 32768.0f);

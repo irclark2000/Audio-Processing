@@ -24,8 +24,8 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define SCHROEDER_VERB_H_
 
 
-#include <effects/all_pass1.h>
-#include <effects/comb_filter1.h>
+#include <filters/all_pass1.h>
+#include <filters/comb_filter1.h>
 
 typedef struct {
 	ALLPASS1 allpass[3];

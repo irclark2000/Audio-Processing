@@ -22,7 +22,7 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CON
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "equalizing_filter.h"
+#include <filters/equalizing_filter.h>
 #include <math.h>
 
 static const float PI = 3.14159265358979f;

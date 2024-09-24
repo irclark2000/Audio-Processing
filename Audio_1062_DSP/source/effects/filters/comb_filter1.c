@@ -19,7 +19,7 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CON
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include <effects/comb_filter1.h>
+#include <filters/comb_filter1.h>
 #include "denormals.h"
 
 static void mute (COMB_FILTER *comb);

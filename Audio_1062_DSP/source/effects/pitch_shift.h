@@ -22,7 +22,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef PITCH_SHIFT_H_
 #define PITCH_SHIFT_H_
 
-#include "high_pass.h"
+#include <filters/high_pass.h>
 
 #define PITCH_BUFFER_SIZE 1000
 #define PITCH_OVERLAP 100
