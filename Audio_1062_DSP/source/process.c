@@ -24,6 +24,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <effects/pitch_shift.h>
 #include <effects/tremolo.h>
 #include <phase vocoder/computeFFT.h>
+#include "delay based/echo.h"
 #include "process.h"
 #include "updateSettings.h"
 #include "random_generator.h"
@@ -40,15 +41,25 @@ EQFILTER eqf0;
 EQFILTER eqf1;
 EQFILTER eqf2;
 EQFILTER eqf3;
+ECHO echo;
+
+#include <cr_section_macros.h>
+
 
 #ifndef PHASEVOCODER
 #define PHASEVOCODER 0
 #endif
 
 const float INT16_TO_FLOAT = 1.0f / 32768.0f;
+#define ECHO_BUF_SIZE 2048
+
+__NOINIT(RAM3) static float echo_buf[ECHO_BUF_SIZE];
+
 
 void initializeEffects(float sampleRate) {
 	Tremolo_Init(&trem, 0.55f, 220.0f, sampleRate);
+	intialize_ECHO (&echo, echo_buf, ECHO_BUF_SIZE, 2.0f, 0.0, sampleRate);
+
 	//initFreeverb(&fvb);
 	//initSchroederVerb(&svb);
 	intitialize_random_number_generator();
@@ -93,11 +104,12 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRat
 //		leftOut = 1.05f * Tremolo_Update(&trem, leftIn, false);
 //		rightOut = 1.05f * Tremolo_Update(&trem, rightIn, true);
 		// test EQ filter using freq scan
-		float filterOut = EQFILTER_update(&eqf0, rightIn);
-		filterOut = EQFILTER_update(&eqf1, filterOut);
-		filterOut = EQFILTER_update(&eqf2, filterOut);
-		leftOut = EQFILTER_update(&eqf3, filterOut);
+		//float filterOut = EQFILTER_update(&eqf0, rightIn);
+		//filterOut = EQFILTER_update(&eqf1, filterOut);
+		//filterOut = EQFILTER_update(&eqf2, filterOut);
+		//leftOut = EQFILTER_update(&eqf3, filterOut);
 
+		leftOut = update_Echo (&echo, rightIn);
 		//leftOut = EQFILTER_update(&eqf0, rightIn);
 		//leftOut = 1.5f * applyNoiseGate(&nGate, rightIn);
 		//leftOut = 3.0 * g_gain * applyShroederVerb(&svb, rightIn);
@@ -122,6 +134,9 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRat
 const static float inverse_time = 1.0f / 799.0f;
 
 void EQFILTER_test (uint32_t update_counter) {
+	float param = update_counter * inverse_time;
+	//delay sweep over about 8 seconds
+//	setDelayMSec_ECHO (&echo, getMaxDelayMS_ECHO(&echo) * param);
 #if 0
 	// frequency sweep  over 4.6 octaves
 	float freq0 = 500 * powf (2.0f, 4.6f * (update_counter * inverse_time));

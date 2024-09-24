@@ -25,8 +25,8 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 typedef struct {
 	float *storage;
-	uint32_t rd_ptr;
-	uint32_t wr_ptr;
+	int32_t rd_ptr;
+	int32_t wr_ptr;
 	uint32_t size;
 	uint32_t count;
 } CIRCBUFFER;
@@ -39,5 +39,7 @@ uint16_t cb_transferOutWithHop(CIRCBUFFER *cb, float * dest, uint32_t hop_size, 
 void cb_initialize(CIRCBUFFER *cb, float * buf, uint32_t size);
 uint16_t cb_addOverlap(CIRCBUFFER *cb, float * buf, uint32_t hop_size, uint32_t window_size);
 float cb_getFloat (CIRCBUFFER *cb, uint32_t index);
+float cb_getFloatAtIndex(CIRCBUFFER *cb, int32_t index);
+void cb_setFloatAtWritePointer(CIRCBUFFER *cb, float value);
 
 #endif /* EFFECTS_CIRCULAR_BUFFER_H_ */
