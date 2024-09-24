@@ -51,14 +51,14 @@ ECHO echo;
 #endif
 
 const float INT16_TO_FLOAT = 1.0f / 32768.0f;
-#define ECHO_BUF_SIZE 2048
+#define ECHO_BUF_SIZE 4096
 
 __NOINIT(RAM3) static float echo_buf[ECHO_BUF_SIZE];
 
 
 void initializeEffects(float sampleRate) {
 	Tremolo_Init(&trem, 0.55f, 220.0f, sampleRate);
-	intialize_ECHO (&echo, echo_buf, ECHO_BUF_SIZE, 2.0f, 0.0, sampleRate);
+	intialize_ECHO (&echo, echo_buf, ECHO_BUF_SIZE, 80.0f, 0.3, sampleRate);
 
 	//initFreeverb(&fvb);
 	//initSchroederVerb(&svb);

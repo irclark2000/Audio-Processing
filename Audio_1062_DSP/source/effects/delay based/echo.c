@@ -27,6 +27,8 @@ float getMaxDelayMS_ECHO (ECHO *echo) {
 float update_Echo (ECHO * echo, float input) {
 	// get sample should be called before adding new sample to buffer
 	// add feedback (with gain) to the input
-	float output = getDelayedSample_VARDELAY(&(echo->vDelay), input, echo->feedBack_level);
+	float delayed = getDelayedSample_VARDELAY(&(echo->vDelay), input, echo->feedBack_level);
+	float output = input + 0.5 * delayed;
+
 	return output;
 }

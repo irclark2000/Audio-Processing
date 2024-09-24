@@ -22,7 +22,8 @@ void initialize_variable_delay (VARDELAY * vDelay, float *buf, float buf_size, f
 
 float getDelayedSample_VARDELAY(VARDELAY *vDelay, float input, float fb_level) {
 	// replace oldest spot with current sample
-	cb_setFloatAtWritePointer(&(vDelay->cBuf), input);
+	// there is no reason to do this
+	// cb_setFloatAtWritePointer(&(vDelay->cBuf), input);
 
 	// compute whole and fractional indices
 	float offset = (vDelay->delayInSamples);
@@ -45,7 +46,7 @@ float getDelayedSample_VARDELAY(VARDELAY *vDelay, float input, float fb_level) {
 	return output;
 }
 void setDelay_VARDELAY(VARDELAY *vDelay, float delaySec) {
-	float seconds = (delaySec <= vDelay->max_delay) ? delaySec : vDelay->max_delay;
+	float seconds = (delaySec <= vDelay->max_delay) ? (delaySec >= vDelay->sampleTime ? delaySec : vDelay->sampleTime) : vDelay->max_delay;
 	vDelay->delayInSamples = vDelay->sampleRate * seconds;
 	int32_t ptr = (int32_t) (vDelay->cBuf.wr_ptr) - vDelay->delayInSamples;
 	setReadPointer(vDelay, ptr);
