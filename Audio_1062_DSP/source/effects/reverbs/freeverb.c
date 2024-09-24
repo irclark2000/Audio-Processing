@@ -20,7 +20,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#include "freeverb.h"
+#include <reverbs/freeverb.h>
 #include "fsl_common.h"
 
 #define COMB0 1557 * 48 / 44

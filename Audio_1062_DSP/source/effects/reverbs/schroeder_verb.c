@@ -20,7 +20,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include <cr_section_macros.h>
-#include "schroeder_verb.h"
+#include <reverbs/schroeder_verb.h>
 
 #define MULT 2
 
