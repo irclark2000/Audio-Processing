@@ -9,6 +9,7 @@
 
 #ifndef TREMOLO_H_
 #define TREMOLO_H_
+#include "low_frequency_oscillator.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -17,6 +18,7 @@ extern "C" {
 
 typedef struct {
 	float depth;      // 0 to 1.0
+	LOWFREQOSC osc;
 	float tCount;
 	float tCountLimit;
 	float tDir;     // -1 down, 1 up

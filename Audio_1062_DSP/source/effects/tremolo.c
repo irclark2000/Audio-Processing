@@ -9,13 +9,19 @@
 
 #include "tremolo.h"
 
+#define USE_LFO 1
+
 void Tremolo_Init(TREMOLO * trem, float depth, float tremFreq, float sampleRate) {
-	trem->sampleRate = sampleRate;
 	Tremolo_SetDepth (trem, depth);
+#if !USE_LFO
+	trem->sampleRate = sampleRate;
 	Tremolo_SetTremFrequency (trem, tremFreq);
 	trem->tCount = 0.0;
 	trem->tDir = 1.0;
+#endif
+	initialize_LOWFREQOSC(&(trem->osc), 1.0f, tremFreq, sampleRate);
 }
+
 void Tremolo_SetDepth(TREMOLO * trem, float depth) {
 	if (depth > 1.0f) {
 		depth = 1.0f;
@@ -26,6 +32,8 @@ void Tremolo_SetDepth(TREMOLO * trem, float depth) {
 	trem->depth = depth;
 }
 void Tremolo_SetTremFrequency(TREMOLO * trem, float tremFreq) {
+	setFreq_LOWFREQOSC(&(trem->osc), tremFreq);
+#if! USE_LFO
 	if (tremFreq <= 0.0f) {
 		tremFreq = 1.0f;
 	}
@@ -41,12 +49,15 @@ void Tremolo_SetTremFrequency(TREMOLO * trem, float tremFreq) {
 	else if (trem->tCount < -trem->tCountLimit)  {
 		trem->tCount = -trem->tCountLimit;
 	}
+#endif
 }
 
 float Tremolo_Update(TREMOLO *trem, float input, int increment) {
-	trem->tOut = input * ((1.0f - trem->depth) + trem->depth *  (trem->tCount / trem->tCountLimit));
-
-	// update the direction if needed
+	float osc_output = getOutput_LOWFREQOSC(&(trem->osc));
+	trem->tOut = input * ((1.0f - trem->depth) + trem->depth *  osc_output);
+#if !USE_LFO
+	float osc_output1 = trem->tCount / trem->tCountLimit;
+	trem->tOut = input * ((1.0f - trem->depth) + trem->depth *  (trem->tCount / trem->tCountLimit));	// update the direction if needed
 	if (trem->tCount >= trem->tCountLimit) {
 		trem->tDir = -1.0f;
 	}
@@ -57,5 +68,6 @@ float Tremolo_Update(TREMOLO *trem, float input, int increment) {
 	if (increment != 0) {
 		trem->tCount += trem->tDir;
 	}
+#endif
 	return trem->tOut;
 }
