@@ -58,7 +58,7 @@ __NOINIT(RAM3) static float echo_buf[ECHO_BUF_SIZE];
 
 void initializeEffects(float sampleRate) {
 	Tremolo_Init(&trem, 0.55f, 220.0f, sampleRate);
-	intialize_ECHO (&echo, echo_buf, ECHO_BUF_SIZE, 80.0f, 0.3, sampleRate);
+	intialize_ECHO (&echo, echo_buf, ECHO_BUF_SIZE, 80.0f, 0.3f, 0.5f, 0.5f, sampleRate);
 
 	//initFreeverb(&fvb);
 	//initSchroederVerb(&svb);
