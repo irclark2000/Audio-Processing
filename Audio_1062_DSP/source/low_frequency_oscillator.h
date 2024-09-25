@@ -17,9 +17,11 @@ typedef struct {
 	float amplitude;
 	float counter;
 	float direction;
+	float out;
 } LOWFREQOSC;
 
 void initialize_LOWFREQOSC (LOWFREQOSC *osc, float amplitude, float osc_freq, float sampleFreq);
 void setFreq_LOWFREQOSC(LOWFREQOSC *osc, float osc_freq);
-float getOutput_LOWFREQOSC(LOWFREQOSC *osc);
+void setAmplitude_LOWFREQOSC(LOWFREQOSC *osc, float amplitude);
+void update_LOWFREQOSC(LOWFREQOSC *osc);
 #endif /* LOW_FREQUENCY_OSCILLATOR_H_ */

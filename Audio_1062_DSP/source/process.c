@@ -20,10 +20,12 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#include <effects/pitch_shift.h>
-#include <effects/tremolo.h>
-#include <filters/equalizing_filter.h>
-#include <phase vocoder/computeFFT.h>
+#include "effects/pitch_shift.h"
+#include "effects/tremolo.h"
+#include "filters/equalizing_filter.h"
+#include "reverbs/schroeder_verb.h"
+#include "reverbs/freeverb.h"
+#include "phase vocoder/computeFFT.h"
 #include "delay based/echo.h"
 #include "process.h"
 #include "updateSettings.h"
@@ -54,6 +56,7 @@ const float INT16_TO_FLOAT = 1.0f / 32768.0f;
 #define ECHO_BUF_SIZE 4096
 
 __NOINIT(RAM3) static float echo_buf[ECHO_BUF_SIZE];
+//__NOINIT(RAM3) static float flange_buf[ECHO_BUF_SIZE];
 
 
 void initializeEffects(float sampleRate) {
@@ -109,14 +112,14 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRat
 		//filterOut = EQFILTER_update(&eqf2, filterOut);
 		//leftOut = EQFILTER_update(&eqf3, filterOut);
 
-		//leftOut = update_Echo (&echo, rightIn);
+		leftOut = update_Echo (&echo, rightIn);
 		//leftOut = EQFILTER_update(&eqf0, rightIn);
 		//leftOut = 1.5f * applyNoiseGate(&nGate, rightIn);
 		//leftOut = 3.0 * g_gain * applyShroederVerb(&svb, rightIn);
 		//leftOut = applyFreeverb(&fvb, rightIn);
 		//leftOut = 1.5 * applyPitchShift(&ps, rightIn);
 		//leftOut = 3.0 * overdriveUpdate(&od, rightIn);
-		leftOut = 1.05f * Tremolo_Update(&trem, rightIn, true);
+		//leftOut = 1.05f * Tremolo_Update(&trem, rightIn, true);
 		//leftOut = rightIn;
 		rightOut = leftOut;
 		bufOut[i]   = (int) (leftOut * 32768.0f);
@@ -133,10 +136,12 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRat
 
 const static float inverse_time = 1.0f / 799.0f;
 
+// apply automatic variation to a parameter
 void EQFILTER_test (uint32_t update_counter) {
 	float param = update_counter * inverse_time;
-	//delay sweep over about 8 seconds
+	//delay parameter over about 8 seconds
 //	setDelayMSec_ECHO (&echo, getMaxDelayMS_ECHO(&echo) * param);
+	//setFeedback_level_ECHO (&echo, 0.95 * param);
 #if 0
 	// frequency sweep  over 4.6 octaves
 	float freq0 = 500 * powf (2.0f, 4.6f * (update_counter * inverse_time));

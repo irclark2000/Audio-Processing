@@ -30,12 +30,15 @@ void setFeedback_gain_ECHO (ECHO *echo, float gain) {
 float getMaxDelayMS_ECHO (ECHO *echo) {
 	return echo->vDelay.max_delay * 1000.0f;
 }
+static float delayed;
+static float wet;
+static float output;
 float update_Echo (ECHO * echo, float input) {
 	// get sample should be called before adding new sample to buffer
 	// add feedback (with gain) to the input
-	float delayed = getDelayedSample_VARDELAY(&(echo->vDelay), input, echo->feedBack_level);
-	float wet = echo->feedback_gain * delayed;
-	float output = apply_MIXER (&(echo->mixer), wet, input);
+	delayed = getDelayedSample_VARDELAY(&(echo->vDelay), input, echo->feedBack_level);
+	wet = echo->feedback_gain * delayed;
+	output = applyWetDry_MIXER (&(echo->mixer), wet, input);
 
 	return output;
 }

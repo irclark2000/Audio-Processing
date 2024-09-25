@@ -13,6 +13,6 @@ typedef struct {
 } MIXER;
 
 void initialize_MIXER (MIXER * mixer, float wet_dry);
-float apply_MIXER (MIXER * mixer, float input_wet, float input_dry);
+float applyWetDry_MIXER (MIXER * mixer, float input_wet, float input_dry);
 void setWetDry_MIXER (MIXER *mixer, float wet_dry);
 #endif /* MIXER_H_ */

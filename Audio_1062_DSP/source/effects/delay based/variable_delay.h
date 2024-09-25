@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include "circular_buffer.h"
 typedef struct {
-	float max_delay;
+	float max_delay;  // seconds
 	float delayInSamples;
 	float sampleTime;
 	float sampleRate;

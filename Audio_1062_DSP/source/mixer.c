@@ -9,7 +9,7 @@
 void initialize_MIXER (MIXER * mixer, float wet_dry) {
 	setWetDry_MIXER(mixer, wet_dry);
 }
-float apply_MIXER (MIXER * mixer, float input_wet, float input_dry){
+float applyWetDry_MIXER (MIXER * mixer, float input_wet, float input_dry){
 	return input_dry * (1.0f - mixer->wet_dry) + input_wet * mixer->wet_dry;
 }
 void setWetDry_MIXER (MIXER *mixer, float wet_dry){

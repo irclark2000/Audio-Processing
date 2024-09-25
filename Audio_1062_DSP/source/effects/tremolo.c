@@ -53,8 +53,8 @@ void Tremolo_SetTremFrequency(TREMOLO * trem, float tremFreq) {
 }
 
 float Tremolo_Update(TREMOLO *trem, float input, int increment) {
-	float osc_output = getOutput_LOWFREQOSC(&(trem->osc));
-	trem->tOut = input * ((1.0f - trem->depth) + trem->depth *  osc_output);
+	update_LOWFREQOSC(&(trem->osc));
+	trem->tOut = input * ((1.0f - trem->depth) + trem->depth * trem->osc.out);
 #if !USE_LFO
 	float osc_output1 = trem->tCount / trem->tCountLimit;
 	trem->tOut = input * ((1.0f - trem->depth) + trem->depth *  (trem->tCount / trem->tCountLimit));	// update the direction if needed

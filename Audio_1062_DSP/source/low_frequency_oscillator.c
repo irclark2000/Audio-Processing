@@ -32,9 +32,12 @@ void setFreq_LOWFREQOSC(LOWFREQOSC *osc, float osc_freq) {
 		osc->counter = -osc->countLimit;
 	}
 }
+void setAmplitude_LOWFREQOSC(LOWFREQOSC *osc, float amplitude) {
+	osc->amplitude = amplitude;
+}
 
-float getOutput_LOWFREQOSC(LOWFREQOSC *osc) {
-	float output = osc->amplitude * osc->counter / osc->countLimit;
+void update_LOWFREQOSC(LOWFREQOSC *osc) {
+	osc->out = osc->amplitude * osc->counter / osc->countLimit;
 
 	// update the direction if needed
 	if (osc->counter >= osc->countLimit) {
@@ -45,6 +48,5 @@ float getOutput_LOWFREQOSC(LOWFREQOSC *osc) {
 	}
 	// bump the count
 	osc->counter += osc->direction;
-	return output;
 }
 

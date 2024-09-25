@@ -7,15 +7,7 @@
  */
 
 #include <stdio.h>
-//#include "pin_mux.h"
-//#include "clock_config.h"
-//#include "board.h"
 #include "fsl_debug_console.h"
-//#include "fsl_sai_edma.h"
-//#include "fsl_codec_common.h"
-//#include "fsl_wm8960.h"
-//#include "fsl_codec_adapter.h"
-//#include "fsl_dmamux.h"
 
 #include "audio_wm8960.h"
 #include "dma_functions.h"
@@ -29,9 +21,6 @@
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
-//#define EXAMPLE_LED_GPIO     BOARD_USER_LED_GPIO
-//#define EXAMPLE_LED_GPIO_PIN BOARD_USER_LED_GPIO_PIN
-
 /*******************************************************************************
  * Code
  ******************************************************************************/
@@ -92,7 +81,6 @@ int main(void)
             		(int)(4096 *getPotentiometerValue(6)));
 #endif
     		g_AdcConversionDoneFlag = false;
-
     	}
     }
 }
