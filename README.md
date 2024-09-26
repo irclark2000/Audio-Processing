@@ -23,7 +23,7 @@ Effects include the following
     - Pitch Shifting
     - Tremolo
     - Overdrive
-    - FFT
+    - FFT (alpha)
 - Effects Components
     - Low Frequency Oscillator
     - Mixer
@@ -31,5 +31,5 @@ Effects include the following
     - Circular Buffer
     
 
-The code for the Tremolo, Noise Gate, and Overdrive effects are based on code provided by 
+The code for the Tremolo, Noise Gate, and Overdrive effects is based on code provided by 
 Philip Salmony on his Phil's Lab YouTube channel, and is provided with his permission.
