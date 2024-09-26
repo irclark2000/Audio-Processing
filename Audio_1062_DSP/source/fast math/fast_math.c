@@ -7,6 +7,10 @@
 
 #include "fast_math.h"
 
+const float ln10 = 2.30258509299f;
+const float logE = 0.4342944819f;
+const float ln2 = 0.69314718056f;
+
 // reasonable (+-3%) and fast approximation of exp(x) for x < 80
 float fastExp(float x)
 {
@@ -26,9 +30,6 @@ float fastExp(float x)
     memcpy(&x, &n, 4);
     return x;
 }
-
-const float ln10 = 2.30258509299f;
-const float logE = 0.4342944819f;
 
 float fastLN(float x) {
   unsigned int bx = * (unsigned int *) (&x);
