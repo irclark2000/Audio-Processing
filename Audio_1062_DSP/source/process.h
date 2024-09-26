@@ -32,7 +32,7 @@ extern "C" {
 #endif
 void processHalf(void * bufIn, void * bufOut, uint16_t count, float sampleRate);
 void initializeEffects(float sampleRate);
-void EQFILTER_test (uint32_t update_counter);
+void test_PROCESS (uint32_t update_counter);
 #if defined(__cplusplus)
 }
 #endif

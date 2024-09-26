@@ -19,8 +19,7 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CON
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-
-#include <filters/equalizing_filter.h>
+#include "process.h"
 #include "updateSettings.h"
 #define  GAININDEX 1
 void setGain (void);
@@ -33,7 +32,7 @@ void updateSettings() {
 volatile static uint32_t update_counter = 0;
 void setGain () {
 	g_gain = getPotentiometerValue (GAININDEX);
-	EQFILTER_test (update_counter);
+	test_PROCESS (update_counter);  // simulate use of a potentiometer
 	update_counter++;
 	if (update_counter == 800) update_counter = 0;
 }

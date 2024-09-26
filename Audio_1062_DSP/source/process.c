@@ -45,8 +45,8 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
 
 // Take care if enabling more than one at a time
-#define TESTING_CHORUS 0
-#define TESTING_FLANGER 1
+#define TESTING_CHORUS 1
+#define TESTING_FLANGER 0
 #define TESTING_ECHO 0
 #define TESTING_EQUALIZER 0
 #define TESTING_PITCH_CHANGE 0
@@ -56,6 +56,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define TESTING_FREEVERB 0
 #define TESTING_SCHROEDER 0
 #define TESTING_NOISE_GENERATOR 0
+#define TESTING_PHASE_VOCODER 0
 
 #if TESTING_NOISEGATE
 NOISEGATE nGate;
@@ -101,6 +102,13 @@ SCHROEDERVERB svb;
 #if TESTING_OVERDRIVE
 OVERDRIVE od;
 #endif
+#if TESTING_EQUALIZER
+	EQFILTER eqf0;
+	EQFILTER eqf1;
+	EQFILTER eqf2;
+	EQFILTER eqf3;
+#endif
+
 void initializeEffects(float sampleRate) {
 #if TESTING_TREMOLO
 	Tremolo_Init(&trem, 0.55f, 220.0f, sampleRate);
@@ -122,7 +130,6 @@ void initializeEffects(float sampleRate) {
 
 	initialize_CHORUS (&chorus, CHORUS_ELEMENT_COUNT, buffer_array, 0.5f,
 			CHORUS_BUF_SIZE, 20.0f, cData, sampleRate);
-
 #endif
 #if TESTING_FREEVERB
 	initFreeverb(&fvb);
@@ -132,25 +139,23 @@ void initializeEffects(float sampleRate) {
 	initSchroederVerb(&svb);
 #endif
 #if TESTING_EQUALIZER
-	EQFILTER eqf0;
-	EQFILTER eqf1;
-	EQFILTER eqf2;
-	EQFILTER eqf3;
 	intitialize_random_number_generator();
 	EQFILTER_initialize(&eqf0, 4000.0f, sampleRate, 10.0f, 200.0f);
 	EQFILTER_initialize(&eqf1, 12000.0f, sampleRate, 10.0f, 200.0f);
 	EQFILTER_initialize(&eqf2, 12000.0f, sampleRate, 1.0f, 200.0f);
 	EQFILTER_initialize(&eqf3, 500.0f, sampleRate, 1.0f, 200.0f);
 #endif
+#if TESTING_PHASE_VOCODER
 	intializeFFT();
+#endif
 #if TESTING_FLANGER
 	intialize_FLANGER (&flanger, flanger_buf, FLANGER_BUF_SIZE,
 			80.0f, 0.25f, 30.0f,
 			0.4f, 0.5, sampleRate);
 #endif
-	// distortion level of 50 yields high distortion.
 #if TESTING_OVERDRIVE
-	overdriveInit(&od, sampleRate, 30.0f, 10.0f, 6400.0f, 0.6);
+	// distortion level of 50 yields high distortion.
+	initialize_OVERDRIVE(&od, sampleRate, 30.0f, 10.0f, 6400.0f, 0.6);
 #endif
 #if TESTING_NOISEGATE
 	initializeNoiseGate(&nGate, 10.0f, 1.0f, 10.0f, sampleRate, 0.1f);
@@ -184,7 +189,7 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRat
 		rightIn = 0.05 * get_random_float(); // make white noise
 #endif
 		leftOut = rightIn;
-#if !PHASEVOCODER
+#if !TESTING_PHASE_VOCODER
 #if TESTING_CHORUS
 		leftOut = update_CHORUS(&chorus, rightIn);
 #endif
@@ -193,8 +198,9 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRat
 		//leftOut = 1.05f * Tremolo_Update(&trem, leftIn, false);
 		//rightOut = 1.05f * Tremolo_Update(&trem, rightIn, true);
 		//leftOut = EQFILTER_update(&eqf0, rightIn);
-#if TESTING_EQUALIER
+#if TESTING_EQUALIZER
 		// test EQ filter using freq scan
+		rightIn = 0.05 * get_random_float();
 		float filterOut = EQFILTER_update(&eqf0, rightIn);
 		filterOut = EQFILTER_update(&eqf1, filterOut);
 		filterOut = EQFILTER_update(&eqf2, filterOut);
@@ -219,7 +225,7 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRat
 		leftOut = 1.5 * applyPitchShift(&ps, rightIn);
 #endif
 #if TESTING_OVERDRIVE
-		leftOut = 3.0 * overdriveUpdate(&od, rightIn);
+		leftOut = 3.0 * update_OVERDRIVE(&od, rightIn);
 #endif
 #if TESTING_TREMOLO
 		leftOut = 1.05f * Tremolo_Update(&trem, rightIn, true);
@@ -227,7 +233,7 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRat
 		rightOut = leftOut;
 		bufOut[i]   = (int) (leftOut * 32768.0f);
 		bufOut[i+1] = (int) (rightOut * 32768.0f);
-#else
+#elif TESTING_PHASE_VOCODER
 		cb_transferInFloat(&cbBufIn, rightIn);
 #endif
 	}
@@ -240,7 +246,7 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRat
 const static float inverse_time = 1.0f / 799.0f;
 
 // apply automatic variation to a parameter
-void EQFILTER_test (uint32_t update_counter) {
+void test_PROCESS (uint32_t update_counter) {
 	float param = update_counter * inverse_time;
 	//delay parameter over about 8 seconds
 //	setDelayMSec_ECHO (&echo, getMaxDelayMS_ECHO(&echo) * param);
