@@ -31,9 +31,9 @@ void intitialize_random_number_generator(void) {
 const static float INT32_TO_FLOAT = 1.0f / 1073741824.0f;
 
 float get_random_float(void) {
-	float value = ((int32_t)rand31_next()) * INT32_TO_FLOAT;
-	return value;
+	return ((int32_t)rand31_next()) * INT32_TO_FLOAT;
 }
+
 uint32_t rand31_next () {
 	uint32_t lo, hi;
 	lo = 16807 * (seed & 0xFFFF);
