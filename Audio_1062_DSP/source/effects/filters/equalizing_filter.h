@@ -52,5 +52,4 @@ void EQFILTER_initialize(EQFILTER *eqf, float centerFreq, float sampleRate, floa
 float EQFILTER_update(EQFILTER *eqf, float input);
 void EQFILTER_setGain(EQFILTER *eqf, float gain);
 void EQFILTER_setCenterFrequency(EQFILTER *eqf, float centerFreq, float bandwidth);
-void EQFILTER_test (uint32_t update_counter);
 #endif /* EQUALIZING_FILTER_H_ */

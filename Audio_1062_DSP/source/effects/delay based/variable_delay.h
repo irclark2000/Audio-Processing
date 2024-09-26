@@ -15,6 +15,7 @@ typedef struct {
 	float delayInSamples;
 	float sampleTime;
 	float sampleRate;
+	float out;
 	uint32_t size;
 	CIRCBUFFER cBuf;
 }VARDELAY;

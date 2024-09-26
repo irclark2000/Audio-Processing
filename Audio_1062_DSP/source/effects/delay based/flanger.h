@@ -31,6 +31,7 @@ typedef struct {
 	float baseDelay_MSec; // delay varies above base using lfo
 	LOWFREQOSC lfo;  // used to vary the flanger delay
 	float feedback_level;
+	float out;
 	MIXER mixer;
 } FLANGER;
 

@@ -19,12 +19,12 @@ extern "C" {
 typedef struct {
 	float depth;      // 0 to 1.0
 	LOWFREQOSC osc;
-	float tCount;
-	float tCountLimit;
-	float tDir;     // -1 down, 1 up
+	//float tCount;
+	//float tCountLimit;
+	//float tDir;     // -1 down, +1 up
 
 	float sampleRate;  //Hz
-	float tOut;        // avoid declaring memory in a function
+	float tOut;        // avoids declaring variable inside a function
 } TREMOLO;
 
 void Tremolo_Init(TREMOLO * trem, float depth, float tremFreq, float sampleRate);

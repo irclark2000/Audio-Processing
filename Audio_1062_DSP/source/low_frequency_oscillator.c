@@ -3,6 +3,7 @@
  *
  *  Created on: Sep 23, 2024
  *      Author: isaac
+ *
  */
 
 #include "low_frequency_oscillator.h"
@@ -36,6 +37,7 @@ void setAmplitude_LOWFREQOSC(LOWFREQOSC *osc, float amplitude) {
 	osc->amplitude = amplitude;
 }
 
+// this function should be called in the update function of an effect using the lfo
 void update_LOWFREQOSC(LOWFREQOSC *osc) {
 	osc->out = osc->amplitude * osc->counter / osc->countLimit;
 

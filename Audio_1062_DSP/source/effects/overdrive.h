@@ -68,11 +68,11 @@ typedef struct {
 } OVERDRIVE;
 
 
-void overdriveInit(OVERDRIVE *od, float samplingFreq, float hpfCutoffFreq,
+void initialize_OVERDRIVE(OVERDRIVE *od, float samplingFreq, float hpfCutoffFreq,
 		float preGain, float lpfOutCutoffFreq, float lpfOutDamp);
 void overdriveSetLPF(OVERDRIVE *od, float cutoffFreq, float damping);
 void overdriveSetHPF(OVERDRIVE *od, float cutoffFreq);
-float overdriveUpdate(OVERDRIVE *od, float input);
+float update_OVERDRIVE(OVERDRIVE *od, float input);
 
 
 

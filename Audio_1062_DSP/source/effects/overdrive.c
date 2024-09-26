@@ -58,7 +58,7 @@ const float PI = 3.1415926535;
 #endif
 
 
-void overdriveInit(OVERDRIVE *od, float samplingFreq, float hpfCutoffFreq,
+void initialize_OVERDRIVE(OVERDRIVE *od, float samplingFreq, float hpfCutoffFreq,
 		float preGain, float lpfOutCutoffFreq, float lpfOutDamp) {
 	od->T = 1.0/samplingFreq;
 	// Initialize input FIR low pass filter
@@ -104,7 +104,7 @@ void overdriveSetHPF(OVERDRIVE *od, float cutoffFreq) {
 	od->hpfInpWct = 2.0f * PI * cutoffFreq * od->T;
 
 }
-float overdriveUpdate(OVERDRIVE *od, float input) {
+float update_OVERDRIVE(OVERDRIVE *od, float input) {
 	// Input FIR low pass filter (anti-aliasing)
 	od->lpfInpBuf[od->lpfInpBufIndex] = input;
 	od->lpfInpBufIndex++;

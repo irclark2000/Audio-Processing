@@ -66,13 +66,13 @@ static float wet;
 float update_FLANGER (FLANGER *flanger, float input) {
 	update_LOWFREQOSC(&(flanger->lfo));
 	var_MSec = (flanger->lfo.amplitude + flanger->lfo.out / 2000.0f);
-	// FIXME: before calling delayed, set the flanger delay based on lfo
+
 	setDelayMSec_FLANGER(flanger, var_MSec + flanger->baseDelay_MSec);
 
 	wet = getDelayedSample_VARDELAY(&(flanger->vDelay), input, flanger->feedback_level);
-	tmp_out = applyWetDry_MIXER (&(flanger->mixer), wet, input);
+	flanger->out = applyWetDry_MIXER (&(flanger->mixer), wet, input);
 
-	return tmp_out;
+	return flanger->out;
 }
 
 
