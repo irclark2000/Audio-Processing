@@ -23,8 +23,8 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <effects/circular_buffer.h>
 #include <phase vocoder/computeFFT.h>
 
-CIRCBUFFER cbBufIn;
-CIRCBUFFER cbBufOut;
+FFTCIRCBUFFER FFTcBufIn;
+FFTCIRCBUFFER FFTcBufOut;
 #define WINDOW_LENGTH 64
 #define HOP 64
 arm_rfft_fast_instance_f32 fft_instance;
@@ -48,14 +48,14 @@ int __signbitf(float x) { // @suppress("Name convention for function")
 void intializeFFT(void) {
 	arm_status status = ARM_MATH_SUCCESS;
 	status = arm_rfft_fast_init_f32(&fft_instance, (unsigned)WINDOW_LENGTH);
-	cb_initialize(&cbBufIn, g_FFTAudioIn, FFT_LENGTH + WINDOW_LENGTH);
-	cb_initialize(&cbBufOut, g_FFTAudioOut, 2*(FFT_LENGTH + WINDOW_LENGTH));
+	initialize_FFTCIRCBUFFER(&FFTcBufIn, g_FFTAudioIn, FFT_LENGTH + WINDOW_LENGTH);
+	initialize_FFTCIRCBUFFER(&FFTcBufOut, g_FFTAudioOut, 2*(FFT_LENGTH + WINDOW_LENGTH));
 	s_FFTPhase_current = g_FFTPhase1;
 	s_FFTPhase_previous = g_FFTPhase2;
 }
 
 void phaseVocoder (void * bufferOut, uint16_t size) {
-	while(cb_transferOutWithHop(&cbBufIn, g_FFTInput, HOP, WINDOW_LENGTH)) {
+	while(transferOutWithHop_FFTCIRCBUFFER(&FFTcBufIn, g_FFTInput, HOP, WINDOW_LENGTH)) {
 		arm_rfft_fast_f32(&fft_instance, g_FFTInput, g_FFTOutput, 0);
 		// calculate magnitude and phase of FFT
 		arm_cmplx_mag_f32(g_FFTOutput, g_FFTMag, WINDOW_LENGTH/2);
@@ -70,13 +70,13 @@ void phaseVocoder (void * bufferOut, uint16_t size) {
 			g_FFTOutput[2*i+1] = g_FFTMag[i] * arm_sin_f32(s_FFTPhase_current[i]);
 		}
 		arm_rfft_fast_f32(&fft_instance, g_FFTOutput, g_FFTInput, 1);
-		cb_addOverlap(&cbBufOut, g_FFTInput, HOP, WINDOW_LENGTH);
+		addOverlap_FFTCIRCBUFFER(&FFTcBufOut, g_FFTInput, HOP, WINDOW_LENGTH);
 	}
 	int16_t *bufOut = (int16_t *) bufferOut;
 	// fill the output buffer with overlap add results
-	if (cbBufOut.count >= size / 4) {
+	if (FFTcBufOut.cBuf.count >= size / 4) {
 		for(int i=0; i < size/2; i += 2) {
-			int16_t value = (int) (cb_transferOut(&cbBufOut) * 32768.0f);
+			int16_t value = (int) (transferOut_FFTCIRCBUFFER(&FFTcBufOut) * 32768.0f);
 			bufOut[i] = value;
 			bufOut[i+1] = value;
 		}
@@ -85,8 +85,9 @@ void phaseVocoder (void * bufferOut, uint16_t size) {
 		memset(bufferOut, 0, size);
 	}
 }
+
 void computeFFT(void * bufferOut, uint16_t size) {
-	cb_blockTransferOut(&cbBufIn, g_FFTInput, FFT_LENGTH);
+	blockTransferOut_FFTCIRCBUFFER(&FFTcBufIn, g_FFTInput, FFT_LENGTH);
 	arm_rfft_fast_f32(&fft_instance, g_FFTInput, g_FFTOutput, 0);
 	// calculate magnitude and phase of FFT
 	arm_cmplx_mag_f32(g_FFTOutput, g_FFTMag, FFT_LENGTH/2);

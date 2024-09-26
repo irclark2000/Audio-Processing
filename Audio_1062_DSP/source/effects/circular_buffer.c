@@ -117,6 +117,7 @@ uint32_t cb_transferIn(CIRCBUFFER *cb, float *source, uint32_t count) {
 	}
 
 }
+#if 0
 // returns 0 if there is not sufficient data in the buffer
 // fills destination buffer and then advances the read pointer by the hop size
 uint16_t cb_transferOutWithHop(CIRCBUFFER *cb, float *dest, uint32_t hop_size,
@@ -150,7 +151,7 @@ uint16_t cb_addOverlap(CIRCBUFFER *cb, float *buf, uint32_t hop_size,
 	cb->wr_ptr = (wr_ptr_save + hop_size) % cb->size;
 	return 1;
 }
-
+#endif
 void cb_initialize(CIRCBUFFER *cb, float *buf, uint32_t size) {
 	cb->storage = buf;
 	cb->rd_ptr = 0;

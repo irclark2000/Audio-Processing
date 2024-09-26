@@ -31,11 +31,10 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <arm_math.h>
 #include "arm_const_structs.h"
 #include "audio_wm8960.h"
-#include <effects/circular_buffer.h>
-
+#include "FFTCircBuffer.h"
 
 #define FFT_LENGTH HALF_BUFFER_SIZE/4
-extern CIRCBUFFER cbBufIn;
+extern FFTCIRCBUFFER FFTcBufIn;
 
 #if defined(__cplusplus)
 extern "C" {
