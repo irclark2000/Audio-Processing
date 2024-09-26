@@ -7,9 +7,9 @@
 
 #ifndef EFFECTS_DELAY_BASED_CHORUS_ELEMENT_H_
 #define EFFECTS_DELAY_BASED_CHORUS_ELEMENT_H_
+#include <components/low_frequency_oscillator.h>
+#include <components/variable_delay.h>
 #include <stdint.h>
-#include "variable_delay.h"
-#include "low_frequency_oscillator.h"
 
 typedef struct {
 	LOWFREQOSC lfo;

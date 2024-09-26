@@ -6,7 +6,7 @@
  *
  */
 
-#include "low_frequency_oscillator.h"
+#include <components/low_frequency_oscillator.h>
 
 void initialize_LOWFREQOSC (LOWFREQOSC *osc, float amplitude, float osc_freq, float sampleFreq) {
 	osc->amplitude = amplitude;

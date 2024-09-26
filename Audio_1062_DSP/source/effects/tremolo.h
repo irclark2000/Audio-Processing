@@ -9,7 +9,7 @@
 
 #ifndef TREMOLO_H_
 #define TREMOLO_H_
-#include "low_frequency_oscillator.h"
+#include <components/low_frequency_oscillator.h>
 
 #if defined(__cplusplus)
 extern "C" {

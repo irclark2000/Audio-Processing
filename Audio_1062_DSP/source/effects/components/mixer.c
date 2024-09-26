@@ -5,7 +5,7 @@
  *      Author: isaac
  */
 
-#include "mixer.h"
+#include <components/mixer.h>
 void initialize_MIXER (MIXER * mixer, float wet_dry) {
 	setWetDry_MIXER(mixer, wet_dry);
 }

@@ -5,8 +5,8 @@
  *      Author: isaac
  */
 
-#ifndef LOW_FREQUENCY_OSCILLATOR_H_
-#define LOW_FREQUENCY_OSCILLATOR_H_
+#ifndef EFFECTS_COMPONENTS_LOW_FREQUENCY_OSCILLATOR_H_
+#define EFFECTS_COMPONENTS_LOW_FREQUENCY_OSCILLATOR_H_
 
 #include <stdint.h>
 // generate low frequency triangle wave
@@ -24,4 +24,4 @@ void initialize_LOWFREQOSC (LOWFREQOSC *osc, float amplitude, float osc_freq, fl
 void setFreq_LOWFREQOSC(LOWFREQOSC *osc, float osc_freq);
 void setAmplitude_LOWFREQOSC(LOWFREQOSC *osc, float amplitude);
 void update_LOWFREQOSC(LOWFREQOSC *osc);
-#endif /* LOW_FREQUENCY_OSCILLATOR_H_ */
+#endif /* EFFECTS_COMPONENTS_LOW_FREQUENCY_OSCILLATOR_H_ */

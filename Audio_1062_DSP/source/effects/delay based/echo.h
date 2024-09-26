@@ -8,8 +8,8 @@
 #ifndef EFFECTS_DELAY_BASED_ECHO_H_
 #define EFFECTS_DELAY_BASED_ECHO_H_
 
-#include "variable_delay.h"
-#include "mixer.h"
+#include <components/mixer.h>
+#include <components/variable_delay.h>
 
 typedef struct {
 	VARDELAY vDelay;

@@ -5,8 +5,8 @@
  *      Author: isaac
  */
 
-#ifndef MIXER_H_
-#define MIXER_H_
+#ifndef EFFECTS_COMPONENTS_MIXER_H_
+#define EFFECTS_COMPONENTS_MIXER_H_
 
 typedef struct {
 	float wet_dry;
@@ -15,4 +15,4 @@ typedef struct {
 void initialize_MIXER (MIXER * mixer, float wet_dry);
 float applyWetDry_MIXER (MIXER * mixer, float input_wet, float input_dry);
 void setWetDry_MIXER (MIXER *mixer, float wet_dry);
-#endif /* MIXER_H_ */
+#endif /* EFFECTS_COMPONENTS_MIXER_H_ */

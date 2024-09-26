@@ -5,7 +5,7 @@
  *      Author: isaac
  */
 
-#include "variable_delay.h"
+#include <components/variable_delay.h>
 
 void initialize_variable_delay (VARDELAY * vDelay, float *buf, float buf_size, float sampleRate) {
 	vDelay->sampleTime = 1.0f / sampleRate;

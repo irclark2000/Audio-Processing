@@ -22,9 +22,9 @@
 #ifndef EFFECTS_DELAY_BASED_FLANGER_H_
 #define EFFECTS_DELAY_BASED_FLANGER_H_
 
-#include "variable_delay.h"
-#include "mixer.h"
-#include "low_frequency_oscillator.h"
+#include <components/low_frequency_oscillator.h>
+#include <components/mixer.h>
+#include <components/variable_delay.h>
 
 typedef struct {
 	VARDELAY vDelay;

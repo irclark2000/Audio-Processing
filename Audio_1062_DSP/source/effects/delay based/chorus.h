@@ -8,8 +8,8 @@
 #ifndef EFFECTS_DELAY_BASED_CHORUS_H_
 #define EFFECTS_DELAY_BASED_CHORUS_H_
 
+#include <components/mixer.h>
 #include "chorus_element.h"
-#include "mixer.h"
 
 #define MAX_NUMBER_CHORUSELEMENTS 3
 typedef struct {

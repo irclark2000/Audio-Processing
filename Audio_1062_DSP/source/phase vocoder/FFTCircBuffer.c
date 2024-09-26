@@ -15,6 +15,10 @@ void initialize_FFTCIRCBUFFER(FFTCIRCBUFFER *fcb, float * buf, uint32_t size) {
 	cb_initialize(&(fcb->cBuf), buf, size);
 }
 
+uint16_t transferInFloat_FFTCIRCBUFFER(FFTCIRCBUFFER *fcb, float input) {
+	return cb_transferInFloat(&(fcb->cBuf), input);
+}
+
 uint16_t addOverlap_FFTCIRCBUFFER(FFTCIRCBUFFER *fcb, float * buf, uint32_t hop_size, uint32_t window_size) {
 	CIRCBUFFER *cb = &(fcb->cBuf);
 	uint32_t wr_ptr_save = cb->wr_ptr;
@@ -92,5 +96,5 @@ uint16_t blockTransferOut_FFTCIRCBUFFER(FFTCIRCBUFFER *fcb, float *output, uint3
 	return cb_blockTransferOut(&(fcb->cBuf), output, count);
 }
 float transferOut_FFTCIRCBUFFER(FFTCIRCBUFFER *fcb) {
-	cb_transferOut(&(fcb->cBuf));
+	return cb_transferOut(&(fcb->cBuf));
 }

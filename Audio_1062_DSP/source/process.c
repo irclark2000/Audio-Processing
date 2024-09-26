@@ -45,7 +45,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
 
 // Take care if enabling more than one at a time
-#define TESTING_CHORUS 1
+#define TESTING_CHORUS 0
 #define TESTING_FLANGER 0
 #define TESTING_ECHO 0
 #define TESTING_EQUALIZER 0
@@ -56,7 +56,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define TESTING_FREEVERB 0
 #define TESTING_SCHROEDER 0
 #define TESTING_NOISE_GENERATOR 0
-#define TESTING_PHASE_VOCODER 0
+#define TESTING_PHASE_VOCODER 1
 
 #if TESTING_NOISEGATE
 NOISEGATE nGate;
@@ -199,7 +199,7 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRat
 		//rightOut = 1.05f * Tremolo_Update(&trem, rightIn, true);
 		//leftOut = EQFILTER_update(&eqf0, rightIn);
 #if TESTING_EQUALIZER
-		// test EQ filter using freq scan
+		// test EQ filter using freq scan over random noise
 		rightIn = 0.05 * get_random_float();
 		float filterOut = EQFILTER_update(&eqf0, rightIn);
 		filterOut = EQFILTER_update(&eqf1, filterOut);
@@ -234,9 +234,9 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRat
 		bufOut[i]   = (int) (leftOut * 32768.0f);
 		bufOut[i+1] = (int) (rightOut * 32768.0f);
 #elif TESTING_PHASE_VOCODER
-		cb_transferInFloat(&cbBufIn, rightIn);
+		transferInFloat_FFTCIRCBUFFER(&FFTcBufIn, rightIn);
 #endif
-	}
+	} // for loop
 	//memcpy(bufOut, bufIn, byteCount);
 #if PHASEVOCODER
 	phaseVocoder (bufferOut, size);
