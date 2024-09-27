@@ -32,11 +32,11 @@ float getDelayedSample_VARDELAY(VARDELAY *vDelay, float input, float fb_level) {
 	uint32_t whole_index = (uint32_t) f_index;
 	float frac_index = f_index - whole_index;
 
-	vDelay->out = cb_getFloatAtIndex(&(vDelay->cBuf), whole_index);
+	vDelay->out = getFloatAtIndex_VARDELAY(vDelay, whole_index);
 
 	// implements fractional part of delay using linear interpolation
 	if (frac_index >= 0.01 && offset > 1) {
-		float value1 = cb_getFloatAtIndex(&(vDelay->cBuf), whole_index + 1);
+		float value1 = getFloatAtIndex_VARDELAY(vDelay, whole_index + 1);
 		vDelay->out = value1 * frac_index + vDelay->out * (1.0f - frac_index);
 	}
 	// save the input value + fb-level fraction of output (regenerative feedback)
@@ -53,7 +53,7 @@ void setDelay_VARDELAY(VARDELAY *vDelay, float delaySec) {
 	float seconds = (delaySec <= vDelay->max_delay) ? (delaySec >= vDelay->sampleTime ? delaySec : vDelay->sampleTime) : vDelay->max_delay;
 	vDelay->delayInSamples = vDelay->sampleRate * seconds;
 	int32_t ptr = (int32_t) (vDelay->cBuf.wr_ptr) - vDelay->delayInSamples;
-	setReadPointer(vDelay, ptr);
+	setReadPointer(vDelay, ptr); // not currently being used
 }
 
 void setReadPointer(VARDELAY *vDelay, int32_t value) {
@@ -62,5 +62,15 @@ void setReadPointer(VARDELAY *vDelay, int32_t value) {
   }
   value %= vDelay->size;
   vDelay->cBuf.rd_ptr = value;
+}
+float getFloatAtIndex_VARDELAY (VARDELAY *vDelay, int32_t index) {
+	CIRCBUFFER *cb = &(vDelay->cBuf);
+	index = (index + 5 * cb->size) % cb->size;
+	return cb->storage[index];
+}
+float getFloatAtReadPtrWithIndex_VARDELAY(VARDELAY *vDelay, uint32_t index) {
+	CIRCBUFFER *cb = &(vDelay->cBuf);
+	index = (cb->rd_ptr + index + 5 * cb->size) % cb->size;
+	return cb->storage[index];
 }
 

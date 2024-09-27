@@ -24,4 +24,7 @@ void initialize_variable_delay (VARDELAY * vDelay, float *buf, float buf_size, f
 float getDelayedSample_VARDELAY(VARDELAY *vDelay, float input, float fb_level);
 void setDelay_VARDELAY(VARDELAY *vDelay, float delaySec);
 void setReadPointer(VARDELAY *vDelay, int32_t value);
+float getFloatAtIndex_VARDELAY (VARDELAY *vDelay, int32_t index);
+float getFloatAtReadPtrWithIndex_VARDELAY(VARDELAY *vDelay, uint32_t index);
+
 #endif /* EFFECTS_COMPONENTS_VARIABLE_DELAY_H_ */

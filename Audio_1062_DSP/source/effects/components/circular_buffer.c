@@ -66,15 +66,19 @@ uint16_t cb_blockTransferOut(CIRCBUFFER *cb, float *output, uint32_t count) {
 		return 1;
 	}
 }
-
-float cb_getFloat(CIRCBUFFER *cb, uint32_t index) {
-	index = (cb->rd_ptr + index) % cb->size;
+#if 0
+float cb_getFloatAtReadPtrWithIndex(CIRCBUFFER *cb, uint32_t index) {
+	index = (cb->rd_ptr + index + 5 * cb->size) % cb->size;
 	return cb->storage[index];
 }
+#endif
+#if 0
 float cb_getFloatAtIndex(CIRCBUFFER *cb, int32_t index) {
 	index = (index + 5 * cb->size) % cb->size;
 	return cb->storage[index];
 }
+#endif
+
 void cb_setFloatAtWritePointer(CIRCBUFFER *cb, float value) {
 	cb->storage[cb->wr_ptr] = value;
 }
