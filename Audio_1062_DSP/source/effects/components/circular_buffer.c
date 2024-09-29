@@ -78,11 +78,11 @@ float cb_getFloatAtIndex(CIRCBUFFER *cb, int32_t index) {
 	return cb->storage[index];
 }
 #endif
-
+#if 0
 void cb_setFloatAtWritePointer(CIRCBUFFER *cb, float value) {
 	cb->storage[cb->wr_ptr] = value;
 }
-
+#endif
 uint32_t cb_transferIn(CIRCBUFFER *cb, float *source, uint32_t count) {
 	if (count + cb->count <= cb->size) {
 		if (cb->wr_ptr + count < cb->size) {  // all in one

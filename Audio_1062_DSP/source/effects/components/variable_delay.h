@@ -18,6 +18,7 @@ typedef struct {
 	float out;
 	uint32_t size;
 	CIRCBUFFER cBuf;
+	CIRCBUFFER *cBufPtr;
 }VARDELAY;
 
 void initialize_variable_delay (VARDELAY * vDelay, float *buf, float buf_size, float sampleRate);

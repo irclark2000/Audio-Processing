@@ -13,7 +13,8 @@ void initialize_variable_delay (VARDELAY * vDelay, float *buf, float buf_size, f
 	vDelay->delayInSamples = 0;
 	vDelay->max_delay = (buf_size - 1) * vDelay->sampleTime;
 	vDelay->size = buf_size;
-	cb_initialize(&(vDelay->cBuf), buf, buf_size);
+	vDelay->cBufPtr = &(vDelay->cBuf);
+	cb_initialize(vDelay->cBufPtr, buf, buf_size);
 }
 
 /*
@@ -61,16 +62,15 @@ void setReadPointer(VARDELAY *vDelay, int32_t value) {
 	  value += vDelay->size;
   }
   value %= vDelay->size;
-  vDelay->cBuf.rd_ptr = value;
+  vDelay->cBufPtr->rd_ptr = value;
 }
 float getFloatAtIndex_VARDELAY (VARDELAY *vDelay, int32_t index) {
-	CIRCBUFFER *cb = &(vDelay->cBuf);
-	index = (index + 5 * cb->size) % cb->size;
-	return cb->storage[index];
+	//CIRCBUFFER *cb = &(vDelay->cBuf);
+	index = (index + 5 * vDelay->cBufPtr->size) % vDelay->cBufPtr->size;
+	return vDelay->cBufPtr->storage[index];
 }
 float getFloatAtReadPtrWithIndex_VARDELAY(VARDELAY *vDelay, uint32_t index) {
-	CIRCBUFFER *cb = &(vDelay->cBuf);
-	index = (cb->rd_ptr + index + 5 * cb->size) % cb->size;
-	return cb->storage[index];
+	index = (index + 5 * vDelay->cBufPtr->size) % vDelay->cBufPtr->size;
+	return vDelay->cBufPtr->storage[index];
 }
 
