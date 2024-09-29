@@ -12,24 +12,24 @@ Effects include the following
     - All Pass
     - Low Pass
 - Dynamic Range Controls
-    - Noise Gate
+    - Noise Gate*
     - Compressor
-    - Expander
+    - Expander  (work in progress)
     - Limiter
 - Reverberation    
     - Schroeder Reverb
     - Freeverb
 - Miscellaneous    
     - Pitch Shifting
-    - Tremolo
-    - Overdrive
+    - Tremolo*
+    - Overdrive*
     - FFT (alpha)
 - Effects Components
-    - Low-Frequency Oscillator
+    - Low Frequency Oscillator
     - Mixer
     - Variable Delay
     - Circular Buffer
     
 
-The code for the Tremolo, Noise Gate, and Overdrive effects is based on code provided by 
+*The code for the Tremolo, Noise Gate, and Overdrive effects is based on code provided by 
 Philip Salmony on his Phil's Lab YouTube channel, and is provided with his permission.
