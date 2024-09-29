@@ -11,8 +11,6 @@
 #include <dynamic range control/noise_gate.h>
 #include "fast_math.h"
 
-// Copyright 2021 Johan Rade (johan.rade@gmail.com)
-// Distributed under the MIT license (https://opensource.org/licenses/MIT)
 #define EXP(x) fastExp(x)
 
 
