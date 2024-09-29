@@ -34,5 +34,5 @@ void setGain () {
 	g_gain = getPotentiometerValue (GAININDEX);
 	test_PROCESS (update_counter);  // simulate use of a potentiometer
 	update_counter++;
-	if (update_counter == 800) update_counter = 0;
+	if (update_counter == 4000000000) update_counter = 0;
 }

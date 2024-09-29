@@ -282,7 +282,7 @@ const static float inverse_time = 1.0f / 799.0f;
 #define USE_FAST_APPROX 1
 // apply automatic variation to a parameter
 void test_PROCESS (uint32_t update_counter) {
-	float param = update_counter * inverse_time;
+	float param = (update_counter % 800) * inverse_time;
 	//delay parameter over about 8 seconds
 //	setDelayMSec_ECHO (&echo, getMaxDelayMS_ECHO(&echo) * param);
 	//setFeedback_level_ECHO (&echo, 0.95 * param);
