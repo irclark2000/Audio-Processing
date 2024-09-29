@@ -7,11 +7,14 @@
 
 #include "fast_math.h"
 
-const float ln10 = 2.30258509299f;
-const float logE = 0.4342944819f;
-const float ln2 = 0.69314718056f;
+//const float ln10 = 2.30258509299f;
+//const float logE = 0.4342944819f;
+//const float ln2 = 0.69314718056f;
 
 // reasonable (+-3%) and fast approximation of exp(x) for x < 80
+// Copyright 2021 Johan Rade (johan.rade@gmail.com)
+// Distributed under the MIT license (https://opensource.org/licenses/MIT)
+
 float fastExp(float x)
 {
     float a = (1 << 23) / 0.69314718f;
