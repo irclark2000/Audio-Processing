@@ -29,11 +29,15 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "delay based/echo.h"
 #include "delay based/flanger.h"
 #include "delay based/chorus.h"
+#include "dynamic range control/expander.h"
+#include "dynamic range control/compressor.h"
+#include "dynamic range control/limiter.h"
 #include "process.h"
 #include "updateSettings.h"
 #include "random_generator.h"
 #include "overdrive.h"
 #include "dynamic range control/noise_gate.h"
+#include "fast_math.h"
 
 //#include "overdrive.h"
 
@@ -50,13 +54,16 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define TESTING_ECHO 0
 #define TESTING_EQUALIZER 0
 #define TESTING_PITCH_CHANGE 0
+#define TESTING_LIMITER 0
+#define TESTING_EXPANDER 0
+#define TESTING_COMPRESSOR 1
 #define TESTING_NOISEGATE 0
 #define TESTING_OVERDRIVE 0
 #define TESTING_TREMOLO 0
 #define TESTING_FREEVERB 0
 #define TESTING_SCHROEDER 0
 #define TESTING_NOISE_GENERATOR 0
-#define TESTING_PHASE_VOCODER 1
+#define TESTING_PHASE_VOCODER 0
 
 #if TESTING_NOISEGATE
 NOISEGATE nGate;
@@ -108,6 +115,15 @@ OVERDRIVE od;
 	EQFILTER eqf2;
 	EQFILTER eqf3;
 #endif
+#if TESTING_LIMITER
+LIMITER limiter;
+#endif
+#if TESTING_EXPANDER
+	EXPANDER expander;
+#endif
+#if TESTING_COMPRESSOR
+	COMPRESSOR compressor;
+#endif
 
 void initializeEffects(float sampleRate) {
 #if TESTING_TREMOLO
@@ -152,6 +168,15 @@ void initializeEffects(float sampleRate) {
 	intialize_FLANGER (&flanger, flanger_buf, FLANGER_BUF_SIZE,
 			80.0f, 0.25f, 30.0f,
 			0.4f, 0.5, sampleRate);
+#endif
+#if TESTING_LIMITER
+	initialize_LIMITER(&limiter,  sampleRate);
+#endif
+#if TESTING_EXPANDER
+	initialize_EXPANDER (&expander, sampleRate);
+#endif
+#if TESTING_COMPRESSOR
+	initialize_COMPRESSOR(&compressor,  sampleRate);
 #endif
 #if TESTING_OVERDRIVE
 	// distortion level of 50 yields high distortion.
@@ -230,6 +255,16 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRat
 #if TESTING_TREMOLO
 		leftOut = 1.05f * Tremolo_Update(&trem, rightIn, true);
 #endif
+#if TESTING_LIMITER
+	leftOut = update_LIMITER(&limiter,  rightIn);
+#endif
+#if TESTING_EXPANDER
+	leftOut = update_EXPANDER(&expander,  rightIn);
+#endif
+#if TESTING_COMPRESSOR
+	leftOut = update_COMPRESSOR(&compressor,  rightIn);
+#endif
+
 		rightOut = leftOut;
 		bufOut[i]   = (int) (leftOut * 32768.0f);
 		bufOut[i+1] = (int) (rightOut * 32768.0f);
@@ -238,13 +273,13 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRat
 #endif
 	} // for loop
 	//memcpy(bufOut, bufIn, byteCount);
-#if PHASEVOCODER
+#if TESTING_PHASE_VOCODER
 	phaseVocoder (bufferOut, size);
 #endif
 }
 
 const static float inverse_time = 1.0f / 799.0f;
-
+#define USE_FAST_APPROX 1
 // apply automatic variation to a parameter
 void test_PROCESS (uint32_t update_counter) {
 	float param = update_counter * inverse_time;
@@ -256,8 +291,13 @@ void test_PROCESS (uint32_t update_counter) {
 #endif
 #if TESTING_EQUALIZER
 	// frequency sweep  over 4.6 octaves
-	float freq0 = 500 * powf (2.0f, 4.6f * (update_counter * inverse_time));
-	float freq1 = 500 * powf (2.0f, 4.6f * (1.0f - update_counter * inverse_time));
+#if USE_FAST_APPROX
+	float freq0 = 500 * fastPow2 (4.6f * (update_counter * inverse_time));
+	float freq1 = 500 * fastPow2 (4.6f * (1.0f - update_counter * inverse_time));
+#else
+	float freq0 = 500 * powf(2.0f, 4.6f * (update_counter * inverse_time));
+	float freq1 = 500 * powf(2.0f, 4.6f * (1.0f - update_counter * inverse_time));
+#endif
 	EQFILTER_setCenterFrequency(&eqf0, freq0, 200.0f);
 	EQFILTER_setCenterFrequency(&eqf3, freq0, 200.0f);
 	EQFILTER_setCenterFrequency(&eqf1, freq1, 200.0f);

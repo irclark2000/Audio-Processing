@@ -30,6 +30,7 @@ typedef struct {
 	float threshold;  //db
 	float makeup_gain; //db
 	float knee;
+	float absInput;
 	float attack_time;
 	float release_time;
 	float alphaA, alphaR;
@@ -38,8 +39,8 @@ typedef struct {
 	float compress_out;
 } COMPRESSOR;
 
-void initialize_compressor (COMPRESSOR * comp, float sample_rate);
-float update_compressor (COMPRESSOR * comp, float input);
+void initialize_COMPRESSOR (COMPRESSOR * comp, float sample_rate);
+float update_COMPRESSOR (COMPRESSOR * comp, float input);
 void compressor_setRelease(COMPRESSOR * comp, float release_time);
 void compressor_setAttack(COMPRESSOR * comp, float attack_time);
 

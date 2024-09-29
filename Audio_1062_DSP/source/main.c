@@ -29,7 +29,6 @@
  */
 int main(void)
 {
-
     board_startup();
     initialize_dma_system();
     setup_SAI_EDMA();

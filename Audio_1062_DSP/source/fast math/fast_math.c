@@ -15,11 +15,10 @@
 // Copyright 2021 Johan Rade (johan.rade@gmail.com)
 // Distributed under the MIT license (https://opensource.org/licenses/MIT)
 
-float fastExp(float x)
-{
-    float a = (1 << 23) / 0.69314718f;
-    float b = (1 << 23) * (127 - 0.043677448f);
-    x = a * x + b;
+float fastExp(float x) {
+	float a = (1 << 23) / 0.69314718f;
+	float b = (1 << 23) * (127 - 0.043677448f);
+	x = a * x + b;
 
 #if 0
     // Remove these lines if bounds checking is not needed
@@ -28,18 +27,32 @@ float fastExp(float x)
     if (x < c || x > d)
         x = (x < c) ? 0.0f : d;
 #endif
-    // With C++20 one can use std::bit_cast instead
-    uint32_t n = (uint32_t)(x);
-    memcpy(&x, &n, 4);
-    return x;
+	// With C++20 one can use std::bit_cast instead
+	uint32_t n = (uint32_t) (x);
+	memcpy(&x, &n, 4);
+	return x;
 }
 
 float fastLN(float x) {
-  unsigned int bx = * (unsigned int *) (&x);
-  unsigned int ex = bx >> 23;
-  signed int t = (signed int)ex-(signed int)127;
-  unsigned int s = (t < 0) ? (-t) : t;
-  bx = 1065353216 | (bx & 8388607);
-  x = * (float *) (&bx);
-  return -1.49278+(2.11263+(-0.729104+0.10969*x)*x)*x+0.6931471806*t;
+	unsigned int bx = *(unsigned int*) (&x);
+	unsigned int ex = bx >> 23;
+	signed int t = (signed int) ex - (signed int) 127;
+	unsigned int s = (t < 0) ? (-t) : t;
+	bx = 1065353216 | (bx & 8388607);
+	x = *(float*) (&bx);
+	return -1.49278 + (2.11263 + (-0.729104 + 0.10969 * x) * x) * x
+			+ 0.6931471806 * t;
+}
+union {
+	float f;
+	uint32_t u;
+}static myun;
+
+uint8_t isINF(float x) {
+	myun.f = x;
+	if ((myun.u & 0x007FFFFF) == 0 && (myun.u & 0x7F800000) == 0x7F800000) {
+		return 1;
+	} else {
+		return 0;
+	}
 }

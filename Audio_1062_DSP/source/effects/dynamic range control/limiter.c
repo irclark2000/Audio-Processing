@@ -20,11 +20,24 @@
  */
 
 #include <dynamic range control/limiter.h>
-static float log9 = 0.95424250943f;
+#include "fast_math.h"
 
-float limiter_gain_calc_smoothing(LIMITER *limiter, float xdb, float *xsc);
+static float log10_9 = 0.95424250943f;
+static float ln9 = 2.19722457734f;
+#define TRY_FAST 0  // using fast approximations yields substantially better performance
+#if TRY_FAST
+#define EXP fastExp
+#define LOG10 fastLog10
+#else
+#define EXP expf
+#define LOG10 log10f
+#endif
 
-void initialize_limiter(LIMITER *limiter, float sample_rate) {
+
+
+float limiter_gain_calc_smoothing(LIMITER *limiter, float xdb, float *xscOut, float *gcOut);
+
+void initialize_LIMITER(LIMITER *limiter, float sample_rate) {
 	limiter->sample_time = 1.0f / sample_rate;
 	limiter->gs = 0.0f;
 	limiter->threshold = -10.0f;  //db
@@ -38,59 +51,80 @@ void initialize_limiter(LIMITER *limiter, float sample_rate) {
 }
 // based on MATLAB limiter
 
-float update_limiter(LIMITER *limiter, float input) {
-	float xdb = 20.0f * logf(input);
+float update_LIMITER(LIMITER *limiter, float input) {
+	limiter->absInput = input;
+	if (input < 0.0f) {
+		limiter->absInput = -limiter->absInput;
+	}
+	float xdb = 20.0f * LOG10(limiter->absInput);
 
+	if (isINF(xdb)) {  // result of log(0)
+		return input;
+	}
 	float xsc;
-	float gs = limiter_gain_calc_smoothing(limiter, xdb, &xsc);
+	float gc;
+	float gs = limiter_gain_calc_smoothing(limiter, xdb, &xsc, &gc);
+	if (gs != gs) {
+		return input;
+	}
 	// make-up gain
 	float M = limiter->makeup_gain;
 	if (!limiter->makeup_property_mode) { // auto mode
 		float xsc0;
-		limiter_gain_calc_smoothing(limiter, 0.0f, &xsc0);
+		// calculate using xdb = 0
+		limiter_gain_calc_smoothing(limiter, 0.0f, &xsc0, NULL);
 		M = -xsc0;
 	}
+	limiter->gs = gs;
 	float gm = gs + M;
 	// linear gain
+#if TRY_FAST
+	float glin = fastPow10(gm / 20.0f);
+#else
 	float glin = powf(10.0, gm / 20.0f);
+#endif
 	limiter->compress_out = glin * input;
 	return limiter->compress_out;
 }
 
-float limiter_gain_calc_smoothing(LIMITER *limiter, float xdb, float *xsc) {
-	if (limiter->hard_knee) {
+float limiter_gain_calc_smoothing(LIMITER *limiter, float xdb, float *xscOut, float *gcOut) {
+	float xsc;
+	if (limiter->hard_knee || limiter->knee < 0.05) {
 		if (xdb < limiter->threshold) {
-			*xsc = xdb;
+			xsc = xdb;
 		} else {
-			*xsc = limiter->threshold;
+			xsc = limiter->threshold;
 		}
 	} else {
 		if (xdb < (limiter->threshold - limiter->knee / 2.0f)) {
-			*xsc = xdb;
+			xsc = xdb;
 		} else if (xdb > (limiter->threshold + limiter->knee / 2.0f)) {
-			*xsc = limiter->threshold;
+			xsc = limiter->threshold;
 		} else {
-			*xsc = xdb
+			xsc = xdb
 					- (xdb - limiter->threshold + limiter->knee / 2.0f)
 					* (xdb - limiter->threshold + limiter->knee / 2.0f) / 2.0f
 							/ limiter->knee;
 		}
 	}
-	float gc = *xsc - xdb;
+	float gc = xsc - xdb;
+	float gs;
+	if (xscOut) *xscOut = xsc;
+	if (gcOut) *gcOut = gc;
 	// gain smoothing
 	if (gc <= limiter->gs) {
-		limiter->gs = limiter->alphaA * limiter->gs + (1.0f - limiter->alphaA) * gc;
+		gs = limiter->alphaA * limiter->gs + (1.0f - limiter->alphaA) * gc;
 	} else {
-		limiter->gs = limiter->alphaR * limiter->gs + (1.0 - limiter->alphaR) * gc;
+		gs = limiter->alphaR * limiter->gs + (1.0 - limiter->alphaR) * gc;
 	}
-	return gc;
+	return gs;
 }
 
 void limiter_setRelease(LIMITER *limiter, float release_time) {
 	limiter->release_time = release_time;
-	limiter->alphaR = expf(-log9 * limiter->sample_time / release_time);
+	limiter->alphaR = EXP(-ln9 * limiter->sample_time / release_time);
 }
 void limiter_setAttack(LIMITER *limiter, float attack_time) {
 	limiter->attack_time = attack_time;
-	limiter->alphaA = expf(-log9 * limiter->sample_time / attack_time);
+	limiter->alphaA = EXP(-ln9 * limiter->sample_time / attack_time);
 }

@@ -30,6 +30,7 @@ typedef struct {
 	float ratio;
 	float threshold;  //db
 	float knee;
+	float absInput;
 	float attack_time;
 	float release_time;
 	float hold_time;
@@ -39,8 +40,8 @@ typedef struct {
 	float expand_out;
 } EXPANDER;
 
-void initialize_expander (EXPANDER * ex, float sample_rate);
-float update_expander (EXPANDER * ex, float input);
+void initialize_EXPANDER (EXPANDER * ex, float sample_rate);
+float update_EXPANDER (EXPANDER * ex, float input);
 void expander_setRelease(EXPANDER * ex, float release_time);
 void expander_setAttack(EXPANDER * ex, float attack_time);
 void expander_setHold(EXPANDER * ex, float hold_time);

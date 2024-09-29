@@ -18,6 +18,7 @@ typedef struct {
 	float threshold;  //db
 	float makeup_gain; //db
 	float knee;
+	float absInput;
 	float attack_time;
 	float release_time;
 	float alphaA, alphaR;
@@ -26,8 +27,8 @@ typedef struct {
 	float compress_out;
 } LIMITER;
 
-void initialize_limiter (LIMITER *limiter, float sample_rate);
-float update_limiter (LIMITER *limiter, float input);
+void initialize_LIMITER (LIMITER *limiter, float sample_rate);
+float update_LIMITER (LIMITER *limiter, float input);
 void limiter_setRelease(LIMITER *limiter, float release_time);
 void limiter_setAttack(LIMITER *limiter, float attack_time);
 
