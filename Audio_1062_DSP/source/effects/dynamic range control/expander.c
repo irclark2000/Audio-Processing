@@ -35,6 +35,7 @@ static const float ln9 = 2.19722457734f;
 #endif
 #define SQUARED(x) ((x) * (x))
 
+
 void initialize_EXPANDER(EXPANDER *ex, float sample_rate) {
 	ex->sample_time = 1.0f / sample_rate;
 	ex->gs = 0.0f;
@@ -115,4 +116,10 @@ void expander_setAttack(EXPANDER *ex, float attack_time) {
 }
 void expander_setHold(EXPANDER *ex, float hold_time) {
 	ex->hold_time = hold_time;
+}
+void setTreshold_EXPANDER(EXPANDER * ex, float threshold_db) {
+	threshold_db =
+			(threshold_db < EXPANDER_MINTHRESHOLD_DB)? EXPANDER_MINTHRESHOLD_DB :
+				(threshold_db > EXPANDER_MAXTHRESHOLD_DB) ? EXPANDER_MAXTHRESHOLD_DB : threshold_db;
+	ex->threshold = threshold_db;
 }
