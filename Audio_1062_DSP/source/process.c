@@ -55,8 +55,8 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define TESTING_EQUALIZER 0
 #define TESTING_PITCH_CHANGE 0
 #define TESTING_LIMITER 0
-#define TESTING_EXPANDER 0
-#define TESTING_COMPRESSOR 1
+#define TESTING_EXPANDER 1
+#define TESTING_COMPRESSOR 0
 #define TESTING_NOISEGATE 0
 #define TESTING_OVERDRIVE 0
 #define TESTING_TREMOLO 0
@@ -174,6 +174,7 @@ void initializeEffects(float sampleRate) {
 #endif
 #if TESTING_EXPANDER
 	initialize_EXPANDER (&expander, sampleRate);
+	setTreshold_EXPANDER(&expander, -50.0f);
 #endif
 #if TESTING_COMPRESSOR
 	initialize_COMPRESSOR(&compressor,  sampleRate);
@@ -279,29 +280,36 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRat
 }
 
 const static float inverse_time = 1.0f / 799.0f;
+const static float inverse_time_15sec = 1.0f / (15000 - 1);
 #define USE_FAST_APPROX 1
 // apply automatic variation to a parameter
+// update_counter increments at approximately 100 counts per second
 void test_PROCESS (uint32_t update_counter) {
-	float param = (update_counter % 800) * inverse_time;
+	float parameter = (update_counter % 800) * inverse_time;
 	//delay parameter over about 8 seconds
-//	setDelayMSec_ECHO (&echo, getMaxDelayMS_ECHO(&echo) * param);
-	//setFeedback_level_ECHO (&echo, 0.95 * param);
+//	setDelayMSec_ECHO (&echo, getMaxDelayMS_ECHO(&echo) * parameter);
+	//setFeedback_level_ECHO (&echo, 0.95 * parameter);
+
+#if TESTING_EXPANDER
+	float parameter2 = (update_counter % 15000) * inverse_time_15sec;
+//	setTreshold_EXPANDER(&expander, -140.0f + 85.0f * parameter2);
+#endif
 #if TESTING_FLANGER
-	setFeedback_level_FLANGER(&flanger, 0.95f * param);
+	setFeedback_level_FLANGER(&flanger, 0.95f * parameter);
 #endif
 #if TESTING_EQUALIZER
 	// frequency sweep  over 4.6 octaves
 #if USE_FAST_APPROX
-	float freq0 = 500 * fastPow2 (4.6f * (update_counter * inverse_time));
-	float freq1 = 500 * fastPow2 (4.6f * (1.0f - update_counter * inverse_time));
+	float freq0 = 500 * fastPow2 (4.6f * (parameter));
+	float freq1 = 500 * fastPow2 (4.6f * (1.0f - parameter));
 #else
-	float freq0 = 500 * powf(2.0f, 4.6f * (update_counter * inverse_time));
-	float freq1 = 500 * powf(2.0f, 4.6f * (1.0f - update_counter * inverse_time));
+	float freq0 = 500 * powf(2.0f, 4.6f * (parameter));
+	float freq1 = 500 * powf(2.0f, 4.6f * (1.0f - parameter));
 #endif
 	EQFILTER_setCenterFrequency(&eqf0, freq0, 200.0f);
 	EQFILTER_setCenterFrequency(&eqf3, freq0, 200.0f);
 	EQFILTER_setCenterFrequency(&eqf1, freq1, 200.0f);
 	EQFILTER_setCenterFrequency(&eqf2, freq1, 200.0f);
-	//EQFILTER_setGain (&eqf0, 10.0 * update_counter * inverse_time);
+	//EQFILTER_setGain (&eqf0, 10.0 * parameter);
 #endif
 }

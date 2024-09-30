@@ -29,8 +29,10 @@ typedef struct {
 
 void initialize_LIMITER (LIMITER *limiter, float sample_rate);
 float update_LIMITER (LIMITER *limiter, float input);
-void limiter_setRelease(LIMITER *limiter, float release_time);
-void limiter_setAttack(LIMITER *limiter, float attack_time);
+void setRelease_LIMITER(LIMITER *limiter, float release_time);
+void setAttack_LIMITER(LIMITER *limiter, float attack_time);
+void setTreshold_LIMITER(LIMITER * limiter, float threshold_db);
+void setKneeWidth_LIMITER(LIMITER * limiter, float knee_width);
 
 
 #endif /* EFFECTS_DYNAMIC_RANGE_CONTROL_LIMITER_H_ */

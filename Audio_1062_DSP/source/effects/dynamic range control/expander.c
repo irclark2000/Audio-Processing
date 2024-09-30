@@ -33,8 +33,23 @@ static const float ln9 = 2.19722457734f;
 #define EXP expf
 #define LOG10 log10f
 #endif
-#define SQUARED(x) ((x) * (x))
 
+#define EXPANDER_MINTHRESHOLD_DB -140
+#define EXPANDER_MAXTHRESHOLD_DB 0
+#define EXPANDER_MINRATIO 1
+#define EXPANDER_MAXRATIO 50
+#define EXPANDER_MINKNEEWIDTH 0
+#define EXPANDER_MAXKNEEWIDTH 20
+#define EXPANDER_MINRELEASE_SEC 0
+#define EXPANDER_MAXRELEASE_SEC 4
+#define EXPANDER_MINATTACK_SEC 0
+#define EXPANDER_MAXATTACK_SEC 4
+#define EXPANDER_MINHOLD_SEC 0
+#define EXPANDER_MAXHOLD_SEC 4
+#define COMPRESSOR_MINMAKEUPGAIN_DB -10
+#define COMPRESSOR_MAXMAKEUPGAIN_DB 24
+
+#include "components/effects_macros.h"
 
 void initialize_EXPANDER(EXPANDER *ex, float sample_rate) {
 	ex->sample_time = 1.0f / sample_rate;
@@ -48,9 +63,10 @@ void initialize_EXPANDER(EXPANDER *ex, float sample_rate) {
 	ex->hold_time_counter = 0.0f;
 	ex->expand_out = 0.0f;
 	ex->hard_knee = 0;
-	expander_setRelease(ex, 0.2);
-	expander_setAttack(ex, 0.05);
-	expander_setHold(ex, 0.05);
+	setRelease_EXPANDER(ex, 0.2);
+	setAttack_EXPANDER(ex, 0.05);
+	setHold_EXPANDER(ex, 0.05);
+	setTreshold_EXPANDER(ex, -50.0f);
 }
 // based on MATLAB expander
 
@@ -106,20 +122,25 @@ float update_EXPANDER(EXPANDER *ex, float input) {
 	return ex->expand_out;
 }
 
-void expander_setRelease(EXPANDER *ex, float release_time) {
+void setRelease_EXPANDER(EXPANDER *ex, float release_time) {
+	release_time = MIN_MAX(release_time, EXPANDER_MINRELEASE_SEC, EXPANDER_MAXRELEASE_SEC);
 	ex->release_time = release_time;
 	ex->alphaR = EXP(-ln9 * ex->sample_time / release_time);
 }
-void expander_setAttack(EXPANDER *ex, float attack_time) {
+void setAttack_EXPANDER(EXPANDER *ex, float attack_time) {
+	attack_time = MIN_MAX(attack_time, EXPANDER_MINATTACK_SEC, EXPANDER_MAXATTACK_SEC);
 	ex->attack_time = attack_time;
 	ex->alphaA = EXP(-ln9 * ex->sample_time / attack_time);
 }
-void expander_setHold(EXPANDER *ex, float hold_time) {
+void setHold_EXPANDER(EXPANDER *ex, float hold_time) {
+	hold_time = MIN_MAX(hold_time, EXPANDER_MINHOLD_SEC, EXPANDER_MAXHOLD_SEC);
 	ex->hold_time = hold_time;
 }
 void setTreshold_EXPANDER(EXPANDER * ex, float threshold_db) {
-	threshold_db =
-			(threshold_db < EXPANDER_MINTHRESHOLD_DB)? EXPANDER_MINTHRESHOLD_DB :
-				(threshold_db > EXPANDER_MAXTHRESHOLD_DB) ? EXPANDER_MAXTHRESHOLD_DB : threshold_db;
+	threshold_db = MIN_MAX(threshold_db, EXPANDER_MINTHRESHOLD_DB, EXPANDER_MAXTHRESHOLD_DB);
 	ex->threshold = threshold_db;
+}
+void setKneeWidth_EXPANDER(EXPANDER * ex, float knee_width) {
+	knee_width = MIN_MAX(knee_width, EXPANDER_MINKNEEWIDTH, EXPANDER_MAXKNEEWIDTH);
+	ex->knee = knee_width;
 }

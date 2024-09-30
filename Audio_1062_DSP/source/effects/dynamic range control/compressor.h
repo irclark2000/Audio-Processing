@@ -41,7 +41,9 @@ typedef struct {
 
 void initialize_COMPRESSOR (COMPRESSOR * comp, float sample_rate);
 float update_COMPRESSOR (COMPRESSOR * comp, float input);
-void compressor_setRelease(COMPRESSOR * comp, float release_time);
-void compressor_setAttack(COMPRESSOR * comp, float attack_time);
+void setRelease_COMPRESSOR(COMPRESSOR * comp, float release_time);
+void setAttack_COMPRESSOR(COMPRESSOR * comp, float attack_time);
+void setKneeWidth_COMPRESSOR(COMPRESSOR * comp, float knee_width);
+void setMakeupDBGain_COMPRESSOR(COMPRESSOR * comp, float makeup_gain);
 
 #endif /* EFFECTS_DYNAMIC_RANGE_CONTROL_COMPRESSOR_H_ */

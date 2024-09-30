@@ -24,8 +24,6 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdint.h>
 #include <math.h>
 
-#define EXPANDER_MAXTHRESHOLD_DB 0
-#define EXPANDER_MINTHRESHOLD_DB -140
 
 typedef struct {
 	float sample_time;
@@ -45,9 +43,9 @@ typedef struct {
 
 void initialize_EXPANDER (EXPANDER * ex, float sample_rate);
 float update_EXPANDER (EXPANDER * ex, float input);
-void expander_setRelease(EXPANDER * ex, float release_time);
-void expander_setAttack(EXPANDER * ex, float attack_time);
-void expander_setHold(EXPANDER * ex, float hold_time);
+void setRelease_EXPANDER(EXPANDER * ex, float release_time);
+void setAttack_EXPANDER(EXPANDER * ex, float attack_time);
+void setHold_EXPANDER(EXPANDER * ex, float hold_time);
 void setTreshold_EXPANDER(EXPANDER * ex, float threshold_db);
 
 #endif /* EFFECTS_DYNAMIC_RANGE_CONTROL_EXPANDER_H_ */

@@ -25,6 +25,19 @@ static float log9 = 0.95424250943f;
 static float ln9 = 2.19722457734f;
 
 #include "fast_math.h"
+#include "components/effects_macros.h"
+#define COMPRESSOR_MINTHRESHOLD_DB -50
+#define COMPRESSOR_MAXTHRESHOLD_DB 0
+#define COMPRESSOR_MINRATIO 1
+#define COMPRESSOR_MAXRATIO 50
+#define COMPRESSOR_MINKNEEWIDTH 0
+#define COMPRESSOR_MAXKNEEWIDTH 20
+#define COMPRESSOR_MINRELEASE_SEC 0
+#define COMPRESSOR_MAXRELEASE_SEC 4
+#define COMPRESSOR_MINATTACK_SEC 0
+#define COMPRESSOR_MAXATTACK_SEC 4
+#define COMPRESSOR_MINMAKEUPGAIN_DB -10
+#define COMPRESSOR_MAXMAKEUPGAIN_DB 24
 
 #define TRY_FAST 0
 #if TRY_FAST
@@ -34,7 +47,7 @@ static float ln9 = 2.19722457734f;
 #define EXP expf
 #define LOG10 log10f
 #endif
-#define SQUARED(x) ((x) * (x))
+
 float compressor_gain_calc_smoothing(COMPRESSOR *comp, float xdb, float *xscOut, float * gcOut);
 void initialize_COMPRESSOR(COMPRESSOR *comp, float sample_rate) {
 	comp->sample_time = 1.0f / sample_rate;
@@ -46,8 +59,8 @@ void initialize_COMPRESSOR(COMPRESSOR *comp, float sample_rate) {
 	comp->makeup_property_mode = 1;
 	comp->compress_out = 0.0f;
 	comp->hard_knee = 0;
-	compressor_setRelease(comp, 0.2f);
-	compressor_setAttack(comp, 0.05f);
+	setRelease_COMPRESSOR(comp, 0.2f);
+	setAttack_COMPRESSOR(comp, 0.05f);
 }
 // based on MATLAB compressor
 
@@ -120,11 +133,27 @@ float compressor_gain_calc_smoothing(COMPRESSOR *comp, float xdb, float *xscOut,
 	return gs;
 }
 
-void compressor_setRelease(COMPRESSOR *comp, float release_time) {
+void setRelease_COMPRESSOR(COMPRESSOR *comp, float release_time) {
+	release_time = MIN_MAX(release_time, COMPRESSOR_MINRELEASE_SEC, COMPRESSOR_MAXRELEASE_SEC);
 	comp->release_time = release_time;
 	comp->alphaR = EXP(-ln9 * comp->sample_time / release_time);
 }
-void compressor_setAttack(COMPRESSOR *comp, float attack_time) {
+void setAttack_COMPRESSOR(COMPRESSOR *comp, float attack_time) {
+	attack_time = MIN_MAX(attack_time, COMPRESSOR_MINATTACK_SEC, COMPRESSOR_MAXATTACK_SEC);
 	comp->attack_time = attack_time;
 	comp->alphaA = EXP(-ln9 * comp->sample_time / attack_time);
 }
+
+void setTreshold_COMPRESSOR(COMPRESSOR * comp, float threshold_db) {
+	threshold_db = MIN_MAX(threshold_db, COMPRESSOR_MINTHRESHOLD_DB, COMPRESSOR_MAXTHRESHOLD_DB);
+	comp->threshold = threshold_db;
+}
+void setKneeWidth_COMPRESSOR(COMPRESSOR * comp, float knee_width) {
+	knee_width = MIN_MAX(knee_width, COMPRESSOR_MINKNEEWIDTH, COMPRESSOR_MAXKNEEWIDTH);
+	comp->knee = knee_width;
+}
+void setMakeupGainDB_COMPRESSOR(COMPRESSOR * comp, float makeup_gain) {
+	makeup_gain = MIN_MAX(makeup_gain, COMPRESSOR_MINMAKEUPGAIN_DB , COMPRESSOR_MAXMAKEUPGAIN_DB );
+	comp->makeup_gain = makeup_gain;
+}
+

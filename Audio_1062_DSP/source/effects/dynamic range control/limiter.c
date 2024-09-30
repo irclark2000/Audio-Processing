@@ -21,6 +21,20 @@
 
 #include <dynamic range control/limiter.h>
 #include "fast_math.h"
+#include "components/effects_macros.h"
+#define LIMITER_MINTHRESHOLD_DB -50
+#define LIMITER_MAXTHRESHOLD_DB 0
+#define LIMITER_MINRATIO 1
+#define LIMITER_MAXRATIO 50
+#define LIMITER_MINKNEEWIDTH 0
+#define LIMITER_MAXKNEEWIDTH 20
+#define LIMITER_MINRELEASE_SEC 0
+#define LIMITER_MAXRELEASE_SEC 4
+#define LIMITER_MINATTACK_SEC 0
+#define LIMITER_MAXATTACK_SEC 4
+#define LIMITER_MINMAKEUPGAIN_DB -10
+#define LIMITER_MAXMAKEUPGAIN_DB 24
+
 
 static float log10_9 = 0.95424250943f;
 static float ln9 = 2.19722457734f;
@@ -46,8 +60,8 @@ void initialize_LIMITER(LIMITER *limiter, float sample_rate) {
 	limiter->makeup_property_mode = 1;
 	limiter->compress_out = 0.0f;
 	limiter->hard_knee = 0;
-	limiter_setRelease(limiter, 0.2f);
-	limiter_setAttack(limiter, 0.0f);
+	setRelease_LIMITER(limiter, 0.2f);
+	setAttack_LIMITER(limiter, 0.0f);
 }
 // based on MATLAB limiter
 
@@ -120,11 +134,25 @@ float limiter_gain_calc_smoothing(LIMITER *limiter, float xdb, float *xscOut, fl
 	return gs;
 }
 
-void limiter_setRelease(LIMITER *limiter, float release_time) {
-	limiter->release_time = release_time;
-	limiter->alphaR = EXP(-ln9 * limiter->sample_time / release_time);
+void setRelease_LIMITER(LIMITER *limit, float release_time) {
+	release_time = MIN_MAX(release_time, LIMITER_MINRELEASE_SEC, LIMITER_MAXRELEASE_SEC);
+	limit->release_time = release_time;
+	limit->alphaR = EXP(-ln9 * limit->sample_time / release_time);
 }
-void limiter_setAttack(LIMITER *limiter, float attack_time) {
-	limiter->attack_time = attack_time;
-	limiter->alphaA = EXP(-ln9 * limiter->sample_time / attack_time);
+void setAttack_LIMITER(LIMITER *limit, float attack_time) {
+	attack_time = MIN_MAX(attack_time, LIMITER_MINATTACK_SEC, LIMITER_MAXATTACK_SEC);
+	limit->attack_time = attack_time;
+	limit->alphaA = EXP(-ln9 * limit->sample_time / attack_time);
+}
+void setTreshold_LIMITER(LIMITER * limit, float threshold_db) {
+	threshold_db = MIN_MAX(threshold_db, LIMITER_MINTHRESHOLD_DB, LIMITER_MAXTHRESHOLD_DB);
+	limit->threshold = threshold_db;
+}
+void setKneeWidth_LIMITER(LIMITER * limit, float knee_width) {
+	knee_width = MIN_MAX(knee_width, LIMITER_MINKNEEWIDTH, LIMITER_MAXKNEEWIDTH);
+	limit->knee = knee_width;
+}
+void setMakeupGainDB_LIMITER(LIMITER * limit, float makeup_gain) {
+	makeup_gain = MIN_MAX(makeup_gain, LIMITER_MINMAKEUPGAIN_DB , LIMITER_MAXMAKEUPGAIN_DB);
+	limit->makeup_gain = makeup_gain;
 }
