@@ -14,7 +14,7 @@ Effects include the following
 - Dynamic Range Controls
     - Noise Gate*
     - Compressor
-    - Expander  (work in progress)
+    - Expander
     - Limiter
 - Reverberation    
     - Schroeder Reverb
