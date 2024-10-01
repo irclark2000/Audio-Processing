@@ -19,7 +19,7 @@ void Tremolo_Init(TREMOLO * trem, float depth, float tremFreq, float sampleRate)
 	trem->tCount = 0.0;
 	trem->tDir = 1.0;
 #endif
-	initialize_LOWFREQOSC(&(trem->osc), 1.0f, tremFreq, sampleRate);
+	initialize_LOWFREQOSC(&(trem->osc), 1.0f, 0.0f, 30, tremFreq, 0.01f, 4000.0f, sampleRate);
 }
 
 void Tremolo_SetDepth(TREMOLO * trem, float depth) {

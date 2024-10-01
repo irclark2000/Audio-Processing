@@ -15,12 +15,18 @@ typedef struct {
 	float sampleRate;
 	float countLimit;
 	float amplitude;
+	float minFreq;
+	float maxFreq;
+	float minAmp;
+	float maxAmp;
+
 	float counter;
 	float direction;
 	float out;
 } LOWFREQOSC;
 
-void initialize_LOWFREQOSC (LOWFREQOSC *osc, float amplitude, float osc_freq, float sampleFreq);
+void initialize_LOWFREQOSC (LOWFREQOSC *osc, float amplitude, float minAmp,
+		float maxAmp, float osc_freq, float minFreq, float maxFreq, float sampleFreq);
 void setFreq_LOWFREQOSC(LOWFREQOSC *osc, float osc_freq);
 void setAmplitude_LOWFREQOSC(LOWFREQOSC *osc, float amplitude);
 void update_LOWFREQOSC(LOWFREQOSC *osc);

@@ -7,21 +7,31 @@
  */
 
 #include <components/low_frequency_oscillator.h>
+#include "effects_macros.h"
 
-void initialize_LOWFREQOSC (LOWFREQOSC *osc, float amplitude, float osc_freq, float sampleFreq) {
-	osc->amplitude = amplitude;
+void initialize_LOWFREQOSC (LOWFREQOSC *osc, float amplitude, float minAmp,
+		float maxAmp, float osc_freq, float minFreq, float maxFreq, float sampleFreq) {
 	osc->sampleRate = sampleFreq;
 	osc->direction = 1.0f;
 	osc->counter = 0.0f;
+	osc->minAmp = minAmp;
+	osc->maxAmp = maxAmp;
+	if (minFreq < 0.01f) {
+		minFreq = 0.01f;
+	}
+	if (maxFreq < 0.0f) {
+		maxFreq = 0.5f * sampleFreq;
+	}
 	setFreq_LOWFREQOSC(osc, osc_freq);
+	setAmplitude_LOWFREQOSC(osc, amplitude);
 }
 
 void setFreq_LOWFREQOSC(LOWFREQOSC *osc, float osc_freq) {
-	if (osc_freq <= 0.0f) {
-		osc_freq = 1.0f;
+	if (osc_freq <= osc->minFreq) {
+		osc_freq = osc->minFreq;
 	}
-	else if (osc_freq > 0.5f * osc->sampleRate) {
-		osc_freq = 0.5f * osc->sampleRate;
+	else if (osc_freq > osc->maxFreq) {
+		osc_freq = osc->maxFreq;
 	}
 	osc->countLimit = 0.25f * (osc->sampleRate / osc_freq);
 
@@ -34,6 +44,7 @@ void setFreq_LOWFREQOSC(LOWFREQOSC *osc, float osc_freq) {
 	}
 }
 void setAmplitude_LOWFREQOSC(LOWFREQOSC *osc, float amplitude) {
+	amplitude = MIN_MAX(amplitude, osc->minFreq, osc->maxFreq);
 	osc->amplitude = amplitude;
 }
 
