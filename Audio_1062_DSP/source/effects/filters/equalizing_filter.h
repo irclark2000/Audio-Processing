@@ -23,15 +23,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define EQUALIZING_FILTER_H_
 
 #include <stdint.h>
-
-typedef struct {
-	float a0;
-	float a1;
-	float a2;
-	float b0;
-	float b1;
-	float b2;
-} FILTERCOEF;
+#include "filter_coefficients.h"
 
 typedef struct {
 
@@ -44,7 +36,7 @@ typedef struct {
 	float gain;
 	float Q;
 
-	FILTERCOEF coefficients;
+	FILTER_COEF coefficients;
 
 } EQFILTER;
 
