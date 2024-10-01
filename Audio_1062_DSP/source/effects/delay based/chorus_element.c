@@ -15,7 +15,7 @@ void initialize_CHORUSELEMENT(CHORUSELEMENT * cEl, float * buf, uint32_t buf_siz
 		CELEMENTDATA cData, float sampleRate) {
 	initialize_variable_delay (&(cEl->vDelay), buf, buf_size, sampleRate);
 	setBaseDelayMSec_CHORUSELEMENT(cEl, delayMSec);
-	initialize_LOWFREQOSC (&(cEl->lfo), cData.depth, cData.freq, sampleRate);
+	initialize_LOWFREQOSC (&(cEl->lfo), cData.depth, 0.0f, 30.0f, cData.freq, 0.01f, -1.0f, sampleRate);
 }
 
 void setBaseDelayMSec_CHORUSELEMENT(CHORUSELEMENT * cEl, float delayMSec) {
