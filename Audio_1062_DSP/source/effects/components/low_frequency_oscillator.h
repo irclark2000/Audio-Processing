@@ -19,6 +19,7 @@ typedef struct {
 	float maxFreq;
 	float minAmp;
 	float maxAmp;
+	float phaseAngle;
 
 	float counter;
 	float direction;
@@ -26,7 +27,7 @@ typedef struct {
 } LOWFREQOSC;
 
 void initialize_LOWFREQOSC (LOWFREQOSC *osc, float amplitude, float minAmp,
-		float maxAmp, float osc_freq, float minFreq, float maxFreq, float sampleFreq);
+		float maxAmp, float osc_freq, float minFreq, float maxFreq, float phaseAngle, float sampleFreq);
 void setFreq_LOWFREQOSC(LOWFREQOSC *osc, float osc_freq);
 void setAmplitude_LOWFREQOSC(LOWFREQOSC *osc, float amplitude);
 void update_LOWFREQOSC(LOWFREQOSC *osc);

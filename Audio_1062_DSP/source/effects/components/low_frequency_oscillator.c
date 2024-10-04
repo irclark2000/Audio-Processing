@@ -9,8 +9,11 @@
 #include <components/low_frequency_oscillator.h>
 #include "effects_macros.h"
 
-void initialize_LOWFREQOSC (LOWFREQOSC *osc, float amplitude, float minAmp,
-		float maxAmp, float osc_freq, float minFreq, float maxFreq, float sampleFreq) {
+void setPhase_LOWFREQOSC(LOWFREQOSC *osc, float phaseAngle);
+
+void initialize_LOWFREQOSC(LOWFREQOSC *osc, float amplitude, float minAmp,
+		float maxAmp, float osc_freq, float minFreq, float maxFreq,
+		float phaseAngle, float sampleFreq) {
 	osc->sampleRate = sampleFreq;
 	osc->direction = 1.0f;
 	osc->counter = 0.0f;
@@ -22,15 +25,17 @@ void initialize_LOWFREQOSC (LOWFREQOSC *osc, float amplitude, float minAmp,
 	if (maxFreq < 0.0f) {
 		maxFreq = 0.5f * sampleFreq;
 	}
+	osc->minFreq = minFreq;
+	osc->maxFreq = maxFreq;
 	setFreq_LOWFREQOSC(osc, osc_freq);
+	setPhase_LOWFREQOSC(osc, phaseAngle);
 	setAmplitude_LOWFREQOSC(osc, amplitude);
 }
 
 void setFreq_LOWFREQOSC(LOWFREQOSC *osc, float osc_freq) {
 	if (osc_freq <= osc->minFreq) {
 		osc_freq = osc->minFreq;
-	}
-	else if (osc_freq > osc->maxFreq) {
+	} else if (osc_freq > osc->maxFreq) {
 		osc_freq = osc->maxFreq;
 	}
 	osc->countLimit = 0.25f * (osc->sampleRate / osc_freq);
@@ -38,13 +43,12 @@ void setFreq_LOWFREQOSC(LOWFREQOSC *osc, float osc_freq) {
 	// may have to adjust the count to keep it in bounds
 	if (osc->counter > osc->countLimit) {
 		osc->counter = osc->countLimit;
-	}
-	else if (osc->counter < -osc->countLimit)  {
+	} else if (osc->counter < -osc->countLimit) {
 		osc->counter = -osc->countLimit;
 	}
 }
 void setAmplitude_LOWFREQOSC(LOWFREQOSC *osc, float amplitude) {
-	amplitude = MIN_MAX(amplitude, osc->minFreq, osc->maxFreq);
+	amplitude = MIN_MAX(amplitude, osc->minAmp, osc->maxAmp);
 	osc->amplitude = amplitude;
 }
 
@@ -62,4 +66,22 @@ void update_LOWFREQOSC(LOWFREQOSC *osc) {
 	// bump the count
 	osc->counter += osc->direction;
 }
-
+// must set frequency first not useful if frequency is varied...
+void setPhase_LOWFREQOSC(LOWFREQOSC *osc, float phaseAngle) {
+    while (phaseAngle >= 180.0f) phaseAngle -= 360;
+    while (phaseAngle <= -180.0f) phaseAngle += 360;
+	phaseAngle = MIN_MAX(phaseAngle, -180.0f, 180.0f);
+	if (phaseAngle >= 90.0f) {
+		osc->direction = -1.0f;
+		osc->counter = 1.0f + (90.0f - phaseAngle) / 90.0f;
+	} else if (phaseAngle >= 0.0f) {
+		osc->direction = 1.0f;
+		osc->counter = (phaseAngle / 90.0f);
+	} else if (phaseAngle >= -90.0f) {
+		osc->direction = 1.0f;
+		osc->counter = -1.0f  + (phaseAngle + 90.0) / 90.0f;
+	} else { // -180 to -90
+		osc->direction = -1.0f;
+		osc->counter = -(phaseAngle + 180.0) / 90.0f;
+	}
+}
