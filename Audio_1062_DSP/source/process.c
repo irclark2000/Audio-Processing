@@ -5,20 +5,19 @@
  *      Author: isaac
  */
 /*
-Copyright 2022 Isaac R. Clark, Jr.
+ Copyright 2022 Isaac R. Clark, Jr.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
-files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy,
-modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
-is furnished to do so, subject to the following conditions:
+ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ is furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
-OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-
+ The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 #include "effects/pitch_shift.h"
 #include "effects/tremolo.h"
@@ -29,6 +28,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "delay based/echo.h"
 #include "delay based/flanger.h"
 #include "delay based/chorus.h"
+#include "delay based/wah_wah.h"
 #include "dynamic range control/expander.h"
 #include "dynamic range control/compressor.h"
 #include "dynamic range control/limiter.h"
@@ -37,12 +37,13 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "random_generator.h"
 #include "overdrive.h"
 #include "dynamic range control/noise_gate.h"
+#include "components/variable_bandpass_filter.h"
+#include "components/state_variable_filter.h"
 #include "fast_math.h"
 
 //#include "overdrive.h"
 
 #include <cr_section_macros.h>
-
 
 #ifndef PHASEVOCODER
 #define PHASEVOCODER 0
@@ -53,9 +54,12 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define TESTING_FLANGER 0
 #define TESTING_ECHO 0
 #define TESTING_EQUALIZER 0
+#define TESTING_STATE_VARIABLE_FILTER 1
+#define TESTING_WAH_WAH 0
+#define TESTING_VARIABLE_BANDPASS 0
 #define TESTING_PITCH_CHANGE 0
 #define TESTING_LIMITER 0
-#define TESTING_EXPANDER 1
+#define TESTING_EXPANDER 0
 #define TESTING_COMPRESSOR 0
 #define TESTING_NOISEGATE 0
 #define TESTING_OVERDRIVE 0
@@ -124,6 +128,16 @@ LIMITER limiter;
 #if TESTING_COMPRESSOR
 	COMPRESSOR compressor;
 #endif
+#if TESTING_VARIABLE_BANDPASS
+VARBANDPASS variable_band_pass;
+#endif
+#if TESTING_WAH_WAH
+WAHWAH wah_wah;
+#endif
+#if TESTING_STATE_VARIABLE_FILTER
+SVFILTER svf;
+#endif
+
 
 void initializeEffects(float sampleRate) {
 #if TESTING_TREMOLO
@@ -161,6 +175,12 @@ void initializeEffects(float sampleRate) {
 	EQFILTER_initialize(&eqf2, 12000.0f, sampleRate, 1.0f, 200.0f);
 	EQFILTER_initialize(&eqf3, 500.0f, sampleRate, 1.0f, 200.0f);
 #endif
+#if TESTING_VARIABLE_BANDPASS
+	// 100 Hz to 16000 Hz and Q is equal to 3.
+	initialize_VARBANDPASS(&variable_band_pass, 10000.0f, 6.0f, sampleRate, 1);
+	intitialize_random_number_generator();
+#endif
+
 #if TESTING_PHASE_VOCODER
 	intializeFFT();
 #endif
@@ -195,22 +215,30 @@ void initializeEffects(float sampleRate) {
 				0.9726137102735608f);
 		initPitchShift(&ps, &hp, pitch_buf, PITCH_BUFFER_SIZE, 0.25f, 1.0f);
 #endif
+#if TESTING_WAH_WAH
+		initialize_WAHWAH(&wah_wah, 2000.0f, 5000.0f, 3000.0f, 0.05, 0.5, sampleRate);
+#endif
+#if TESTING_STATE_VARIABLE_FILTER
+		intitialize_random_number_generator();
+		intialize_SVFILTER (&svf, 100.0f, 0.05, sampleRate);
+#endif
 
 }
 // size is the number of bytes in a half buffer but we will be using
 // 16 bit integer values so two bytes per sample  half left and half right
-void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRate) {
-	int16_t * bufIn;    // use 16 bit pointers to match the word size
-	int16_t * bufOut;
+void processHalf(void *bufferIn, void *bufferOut, uint16_t size,
+		float sampleRate) {
+	int16_t *bufIn;    // use 16 bit pointers to match the word size
+	int16_t *bufOut;
 	static float leftIn, rightIn;
 	static float leftOut, rightOut;
 
-	bufIn = (int16_t *) bufferIn;
-	bufOut = (int16_t *) bufferOut;
+	bufIn = (int16_t*) bufferIn;
+	bufOut = (int16_t*) bufferOut;
 
-	for (int i=0; i < size/2; i+= 2) {
-		leftIn = bufIn[i] * INT16_TO_FLOAT ;
-		rightIn = bufIn[i+1] * INT16_TO_FLOAT;
+	for (int i = 0; i < size / 2; i += 2) {
+		leftIn = bufIn[i] * INT16_TO_FLOAT;
+		rightIn = bufIn[i + 1] * INT16_TO_FLOAT;
 #if TESTING_NOISE_GENERATOR
 		rightIn = 0.05 * get_random_float(); // make white noise
 #endif
@@ -265,33 +293,47 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size, float sampleRat
 #if TESTING_COMPRESSOR
 	leftOut = update_COMPRESSOR(&compressor,  rightIn);
 #endif
-
+#if TESTING_VARIABLE_BANDPASS
+		// 100 Hz to 16000 Hz and Q is equal to 3.
+		rightIn = 0.05 * get_random_float();
+		leftOut = update_VARBANDPASS(&variable_band_pass, rightIn);
+		//leftOut = rightIn;
+#endif
+#if TESTING_WAH_WAH
+		leftOut = apply_WAHWAH (&wah_wah, rightIn);
+#endif
+#if TESTING_STATE_VARIABLE_FILTER
+		rightIn = 0.05 * get_random_float();
+		apply_SVFILTER (&svf, rightIn);
+		leftOut = svf.ylOut;
+#endif
 		rightOut = leftOut;
-		bufOut[i]   = (int) (leftOut * 32768.0f);
-		bufOut[i+1] = (int) (rightOut * 32768.0f);
+		bufOut[i] = (int) (leftOut * 32768.0f);
+		bufOut[i + 1] = (int) (rightOut * 32768.0f);
 #elif TESTING_PHASE_VOCODER
 		transferInFloat_FFTCIRCBUFFER(&FFTcBufIn, rightIn);
 #endif
 	} // for loop
-	//memcpy(bufOut, bufIn, byteCount);
+	  //memcpy(bufOut, bufIn, byteCount);
 #if TESTING_PHASE_VOCODER
 	phaseVocoder (bufferOut, size);
 #endif
 }
 
-const static float inverse_time = 1.0f / 799.0f;
-const static float inverse_time_15sec = 1.0f / (15000 - 1);
+const static float inverse_time = 1.0f / 799.0f;  // 8 second sweep
+const static float inverse_time_15sec = 1.0f / (1500 - 1); // 15 second sweep
 #define USE_FAST_APPROX 1
+
 // apply automatic variation to a parameter
 // update_counter increments at approximately 100 counts per second
-void test_PROCESS (uint32_t update_counter) {
+void test_PROCESS(uint32_t update_counter) {
 	float parameter = (update_counter % 800) * inverse_time;
 	//delay parameter over about 8 seconds
 //	setDelayMSec_ECHO (&echo, getMaxDelayMS_ECHO(&echo) * parameter);
 	//setFeedback_level_ECHO (&echo, 0.95 * parameter);
 
 #if TESTING_EXPANDER
-	float parameter2 = (update_counter % 15000) * inverse_time_15sec;
+	float parameter2 = (update_counter % 1500) * inverse_time_15sec;
 //	setTreshold_EXPANDER(&expander, -140.0f + 85.0f * parameter2);
 #endif
 #if TESTING_FLANGER
@@ -311,5 +353,26 @@ void test_PROCESS (uint32_t update_counter) {
 	EQFILTER_setCenterFrequency(&eqf1, freq1, 200.0f);
 	EQFILTER_setCenterFrequency(&eqf2, freq1, 200.0f);
 	//EQFILTER_setGain (&eqf0, 10.0 * parameter);
+#endif
+#if TESTING_STATE_VARIABLE_FILTER
+#if USE_FAST_APPROX
+	float freq = 100 * fastPow2(6.90f * (parameter));
+#else
+	float freq = 100 * powf(2.0f, 6.90f * (parameter));
+#endif
+	// 100 Hz to 16000 Hz and Q is equal to 3.
+	// successful test of bandpass, low pass, and high pass filters!!
+	set_frequency_damping_SVFILER(&svf, freq, -1.0f);
+#endif
+
+#if TESTING_VARIABLE_BANDPASS
+#if USE_FAST_APPROX
+	float freq = 100 * fastPow2(6.90f * (parameter));
+#else
+	float freq = 100 * powf(2.0f, 6.90f * (parameter));
+#endif
+	// 100 Hz to 16000 Hz and Q is equal to 3.
+	// this bandpass has yet to work :(
+	setCenterFrequency_VARBANDPASS(&variable_band_pass, freq, 6.0f);
 #endif
 }
