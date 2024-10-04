@@ -29,6 +29,7 @@ Effects include the following
     - Mixer
     - Variable Delay
     - Circular Buffer
+    - State Variable Filter
     
 
 *The code for the Tremolo, Noise Gate, and Overdrive effects is based on code provided by 
