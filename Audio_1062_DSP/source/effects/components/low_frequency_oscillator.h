@@ -9,16 +9,15 @@
 #define EFFECTS_COMPONENTS_LOW_FREQUENCY_OSCILLATOR_H_
 
 #include <stdint.h>
+#include "components.h"
 // generate low frequency triangle wave
 
 typedef struct {
 	float sampleRate;
 	float countLimit;
 	float amplitude;
-	float minFreq;
-	float maxFreq;
-	float minAmp;
-	float maxAmp;
+	PARAMETER_LIMITS amplitude_limits;
+	PARAMETER_LIMITS frequency_limits;
 	float phaseAngle;
 
 	float counter;
