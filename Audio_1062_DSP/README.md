@@ -6,6 +6,8 @@ Effects include the following
     - Echo
     - Flanger (alpha)
     - Phaser  (alpha)
+    - Vibrato
+    - Chorus (alpha)
 - Filters
     - Peaking EQ Filter
     - Comb Filter
@@ -16,10 +18,10 @@ Effects include the following
     - Compressor
     - Expander
     - Limiter
-- Reverberation    
+- Reverberation
     - Schroeder Reverb
     - Freeverb
-- Miscellaneous    
+- Miscellaneous
     - Pitch Shifting
     - Tremolo*
     - Overdrive*
@@ -27,10 +29,12 @@ Effects include the following
 - Effects Components
     - Low Frequency Oscillator
     - Mixer
-    - Variable Delay
+    - Variable Delay (fractional)
     - Circular Buffer
     - State Variable Filter
+    - Variable Band Pass/Stop Filter
     
 
 *The code for the Tremolo, Noise Gate, and Overdrive effects is based on code provided by 
 Philip Salmony on his Phil's Lab YouTube channel, and is provided with his permission.
+
