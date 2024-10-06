@@ -56,3 +56,30 @@ uint8_t isINF(float x) {
 		return 0;
 	}
 }
+
+float fastSin(float x) {
+	float sinApprox;
+	while (x < -3.14159265f) x += 6.28318531f;
+	while (x >  3.14159265f) x -= 6.28318531f;
+
+	if ( x < 0 )
+	{
+		sinApprox = x * ( 1.27323954f + 0.405284735f * x );
+
+		if ( sinApprox < 0 )
+			sinApprox = sinApprox * ( -0.255f * ( sinApprox + 1 ) + 1 );
+		else
+			sinApprox = sinApprox * ( 0.255f * ( sinApprox - 1 ) + 1 );
+	}
+	else
+	{
+		sinApprox = x * ( 1.27323954f - 0.405284735f * x );
+
+		if ( sinApprox < 0 )
+			sinApprox = sinApprox * ( -0.255f * ( sinApprox + 1 ) + 1 );
+		else
+			sinApprox = sinApprox * ( 0.255f * ( sinApprox - 1 ) + 1 );
+	}
+
+	return sinApprox;
+}

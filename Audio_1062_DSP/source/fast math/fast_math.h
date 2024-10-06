@@ -20,6 +20,7 @@
 
 float fastLN(float x);
 float fastExp(float x);
+float fastSin(float x);
 uint8_t isINF(float x);
 #define fastPow10(x) fastExp((ln10 * (x)))
 #define fastLog10(x) (logE * fastLN(x))
