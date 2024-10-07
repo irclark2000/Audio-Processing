@@ -5,7 +5,6 @@ Effects include the following
 - Delay Based Effects
     - Echo
     - Flanger (alpha)
-    - Phaser  (alpha)
     - Vibrato
     - Chorus (alpha)
 - Filters
@@ -13,6 +12,7 @@ Effects include the following
     - Comb Filter
     - All Pass
     - Low Pass
+    - Second Order All Pass Filter
 - Dynamic Range Controls
     - Noise Gate*
     - Compressor
@@ -21,6 +21,8 @@ Effects include the following
 - Reverberation
     - Schroeder Reverb
     - Freeverb
+- Delay Base Effects
+    - Phaser (under development)
 - Miscellaneous
     - Pitch Shifting
     - Tremolo*
@@ -33,6 +35,7 @@ Effects include the following
     - Circular Buffer
     - State Variable Filter
     - Variable Band Pass/Stop Filter
+    - First Order All Pass Filter
     
 
 *The code for the Tremolo, Noise Gate, and Overdrive effects is based on code provided by 
