@@ -32,6 +32,8 @@ void initialize_SECONDALLPASSFILTER(SECONDALLPASSFILTER *apf, float centerFreq,
 	apf->sampleTime = 1.0/sampleRate;
 	apf->sampleRate = sampleRate;
 	setCenterFrequency_SECONDALLPASSFILTER(apf, centerFreq, Q);
+	apf->bufIn[2] = apf->bufIn[1] = apf->bufIn[0] = 0.0f;
+	apf->bufOut[2] = apf->bufOut[1] = apf->bufOut[0] = 0.0f;
 }
 
 void calculateCoefficients_SECONDALLPASSFILTER (SECONDALLPASSFILTER *apf) {
