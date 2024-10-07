@@ -11,7 +11,7 @@
 
 void initialize_TREMOLO(TREMOLO * trem, float depth, float tremFreq, float sampleRate) {
 	setDepth_TREMOLO (trem, depth);
-	initialize_LOWFREQOSC(&(trem->osc), 1.0f, 0.0f, 30, tremFreq, 0.01f, 4000.0f, 0.0f, sampleRate);
+	initialize_LOWFREQOSC(&(trem->osc), 1.0f, 0.0f, 30, tremFreq, 0.01f, 4000.0f, 0.0f, 0, sampleRate);
 }
 
 void setDepth_TREMOLO(TREMOLO * trem, float depth) {

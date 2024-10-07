@@ -29,7 +29,7 @@ void initialize_VIBRATO (VIBRATO * vb, float *buf, float buf_size,
 	vb->delay_limitsMsec.minimum = 1000.0f / sampleRate;
 	vb->delay_limitsMsec.maximum = buf_size * 1000.0f / sampleRate;
 	vb->baseDelayMSec = delayMSec;
-  initialize_LOWFREQOSC (&(vb->lfo), variation_delayMSec, 0.1, 100, base_vibrato_frequency, 0.01f, 100.0f, 0.0f, sampleRate);
+  initialize_LOWFREQOSC (&(vb->lfo), variation_delayMSec, 0.1, 100, base_vibrato_frequency, 0.01f, 100.0f, 0.0f, 0, sampleRate);
   initialize_MIXER (&(vb->mixer), 0.5);
   initialize_variable_delay (&(vb->vDelay), buf, buf_size, sampleRate);
 }
