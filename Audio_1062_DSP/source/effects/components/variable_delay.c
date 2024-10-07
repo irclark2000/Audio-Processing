@@ -35,7 +35,7 @@ void initialize_variable_delay (VARDELAY * vDelay, float *buf, float buf_size, f
  *  gets a delayed sample and puts the input into the buffer.
  *  uses linear interpolation to fetch non integer delays
  *  consider using more advanced interpolation
- *  adds feedback if any
+ *  adds feedback (if any) to stored input
  */
 
 float getDelayedSample_VARDELAY(VARDELAY *vDelay, float input, float fb_level) {

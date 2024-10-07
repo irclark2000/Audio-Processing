@@ -3,6 +3,8 @@
  *
  *  Created on: Oct 1, 2024
  *      Author: isaac
+ *      Uses a second order all pass to provide either band pass or band stop filter
+ *      with setable Q and center frequency
  */
 /*
 Copyright 2024 Isaac R. Clark, Jr.
