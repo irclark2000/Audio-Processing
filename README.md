@@ -21,7 +21,7 @@ Effects include the following
 - Reverberation
     - Schroeder Reverb
     - Freeverb
-- Delay Base Effects
+- Variable Filter Based Effects
     - Phaser (under development)
 - Miscellaneous
     - Pitch Shifting
