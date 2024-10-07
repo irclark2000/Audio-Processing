@@ -41,10 +41,10 @@ typedef struct {
 	int size;
 	float sum;
 	float Rd0, Rd1;
-	HIGHPASS *hp;
+	HIGHPASS hp;
 }PITCHSHIFT;
 
-void initPitchShift(PITCHSHIFT *ps, HIGHPASS *hp, float *buf, int size, float shift, float crossfade);
+void initPitchShift(PITCHSHIFT *ps, float *buf, int size, float shift, float crossfade);
 float applyPitchShift(PITCHSHIFT *ps, float input);
 void setPitchShift(PITCHSHIFT *ps, float potentiometer);
 

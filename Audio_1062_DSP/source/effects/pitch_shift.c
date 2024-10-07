@@ -22,21 +22,31 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cr_section_macros.h>
 #include "pitch_shift.h"
 
+// as written, we can only have one instance of pitch shift.
+// the buffer would have to be moved outside.
+
 __NOINIT(RAM3) float pitch_buf[PITCH_BUFFER_SIZE];
 static int round (float value);
+HIGHPASS hp;
 
-void initPitchShift(PITCHSHIFT *ps, HIGHPASS *hp, float *buf, int size, float shift, float crossfade) {
+
+void initPitchShift(PITCHSHIFT *ps, float *buf, int size, float shift, float crossfade) {
 	ps->WrtPtr = 0;
 	ps->Rd_p = 0.0f;
 	ps->Shift = shift;
 	ps->CrossFade = crossfade;
 	ps->size = size;
 	ps->buffer = buf;
-	ps->hp = hp;
+	initHighPass(&hp,
+				0.9862117951198142f,
+				-1.9724235902396283f,
+				0.9862117951198142f,
+				-1.972233470205696f,
+				0.9726137102735608f);
 }
 
 float applyPitchShift(PITCHSHIFT *ps, float input) {
-	ps->sum = applyHighPass(ps->hp, input);
+	ps->sum = applyHighPass(&(ps->hp), input);
 	ps->buffer[ps->WrtPtr] = ps->sum;
 
 	ps->RdPtr1 = round(ps->Rd_p);
