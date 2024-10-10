@@ -20,57 +20,55 @@
  */
 
 #include "flanger.h"
+#include "components/effects_macros.h"
 
-#define MAX_FLANGER_DEPTH 30.0f
-#define MAX_FLANGER_LFO_FREQ 0.5f
+#define MAX_FLANGER_DEPTH_MSEC 30.0f
+#define MAX_FLANGER_LFO_FREQ 5.0f
 
 void setDelayMSec_FLANGER(FLANGER *flanger, float delayMSec);
-static float tmp_out;  // use to avoid variable allocations inside functions
 
 void intialize_FLANGER (FLANGER *flanger, float *buf, uint32_t buf_size,
 		float delayMSec, float lfo_freq, float lfo_depth,
 		float feedback_level, float wet_dry, float sampleRate) {
 	setFeedback_level_FLANGER(flanger, feedback_level);
 	initialize_variable_delay (&(flanger->vDelay), buf, buf_size, sampleRate);
-	//setDelayMSec_FLANGER(flanger, delayMSec);
-	setBaseDelayMSec(flanger, delayMSec);
+	setBaseDelayMSec_FLANGER(flanger, delayMSec);
 	initialize_MIXER (&(flanger->mixer), wet_dry);
-	initialize_LOWFREQOSC (&(flanger->lfo), lfo_depth, lfo_freq, sampleRate);
+	initialize_LOWFREQOSC (&(flanger->lfo),
+			lfo_depth, 0.0f, 30.0f,
+			lfo_freq, 0.01f, 3.0f, 0.0f,
+			1,  // sinusoidal output
+			sampleRate);
 }
 
-void setBaseDelayMSec(FLANGER *flanger, float delayMSec) {
+void setBaseDelayMSec_FLANGER(FLANGER *flanger, float delayMSec) {
 	flanger->baseDelay_MSec = delayMSec;
-	setDelayMSec_FLANGER(flanger, delayMSec);
 }
 void setDelayMSec_FLANGER(FLANGER *flanger, float delayMSec) {
 	setDelay_VARDELAY((&flanger->vDelay), delayMSec / 1000.0f);
 }
 void setFeedback_level_FLANGER (FLANGER *flanger, float level) {
-	tmp_out = (level < 0.0f) ? 0.0f : (level > 1.0f) ? 1.0f : level;
-	flanger->feedback_level = tmp_out;
+	flanger->feedback_level = MIN_MAX(level, 0.0f, 0.98f);
 }
 void setLFO_Frequency_FLANGER (FLANGER *flanger, float lfo_freq) {
-	tmp_out = (lfo_freq < 0.01) ? 0.01 : (lfo_freq > MAX_FLANGER_LFO_FREQ) ? MAX_FLANGER_LFO_FREQ : lfo_freq;
-	setFreq_LOWFREQOSC(&(flanger->lfo), tmp_out);
+	lfo_freq = MIN_MAX(lfo_freq, 0.01f, MAX_FLANGER_LFO_FREQ);
+	setFreq_LOWFREQOSC(&(flanger->lfo), lfo_freq);
 }
 
 void setLFO_Depth_FLANGER (FLANGER *flanger, float lfo_depth) {
-	tmp_out = (lfo_depth < 0.0f) ? 0.0 : (lfo_depth > MAX_FLANGER_DEPTH) ? MAX_FLANGER_DEPTH : lfo_depth;
-	setAmplitude_LOWFREQOSC(&(flanger->lfo), tmp_out);
+	lfo_depth = MIN_MAX (lfo_depth, 0.0f, MAX_FLANGER_DEPTH_MSEC);
+	setAmplitude_LOWFREQOSC(&(flanger->lfo), lfo_depth);
 }
 void setWetDry_FLANGER (FLANGER *flanger, float wet_dry) {
 	setWetDry_MIXER (&(flanger->mixer), wet_dry);
 }
 static float var_MSec;
-static float wet;
 float update_FLANGER (FLANGER *flanger, float input) {
 	update_LOWFREQOSC(&(flanger->lfo));
-	var_MSec = (flanger->lfo.amplitude + flanger->lfo.out / 2000.0f);
-
+	var_MSec = (flanger->lfo.amplitude + flanger->lfo.out) / 2.0f;
 	setDelayMSec_FLANGER(flanger, var_MSec + flanger->baseDelay_MSec);
-
-	wet = getDelayedSample_VARDELAY(&(flanger->vDelay), input, flanger->feedback_level);
-	flanger->out = applyWetDry_MIXER (&(flanger->mixer), wet, input);
+	flanger->out = getDelayedSample_VARDELAY(&(flanger->vDelay), input, flanger->feedback_level);
+	flanger->out = applyWetDry_MIXER (&(flanger->mixer), flanger->out, input);
 
 	return flanger->out;
 }

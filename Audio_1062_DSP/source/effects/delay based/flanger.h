@@ -38,7 +38,7 @@ typedef struct {
 void intialize_FLANGER (FLANGER *flanger, float *buf, uint32_t buf_size,
 		float delayMSec, float lfo_freq, float lfo_depth,
 		float feedback_level, float wet_dry, float sampleRate);
-void setBaseDelayMSec(FLANGER *flanger, float delayMSec);
+void setBaseDelayMSec_FLANGER(FLANGER *flanger, float delayMSec);
 
 void setFeedback_level_FLANGER (FLANGER *flanger, float level);
 void setLFO_Frequency_FLANGER (FLANGER *flanger, float lfo_freq);
