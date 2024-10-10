@@ -40,6 +40,7 @@ void set_frequency_damping_SVFILER(SVFILTER *svf, float centerFreq, float dampin
 }
 
 void apply_SVFILTER (SVFILTER *svf, float input) {
+	// update the stored values
 	svf->yh[1] = svf->yh[0];
 	svf->yb[1] = svf->yb[0];
 	svf->yl[1] = svf->yl[0];
