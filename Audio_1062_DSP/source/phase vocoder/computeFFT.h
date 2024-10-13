@@ -32,6 +32,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "arm_const_structs.h"
 #include "audio_wm8960.h"
 #include "FFTCircBuffer.h"
+#include "process.h"
 
 #define FFT_LENGTH HALF_BUFFER_SIZE/4
 extern FFTCIRCBUFFER FFTcBufIn;
@@ -40,7 +41,7 @@ extern FFTCIRCBUFFER FFTcBufIn;
 extern "C" {
 #endif
 void intializeFFT(void);
-void phaseVocoder (void * bufferOut, uint16_t size);
+void phaseVocoder (void * bufferOut, uint16_t size, AUDIOFORMAT audioFmtIn, AUDIOFORMAT audioFmtOut);
 void computeFFT(void * bufferOut, uint16_t size);
 #if defined(__cplusplus)
 }

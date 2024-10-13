@@ -53,8 +53,10 @@ void intializeFFT(void) {
 	s_FFTPhase_current = g_FFTPhase1;
 	s_FFTPhase_previous = g_FFTPhase2;
 }
-
-void phaseVocoder (void * bufferOut, uint16_t size) {
+//FIXME: Only works with MONO in STEREO out
+// to fix we will need to make separate input buffers for stereo
+// and process them in parallel. Holding off for now
+void phaseVocoder (void * bufferOut, uint16_t size, AUDIOFORMAT audioFmtIn, AUDIOFORMAT audioFmtOut) {
 	while(transferOutWithHop_FFTCIRCBUFFER(&FFTcBufIn, g_FFTInput, HOP, WINDOW_LENGTH)) {
 		arm_rfft_fast_f32(&fft_instance, g_FFTInput, g_FFTOutput, 0);
 		// calculate magnitude and phase of FFT

@@ -29,6 +29,7 @@
 #include "delay based/flanger.h"
 #include "delay based/chorus.h"
 #include "delay based/wah_wah.h"
+#include "delay based/vibrato.h"
 #include "dynamic range control/expander.h"
 #include "dynamic range control/compressor.h"
 #include "dynamic range control/limiter.h"
@@ -54,9 +55,11 @@
 #define TESTING_FLANGER 0
 #define TESTING_ECHO 0
 #define TESTING_EQUALIZER 0
-#define TESTING_STATE_VARIABLE_FILTER 1
-#define TESTING_WAH_WAH 0
+#define TESTING_SECOND_ORDER_ALLPASS 0
+#define TESTING_STATE_VARIABLE_FILTER 0
 #define TESTING_VARIABLE_BANDPASS 0
+#define TESTING_WAH_WAH 0
+#define TESTING_VIBRATO 0
 #define TESTING_PITCH_CHANGE 0
 #define TESTING_LIMITER 0
 #define TESTING_EXPANDER 0
@@ -64,7 +67,7 @@
 #define TESTING_NOISEGATE 0
 #define TESTING_OVERDRIVE 0
 #define TESTING_TREMOLO 0
-#define TESTING_FREEVERB 0
+#define TESTING_FREEVERB 1
 #define TESTING_SCHROEDER 0
 #define TESTING_NOISE_GENERATOR 0
 #define TESTING_PHASE_VOCODER 0
@@ -100,7 +103,6 @@ CHORUSELEMENT cE1;
 TREMOLO trem;
 #endif
 #if TESTING_PITCH_CHANGE
-HIGHPASS hp;
 PITCHSHIFT ps;
 #endif
 #if TESTING_FREEVERB
@@ -137,11 +139,19 @@ WAHWAH wah_wah;
 #if TESTING_STATE_VARIABLE_FILTER
 SVFILTER svf;
 #endif
+#if TESTING_SECOND_ORDER_ALLPASS
+SECONDALLPASSFILTER soap;
+#endif
+#if TESTING_VIBRATO
+VIBRATO vibrato;
+#define VIBRATO_BUF_SIZE 1536
+__NOINIT(RAM3) static float vibrato_buf[VIBRATO_BUF_SIZE];
+#endif
 
 
 void initializeEffects(float sampleRate) {
 #if TESTING_TREMOLO
-	Tremolo_Init(&trem, 0.55f, 220.0f, sampleRate);
+	initialize_TREMOLO(&trem, 0.55f, 220.0f, sampleRate);
 #endif
 #if TESTING_ECHO
 	intialize_ECHO (&echo, echo_buf, ECHO_BUF_SIZE, 80.0f, 0.3f, 0.5f, 0.5f, sampleRate);
@@ -207,42 +217,61 @@ void initializeEffects(float sampleRate) {
 	initializeNoiseGate(&nGate, 10.0f, 1.0f, 10.0f, sampleRate, 0.1f);
 #endif
 #if TESTING_PITCH_CHANGE
-	initHighPass(&hp,
-				0.9862117951198142f,
-				-1.9724235902396283f,
-				0.9862117951198142f,
-				-1.972233470205696f,
-				0.9726137102735608f);
-		initPitchShift(&ps, &hp, pitch_buf, PITCH_BUFFER_SIZE, 0.25f, 1.0f);
+		initPitchShift(&ps, pitch_buf, PITCH_BUFFER_SIZE, 0.25f, 1.0f);
 #endif
 #if TESTING_WAH_WAH
-		initialize_WAHWAH(&wah_wah, 2000.0f, 5000.0f, 3000.0f, 0.05, 0.5, sampleRate);
+		initialize_WAHWAH(&wah_wah, 2000.0f, 3000.0f, 5000.0f, 0.05, 0.5, sampleRate);
 #endif
 #if TESTING_STATE_VARIABLE_FILTER
 		intitialize_random_number_generator();
 		intialize_SVFILTER (&svf, 100.0f, 0.05, sampleRate);
 #endif
+#if TESTING_SECOND_ORDER_ALLPASS
+		intitialize_random_number_generator();
+		initialize_SECONDALLPASSFILTER(&soap, 1000, 3, sampleRate);
+#endif
+
+#if TESTING_VIBRATO
+		initialize_VIBRATO (&vibrato, vibrato_buf, VIBRATO_BUF_SIZE,
+				10.0f, 5.0f, 5.0f, sampleRate);
+#endif
 
 }
 // size is the number of bytes in a half buffer but we will be using
 // 16 bit integer values so two bytes per sample  half left and half right
-void processHalf(void *bufferIn, void *bufferOut, uint16_t size,
+void processHalf(void *bufferIn, void *bufferOut,
+		uint32_t frameCount, AUDIOFORMAT audioFmt,
 		float sampleRate) {
 	int16_t *bufIn;    // use 16 bit pointers to match the word size
 	int16_t *bufOut;
 	static float leftIn, rightIn;
 	static float leftOut, rightOut;
-
+	uint8_t channelCount;
+	uint32_t loopCount;
+	if (audioFmt == MONO) {
+		channelCount = 1;
+	}else if (audioFmt == STEREO) {
+		channelCount = 2;
+	}
+	else {
+		return;
+	}
+    loopCount = frameCount / channelCount;
 	bufIn = (int16_t*) bufferIn;
 	bufOut = (int16_t*) bufferOut;
 
-	for (int i = 0; i < size / 2; i += 2) {
+	for (int i = 0; i < loopCount; i += channelCount) {
 		leftIn = bufIn[i] * INT16_TO_FLOAT;
-		rightIn = bufIn[i + 1] * INT16_TO_FLOAT;
+		if (audioFmt == MONO) {
+			rightIn = leftIn;
+		}
+		else {
+			rightIn = bufIn[i + 1] * INT16_TO_FLOAT;
+		}
 #if TESTING_NOISE_GENERATOR
 		rightIn = 0.05 * get_random_float(); // make white noise
 #endif
-		leftOut = rightIn;
+		leftOut = rightIn;   // no effect is applied
 #if !TESTING_PHASE_VOCODER
 #if TESTING_CHORUS
 		leftOut = update_CHORUS(&chorus, rightIn);
@@ -282,7 +311,7 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size,
 		leftOut = 3.0 * update_OVERDRIVE(&od, rightIn);
 #endif
 #if TESTING_TREMOLO
-		leftOut = 1.05f * Tremolo_Update(&trem, rightIn, true);
+		leftOut = 1.05f * update_TREMOLO(&trem, rightIn, true);
 #endif
 #if TESTING_LIMITER
 	leftOut = update_LIMITER(&limiter,  rightIn);
@@ -294,11 +323,18 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size,
 	leftOut = update_COMPRESSOR(&compressor,  rightIn);
 #endif
 #if TESTING_VARIABLE_BANDPASS
-		// 100 Hz to 16000 Hz and Q is equal to 3.
 		rightIn = 0.05 * get_random_float();
 		leftOut = update_VARBANDPASS(&variable_band_pass, rightIn);
 		//leftOut = rightIn;
 #endif
+#if TESTING_SECOND_ORDER_ALLPASS
+		rightIn = 0.05 * get_random_float();
+		update_SECONDALLPASSFILTER(&soap, rightIn);
+		// adding the input - allpass should produce band pass
+		// input + allpass = band stop
+		leftOut = rightIn - soap.apfOut;
+#endif
+
 #if TESTING_WAH_WAH
 		leftOut = apply_WAHWAH (&wah_wah, rightIn);
 #endif
@@ -307,16 +343,20 @@ void processHalf(void *bufferIn, void *bufferOut, uint16_t size,
 		apply_SVFILTER (&svf, rightIn);
 		leftOut = svf.ylOut;
 #endif
+#if TESTING_VIBRATO
+		leftOut = apply_VIBRATO (&vibrato, rightIn);
+#endif
+
 		rightOut = leftOut;
 		bufOut[i] = (int) (leftOut * 32768.0f);
 		bufOut[i + 1] = (int) (rightOut * 32768.0f);
 #elif TESTING_PHASE_VOCODER
-		transferInFloat_FFTCIRCBUFFER(&FFTcBufIn, rightIn);
+		transferInFloat_FFTCIRCBUFFER(&FFTcBufIn, rightIn); // mono input
 #endif
 	} // for loop
 	  //memcpy(bufOut, bufIn, byteCount);
 #if TESTING_PHASE_VOCODER
-	phaseVocoder (bufferOut, size);
+	phaseVocoder (bufferOut, loopCount, MONO, STEREO);
 #endif
 }
 
@@ -364,6 +404,13 @@ void test_PROCESS(uint32_t update_counter) {
 	// successful test of bandpass, low pass, and high pass filters!!
 	set_frequency_damping_SVFILER(&svf, freq, -1.0f);
 #endif
+#if TESTING_VIBRATO
+
+	setWetDry_VIBRATO (&vibrato, 0.6);
+	setBaseDelayMSec_VIBRATO (&vibrato, 5.0f);
+	setFreq_VIBRATO(&vibrato, 5.0f * parameter);
+
+#endif
 
 #if TESTING_VARIABLE_BANDPASS
 #if USE_FAST_APPROX
@@ -372,7 +419,20 @@ void test_PROCESS(uint32_t update_counter) {
 	float freq = 100 * powf(2.0f, 6.90f * (parameter));
 #endif
 	// 100 Hz to 16000 Hz and Q is equal to 3.
-	// this bandpass has yet to work :(
+	// this bandpass has yet to work correctly :(
+	// but the underlying allpass does work
 	setCenterFrequency_VARBANDPASS(&variable_band_pass, freq, 6.0f);
 #endif
+
+#if TESTING_SECOND_ORDER_ALLPASS
+#if USE_FAST_APPROX
+	float freq = 100 * fastPow2(6.90f * (parameter));
+#else
+	float freq = 100 * powf(2.0f, 6.90f * (parameter));
+#endif
+	// 100 Hz to 12000 Hz and Q is equal to 8.
+	// both bandpass and bandstop work perfectly!!
+	setCenterFrequency_SECONDALLPASSFILTER(&soap, freq, 8.0);
+#endif
+
 }

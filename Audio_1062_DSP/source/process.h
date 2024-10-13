@@ -21,7 +21,8 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #ifndef PROCESS_H_
 #define PROCESS_H_
-#include "fsl_common.h"
+//#include "fsl_common.h"
+#include <stdint.h>
 
 #if defined(__cplusplus)
 extern "C" {
@@ -30,9 +31,18 @@ extern "C" {
 #ifndef PHASEVOCODER
 #define PHASEVOCODER 0
 #endif
-void processHalf(void * bufIn, void * bufOut, uint16_t count, float sampleRate);
+typedef enum {
+	MONO = 1,
+	STEREO = 2,
+	UNKNOWN
+} AUDIOFORMAT;
+
+void processHalf(void *bufferIn, void *bufferOut,
+		uint32_t frameCount, AUDIOFORMAT audioFmt,
+		float sampleRate);
 void initializeEffects(float sampleRate);
 void test_PROCESS (uint32_t update_counter);
+
 #if defined(__cplusplus)
 }
 #endif
