@@ -32,9 +32,14 @@ void initialize_PHASER(PHASER * phaser, uint8_t filterCount, float breakFrequenc
 	for (phaser->index = 0; phaser->index < phaser->filterCount; phaser->index++) {
 		initialize_FIRSTORDERALLPASSFILTER(&(phaser->apf[phaser->index]), breakFrequency, sampleRate);
 	}
-	initialize_LOWFREQOSC (&(phaser->lfo), (minBreak - minBreak), (minBreak+ maxBreak)/ 2.0f,
-			maxBreak, sweepFrequency, minSweep, maxSweep,
-			0.0f, 1, sampleRate);
+	// FIXME;  Check Depth parameters
+	initialize_LOWFREQOSC (&(phaser->lfo),
+			(minBreak - minBreak), (minBreak+ maxBreak)/ 2.0f,
+			maxBreak,
+			sweepFrequency, minSweep, maxSweep,
+			0.0f,
+			1, // sinusoidal output
+			sampleRate);
 	initialize_MIXER (&(phaser->mixer), 0.5f);
 }
 
