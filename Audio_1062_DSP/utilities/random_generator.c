@@ -5,7 +5,7 @@
  *      Author: isaac
  */
 
-#include "random_generator.h"
+#include <random_generator.h>
 
 static uint32_t seed;
 
