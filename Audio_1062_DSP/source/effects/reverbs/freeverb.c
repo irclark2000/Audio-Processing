@@ -21,7 +21,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 #include <reverbs/freeverb.h>
-#include "fsl_common.h"
+#include <stdint.h>
 
 #define COMB0 1557 * 48 / 44
 #define COMB1 1617 * 48 / 44
