@@ -22,6 +22,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef EFFECTS_COMPONENTS_CIRCULAR_BUFFER_H_
 #define EFFECTS_COMPONENTS_CIRCULAR_BUFFER_H_
 #include <stdint.h>
+#include <string.h>
 
 typedef struct {
 	float *storage;

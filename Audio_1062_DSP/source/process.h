@@ -23,8 +23,9 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define PROCESS_H_
 //#include "fsl_common.h"
 #include <stdint.h>
+#if AUDIO_EFFECTS_TESTER
 #include "compatibility_macros/compatibility.h"
-
+#endif
 #if defined(__cplusplus)
 extern "C" {
 #endif

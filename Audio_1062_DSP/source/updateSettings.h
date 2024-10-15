@@ -21,8 +21,12 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #ifndef UPDATESETTINGS_H_
 #define UPDATESETTINGS_H_
-
+#if AUDIO_EFFECTS_TESTER
+#include "compatibility_macros/compatibility.h"
+#else
 #include "potentiometer.h"
+#endif
+
 extern volatile float g_gain;
 void updateSettings(void);
 

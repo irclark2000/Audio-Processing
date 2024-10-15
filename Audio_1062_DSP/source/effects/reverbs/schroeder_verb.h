@@ -23,9 +23,13 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef SCHROEDER_VERB_H_
 #define SCHROEDER_VERB_H_
 
+#if !AUDIO_EFFECTS_TESTER
 #include <cr_section_macros.h>
-#include <reverbs/schroeder_verb.h>
+#else
 #include "compatibility_macros/compatibility.h"
+#endif
+
+#include <reverbs/schroeder_verb.h>
 
 
 #include <filters/all_pass1.h>

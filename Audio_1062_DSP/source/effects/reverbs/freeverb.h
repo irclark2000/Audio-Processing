@@ -21,7 +21,12 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #ifndef FREEVERB_H_
 #define FREEVERB_H_
+
+#if AUDIO_EFFECTS_TESTER
 #include "compatibility_macros/compatibility.h"
+#else
+#include <fsl_common.h>
+#endif
 #include <filters/all_pass.h>
 #include <filters/comb_filter.h>
 

@@ -18,7 +18,9 @@
  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
  OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
+#if !AUDIO_EFFECTS_TESTER
+#include <cr_section_macros.h>
+#endif
 #include "effects/pitch_shift.h"
 #include "effects/tremolo.h"
 #include "filters/equalizing_filter.h"
@@ -29,7 +31,6 @@
 #include "overdrive.h"
 #include "components/variable_bandpass_filter.h"
 #include "components/state_variable_filter.h"
-#include <cr_section_macros.h>
 #include <delay_based/chorus.h>
 #include <delay_based/echo.h>
 #include <delay_based/flanger.h>
