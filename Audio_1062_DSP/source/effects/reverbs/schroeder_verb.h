@@ -23,6 +23,10 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef SCHROEDER_VERB_H_
 #define SCHROEDER_VERB_H_
 
+#include <cr_section_macros.h>
+#include <reverbs/schroeder_verb.h>
+#include "compatibility_macros/compatibility.h"
+
 
 #include <filters/all_pass1.h>
 #include <filters/comb_filter1.h>

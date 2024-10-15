@@ -19,9 +19,7 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CON
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include <cr_section_macros.h>
-#include <reverbs/schroeder_verb.h>
-
+#include "schroeder_verb.h"
 #define MULT 2
 
 #define SCOMB0 3460 * 44 / 96 * MULT
