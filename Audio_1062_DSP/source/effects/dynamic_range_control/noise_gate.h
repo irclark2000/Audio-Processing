@@ -6,7 +6,6 @@
  *      Based on code written by Philip Salmony
  *      See YouTube Phil's Lab Episode #58
  */
-#include "fsl_common.h"
 
 #ifndef NOISE_GATE_H_
 #define NOISE_GATE_H_
