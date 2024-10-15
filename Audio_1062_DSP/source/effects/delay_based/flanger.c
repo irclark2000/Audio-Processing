@@ -19,7 +19,7 @@
  OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "flanger.h"
+#include <delay_based/flanger.h>
 #include "components/effects_macros.h"
 
 #define MAX_FLANGER_DEPTH_MSEC 30.0f

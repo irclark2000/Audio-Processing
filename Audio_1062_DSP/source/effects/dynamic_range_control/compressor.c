@@ -20,11 +20,11 @@
  OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <dynamic range control/compressor.h>
+#include <dynamic_range_control/compressor.h>
 static float log9 = 0.95424250943f;
 static float ln9 = 2.19722457734f;
 
-#include "fast_math.h"
+#include <fast_math/fast_math.h>
 #include "components/effects_macros.h"
 #define COMPRESSOR_MINTHRESHOLD_DB -50
 #define COMPRESSOR_MAXTHRESHOLD_DB 0

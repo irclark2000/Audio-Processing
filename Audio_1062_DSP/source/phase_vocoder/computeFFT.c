@@ -21,7 +21,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <components/circular_buffer.h>
 #include <cr_section_macros.h>
-#include <phase vocoder/computeFFT.h>
+#include <phase_vocoder/computeFFT.h>
 
 FFTCIRCBUFFER FFTcBufIn;
 FFTCIRCBUFFER FFTcBufOut;

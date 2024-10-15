@@ -8,8 +8,8 @@
  */
 
 
-#include <dynamic range control/noise_gate.h>
-#include "fast_math.h"
+#include <dynamic_range_control/noise_gate.h>
+#include <fast_math/fast_math.h>
 
 #define EXP(x) fastExp(x)
 

@@ -20,7 +20,7 @@
  */
 
 
-#include "chorus_element.h"
+#include <delay_based/chorus_element.h>
 #include <math.h>
 
 void setdelayMS_CHORUSELEMENT(CHORUSELEMENT * cEl, float delayMSec);

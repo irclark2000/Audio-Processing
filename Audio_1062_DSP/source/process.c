@@ -24,27 +24,24 @@
 #include "filters/equalizing_filter.h"
 #include "reverbs/schroeder_verb.h"
 #include "reverbs/freeverb.h"
-#include "phase vocoder/computeFFT.h"
-#include "delay based/echo.h"
-#include "delay based/flanger.h"
-#include "delay based/chorus.h"
-#include "delay based/wah_wah.h"
-#include "delay based/vibrato.h"
-#include "dynamic range control/expander.h"
-#include "dynamic range control/compressor.h"
-#include "dynamic range control/limiter.h"
 #include "process.h"
 #include "updateSettings.h"
-#include "random_generator.h"
 #include "overdrive.h"
-#include "dynamic range control/noise_gate.h"
 #include "components/variable_bandpass_filter.h"
 #include "components/state_variable_filter.h"
-#include "fast_math.h"
-
-//#include "overdrive.h"
-
 #include <cr_section_macros.h>
+#include <delay_based/chorus.h>
+#include <delay_based/echo.h>
+#include <delay_based/flanger.h>
+#include <delay_based/vibrato.h>
+#include <delay_based/wah_wah.h>
+#include <dynamic_range_control/compressor.h>
+#include <dynamic_range_control/expander.h>
+#include <dynamic_range_control/limiter.h>
+#include <dynamic_range_control/noise_gate.h>
+#include <fast_math/fast_math.h>
+#include <phase_vocoder/computeFFT.h>
+#include <utilities/random_generator.h>
 
 #ifndef PHASEVOCODER
 #define PHASEVOCODER 0
@@ -53,7 +50,7 @@
 // Take care if enabling more than one at a time
 #define TESTING_CHORUS 0
 #define TESTING_FLANGER 0
-#define TESTING_ECHO 0
+#define TESTING_ECHO 1
 #define TESTING_EQUALIZER 0
 #define TESTING_SECOND_ORDER_ALLPASS 0
 #define TESTING_STATE_VARIABLE_FILTER 0
@@ -67,7 +64,7 @@
 #define TESTING_NOISEGATE 0
 #define TESTING_OVERDRIVE 0
 #define TESTING_TREMOLO 0
-#define TESTING_FREEVERB 1
+#define TESTING_FREEVERB 0
 #define TESTING_SCHROEDER 0
 #define TESTING_NOISE_GENERATOR 0
 #define TESTING_PHASE_VOCODER 0
@@ -239,7 +236,7 @@ void initializeEffects(float sampleRate) {
 }
 // size is the number of bytes in a half buffer but we will be using
 // 16 bit integer values so two bytes per sample  half left and half right
-void processHalf(void *bufferIn, void *bufferOut,
+void processHalf(const void *bufferIn, void *bufferOut,
 		uint32_t frameCount, AUDIOFORMAT audioFmt,
 		float sampleRate) {
 	int16_t *bufIn;    // use 16 bit pointers to match the word size

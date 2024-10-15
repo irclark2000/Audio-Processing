@@ -6,7 +6,7 @@
  */
 
 
-#include "echo.h"
+#include <delay_based/echo.h>
 
 
 void intialize_ECHO (ECHO *echo, float *buf, uint32_t buf_size, float delayMSec,

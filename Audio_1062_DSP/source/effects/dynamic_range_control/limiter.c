@@ -19,8 +19,8 @@
  OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <dynamic range control/limiter.h>
-#include "fast_math.h"
+#include <dynamic_range_control/limiter.h>
+#include <fast_math/fast_math.h>
 #include "components/effects_macros.h"
 #define LIMITER_MINTHRESHOLD_DB -50
 #define LIMITER_MAXTHRESHOLD_DB 0

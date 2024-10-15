@@ -7,8 +7,8 @@
  */
 
 #include <components/low_frequency_oscillator.h>
+#include <fast_math/fast_math.h>
 #include "effects_macros.h"
-#include "fast_math.h"
 
 /*
  * Fast math uses a sine approximation. Not perfectly sinusoidal.

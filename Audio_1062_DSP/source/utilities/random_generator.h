@@ -5,8 +5,8 @@
  *      Author: isaac
  */
 
-#ifndef RANDOM_GENERATOR_H_
-#define RANDOM_GENERATOR_H_
+#ifndef UTILITIES_RANDOM_GENERATOR_H_
+#define UTILITIES_RANDOM_GENERATOR_H_
 
 #include "fsl_trng.h"
 
@@ -15,4 +15,4 @@
 void intitialize_random_number_generator(void);
 float get_random_float(void);
 
-#endif /* RANDOM_GENERATOR_H_ */
+#endif /* UTILITIES_RANDOM_GENERATOR_H_ */

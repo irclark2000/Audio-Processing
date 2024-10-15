@@ -5,7 +5,7 @@
  *      Author: isaac
  */
 
-#include "fast_math.h"
+#include <fast_math/fast_math.h>
 
 //const float ln10 = 2.30258509299f;
 //const float logE = 0.4342944819f;

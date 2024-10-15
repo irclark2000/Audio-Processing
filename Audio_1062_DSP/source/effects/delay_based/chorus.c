@@ -6,7 +6,7 @@
  */
 
 
-#include "chorus.h"
+#include <delay_based/chorus.h>
 
 void initialize_CHORUS (CHORUS *chorus, uint8_t chorus_count, float *buf[], float wet_dry,
 		uint32_t buf_size, float delayMSec, CELEMENTDATA *cData, float sampleRate) {

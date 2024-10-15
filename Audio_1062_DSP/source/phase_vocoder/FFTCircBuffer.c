@@ -6,7 +6,7 @@
  *      Wrapper around Circular Buffer
  */
 
-#include "FFTCircBuffer.h"
+#include <phase_vocoder/FFTCircBuffer.h>
 #include <string.h>
 static const uint16_t bytesPerFloat = sizeof(float);
 

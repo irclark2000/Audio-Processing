@@ -20,7 +20,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#include "vibrato.h"
+#include <delay_based/vibrato.h>
 #include <math.h>
 #include "components/effects_macros.h"
 

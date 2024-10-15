@@ -23,7 +23,7 @@
 #define EFFECTS_DELAY_BASED_CHORUS_H_
 
 #include <components/mixer.h>
-#include "chorus_element.h"
+#include <delay_based/chorus_element.h>
 
 #define MAX_NUMBER_CHORUSELEMENTS 4
 typedef struct {

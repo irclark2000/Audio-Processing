@@ -19,8 +19,8 @@
  OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include <dynamic range control/expander.h>
-#include "fast_math.h"
+#include <dynamic_range_control/expander.h>
+#include <fast_math/fast_math.h>
 
 static const float log9 = 0.95424250943f;
 static const float ln9 = 2.19722457734f;

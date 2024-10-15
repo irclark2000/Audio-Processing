@@ -23,6 +23,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define PROCESS_H_
 //#include "fsl_common.h"
 #include <stdint.h>
+#include "compatibility_macros/compatibility.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -37,7 +38,7 @@ typedef enum {
 	UNKNOWN
 } AUDIOFORMAT;
 
-void processHalf(void *bufferIn, void *bufferOut,
+void processHalf(const void *bufferIn, void *bufferOut,
 		uint32_t frameCount, AUDIOFORMAT audioFmt,
 		float sampleRate);
 void initializeEffects(float sampleRate);
