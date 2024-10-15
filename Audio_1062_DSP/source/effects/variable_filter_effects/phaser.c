@@ -20,7 +20,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#include "phaser.h"
+#include <variable_filter_effects/phaser.h>
 #include "components/effects_macros.h"
 void initialize_PHASER(PHASER * phaser, uint8_t filterCount, float breakFrequency, float minBreak, float maxBreak,
 		float sweepFrequency, float minSweep, float maxSweep, float feedbackGain, float sampleRate) {
