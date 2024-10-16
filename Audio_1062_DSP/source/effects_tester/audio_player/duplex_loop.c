@@ -1,15 +1,15 @@
 /*
-Demonstrates how to load a sound file and play it back using the low-level API.
+ Demonstrates how to load a sound file and play it back using the low-level API.
 
-The low-level API uses a callback to deliver audio between the application and miniaudio for playback or recording. When
-in playback mode, as in this example, the application sends raw audio data to miniaudio which is then played back through
-the default playback device as defined by the operating system.
+ The low-level API uses a callback to deliver audio between the application and miniaudio for playback or recording. When
+ in playback mode, as in this example, the application sends raw audio data to miniaudio which is then played back through
+ the default playback device as defined by the operating system.
 
-This example uses the `ma_decoder` API to load a sound and play it back. The decoder is entirely decoupled from the
-device and can be used independently of it. This example only plays back a single sound file, but it's possible to play
-back multiple files by simple loading multiple decoders and mixing them (do not create multiple devices to do this). See
-the simple_mixing example for how best to do this.
-*/
+ This example uses the `ma_decoder` API to load a sound and play it back. The decoder is entirely decoupled from the
+ device and can be used independently of it. This example only plays back a single sound file, but it's possible to play
+ back multiple files by simple loading multiple decoders and mixing them (do not create multiple devices to do this). See
+ the simple_mixing example for how best to do this.
+ */
 
 #if AUDIO_EFFECTS_TESTER
 #define MINIAUDIO_IMPLEMENTATION
@@ -29,7 +29,9 @@ static void data_callback(ma_device* pDevice, void* pOutput, const void* pInput,
     /* In this example the format and channel count are the same for both input and output which means we can just memcpy(). */
     //MA_COPY_MEMORY(pOutput, pInput, frameCount * ma_get_bytes_per_frame(pDevice->capture.format, pDevice->capture.channels));
     processHalf(pOutput, pOutput,
-    		frameCount, (AUDIOFORMAT) (pDecoder->outputChannels),
+    		frameCount,
+			(AUDIOFORMAT) (pDecoder->outputChannels),
+			(AUDIO_DATA_TYPE) pDecoder->outputFormat,
     		pDecoder->outputSampleRate);
     (void)pInput;
 }

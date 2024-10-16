@@ -18,7 +18,7 @@ void initializeEffects(float sampleRate) {
 
 void processHalf(const void *bufferIn, void *bufferOut,
 		uint32_t frameCount, AUDIOFORMAT audioFmt,
-		float sampleRate, AUDIO_DATA_TYPE dataFmt) {
+		AUDIO_DATA_TYPE dataFmt, float sampleRate) {
 	static float leftIn, rightIn;
 	static float leftOut, rightOut;
 	const float *bufIn;
