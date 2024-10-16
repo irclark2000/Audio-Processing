@@ -1,3 +1,4 @@
+
 /*
  * process.c
  *
@@ -26,8 +27,8 @@
 #include "filters/equalizing_filter.h"
 #include "reverbs/schroeder_verb.h"
 #include "reverbs/freeverb.h"
-#include "process.h"
-#include "updateSettings.h"
+#include <hardware_specific/process.h>
+#include <hardware_specific/updateSettings.h>
 #include "overdrive.h"
 #include "components/variable_bandpass_filter.h"
 #include "components/state_variable_filter.h"

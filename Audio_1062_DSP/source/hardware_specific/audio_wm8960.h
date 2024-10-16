@@ -5,8 +5,8 @@
  *      Author: isaac
  */
 
-#ifndef AUDIO_WM8960_H_
-#define AUDIO_WM8960_H_
+#ifndef HARDWARE_SPECIFIC_AUDIO_WM8960_H_
+#define HARDWARE_SPECIFIC_AUDIO_WM8960_H_
 
 //#include "pin_mux.h"
 //#include "clock_config.h"
@@ -116,4 +116,4 @@ extern void * g_bufOut;
 #endif
 
 
-#endif /* AUDIO_WM8960_H_ */
+#endif /* HARDWARE_SPECIFIC_AUDIO_WM8960_H_ */

@@ -20,7 +20,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 
-#include "dma_functions.h"
+#include <hardware_specific/dma_functions.h>
 
 volatile uint8_t g_AdcConversionDoneFlag = 0U;
 

@@ -6,4 +6,4 @@
  */
 
 
-#include "audio_sgl5000.h"
+#include <hardware_specific/audio_sgl5000.h>

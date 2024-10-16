@@ -20,7 +20,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include <filters/comb_filter1.h>
-#include "denormals.h"
+#include <hardware_specific/denormals.h>
 
 static void mute (COMB_FILTER *comb);
 

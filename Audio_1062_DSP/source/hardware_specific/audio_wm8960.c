@@ -4,7 +4,7 @@
  *  Created on: Aug 13, 2024
  *      Author: isaac
  */
-#include "audio_wm8960.h"
+#include <hardware_specific/audio_wm8960.h>
 
 /*******************************************************************************
  * Prototypes

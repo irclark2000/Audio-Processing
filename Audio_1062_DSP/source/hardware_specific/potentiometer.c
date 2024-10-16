@@ -19,8 +19,8 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CON
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "potentiometer.h"
-#include "dma_functions.h"
+#include <hardware_specific/dma_functions.h>
+#include <hardware_specific/potentiometer.h>
 
 /*******************************************************************************
  * Definitions

@@ -5,8 +5,8 @@
  *      Author: isaac
  */
 
-#ifndef BLINK_H_
-#define BLINK_H_
+#ifndef HARDWARE_SPECIFIC_BLINK_H_
+#define HARDWARE_SPECIFIC_BLINK_H_
 #include "fsl_common.h"
 #include "fsl_iomuxc.h"
 #include "board.h"
@@ -25,4 +25,4 @@ void toggleLED(void);
 #if defined(__cplusplus)
 }
 #endif
-#endif /* BLINK_H_ */
+#endif /* HARDWARE_SPECIFIC_BLINK_H_ */

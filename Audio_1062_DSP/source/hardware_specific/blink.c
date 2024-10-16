@@ -5,7 +5,7 @@
  *      Author: isaac
  */
 
-#include "blink.h"
+#include <hardware_specific/blink.h>
 
 
 #define BOARD_INITPINS_IOMUXC_GPR_GPR26_GPIO_MUX1_GPIO_SEL_MASK 0x0200U /*!< GPIO1 and GPIO6 share same IO MUX function, GPIO_MUX1 selects one GPIO function: affected bits mask */

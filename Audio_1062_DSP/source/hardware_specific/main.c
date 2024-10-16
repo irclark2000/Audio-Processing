@@ -6,16 +6,16 @@
  * SPDX-License-Identifier: BSD-3-Clause
  */
 
+#include <hardware_specific/audio_wm8960.h>
+#include <hardware_specific/blink.h>
+#include <hardware_specific/boardStartup.h>
+#include <hardware_specific/dma_functions.h>
+#include <hardware_specific/potentiometer.h>
+#include <hardware_specific/process.h>
+#include <hardware_specific/updateSettings.h>
 #include <stdio.h>
 #include "fsl_debug_console.h"
 
-#include "audio_wm8960.h"
-#include "dma_functions.h"
-#include "boardStartup.h"
-#include "potentiometer.h"
-#include "blink.h"
-#include "process.h"
-#include "updateSettings.h"
 #include "core_cm7.h"    // required for processor cycle counting
 
 /*******************************************************************************

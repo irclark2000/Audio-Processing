@@ -30,9 +30,9 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <math.h>
 #include <arm_math.h>
 #include "arm_const_structs.h"
-#include "audio_wm8960.h"
+#include <hardware_specific/audio_wm8960.h>
 #include <phase_vocoder/FFTCircBuffer.h>
-#include "process.h"
+#include <hardware_specific/process.h>
 
 #define FFT_LENGTH HALF_BUFFER_SIZE/4
 extern FFTCIRCBUFFER FFTcBufIn;

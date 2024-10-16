@@ -1,11 +1,11 @@
 /*
- * potentiometer.h
+ * updateSettings.c
  *
- *  Created on: Mar 19, 2022
+ *  Created on: Aug 27, 2024
  *      Author: isaac
  */
 /*
-Copyright 2022 Isaac R. Clark, Jr.
+Copyright 2024 Isaac R. Clark, Jr.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
 files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy,
@@ -19,37 +19,20 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CON
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef POTENTIOMETER_H_
-#define POTENTIOMETER_H_
-#include "fsl_adc.h"
-#include "fsl_adc_etc.h"
-#include "fsl_pit.h"
-#include "fsl_xbara.h"
-#include "fsl_debug_console.h"
-#include "fsl_edma.h"
-#include "fsl_common.h"
-#include "fsl_iomuxc.h"
-#include "dma_functions.h"
+#include <hardware_specific/process.h>
+#include <hardware_specific/updateSettings.h>
+#define  GAININDEX 1
+void setGain (void);
+volatile float g_gain = 1.0;
 
-#define ADC_ETC_DONE0_FLAG (0x1U)
-#define ADC_ETC_DONE1_FLAG (0x2U)
-#define ADC_ETC_DONE2_FLAG (0x4U)
-
-#define POTENTIOMETERPINVALUE 0xB0U
-/*******************************************************************************
- * Prototypes
- ******************************************************************************/
-#if defined(__cplusplus)
-extern "C" {
-#endif
-void ADC_Configuration(void);
-void potentiometerReadInit(void);
-float getPotentiometerValue (int channel);
-void  potentiometerInitPins (void);
-#if defined(__cplusplus)
+void updateSettings() {
+	setGain();
 }
-#endif
 
-extern const uint32_t g_Adc_12bitFullRange;
-
-#endif /* POTENTIOMETER_H_ */
+volatile static uint32_t update_counter = 0;
+void setGain () {
+	g_gain = getPotentiometerValue (GAININDEX);
+	test_PROCESS (update_counter);  // simulate use of a potentiometer
+	update_counter++;
+	if (update_counter == 4000000000) update_counter = 0;
+}

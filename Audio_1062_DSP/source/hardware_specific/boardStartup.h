@@ -5,10 +5,10 @@
  *      Author: isaac
  */
 
-#ifndef BOARDSTARTUP_H_
-#define BOARDSTARTUP_H_
+#ifndef HARDWARE_SPECIFIC_BOARDSTARTUP_H_
+#define HARDWARE_SPECIFIC_BOARDSTARTUP_H_
 
-#include <audio_wm8960.h>
+#include <hardware_specific/audio_wm8960.h>
 #include "clock_config.h"
 #include "board.h"
 
@@ -23,4 +23,4 @@ void my_InitBootPins(void);
 #if defined(__cplusplus)
 }
 #endif
-#endif /* BOARDSTARTUP_H_ */
+#endif /* HARDWARE_SPECIFIC_BOARDSTARTUP_H_ */

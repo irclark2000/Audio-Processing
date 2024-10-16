@@ -6,7 +6,7 @@
  */
 
 #include <filters/all_pass.h>
-#include "denormals.h"
+#include <hardware_specific/denormals.h>
 
 static void mute (ALLPASS *pass);
 

@@ -1,7 +1,7 @@
 /*
- * process.h
+ * dma_functions.h
  *
- *  Created on: Apr 16, 2022
+ *  Created on: Mar 24, 2022
  *      Author: isaac
  */
 /*
@@ -19,34 +19,38 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CON
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef PROCESS_H_
-#define PROCESS_H_
-//#include "fsl_common.h"
-#include <stdint.h>
-#if AUDIO_EFFECTS_TESTER
-#include "compatibility_macros/compatibility.h"
-#endif
+#ifndef HARDWARE_SPECIFIC_DMA_FUNCTIONS_H_
+#define HARDWARE_SPECIFIC_DMA_FUNCTIONS_H_
+
+#include "fsl_edma.h"
+#include "fsl_dmamux.h"
+#include "fsl_adc.h"
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-#ifndef PHASEVOCODER
-#define PHASEVOCODER 0
-#endif
-typedef enum {
-	MONO = 1,
-	STEREO = 2,
-	UNKNOWN
-} AUDIOFORMAT;
 
-void processHalf(const void *bufferIn, void *bufferOut,
-		uint32_t frameCount, AUDIOFORMAT audioFmt,
-		float sampleRate);
-void initializeEffects(float sampleRate);
-void test_PROCESS (uint32_t update_counter);
+#define SYSTEM_DMA             DMA0
+#define SYSTEM_DMAMUX          DMAMUX
+//#define AUDIO_TX_EDMA_CHANNEL 4
+//#define AUDIO_RX_EDMA_CHANNEL 5
+#define POTENTIOMETER_DMA_CHANNEL0 0
+#define POTENTIOMETER_DMA_CHANNEL1 1
+#define POTENTIOMETER_COUNT 6
+
+
+void initialize_dma_system(void);
+void DMAMUX_EDMA_SetupForPotentiometers();
+void ADC_TransferCreateHandleEDMA();
+
+extern volatile uint8_t g_AdcConversionDoneFlag;
+uint16_t * getADCBuffer();
+void POTENTIOMETER_EDMACallback(edma_handle_t *handle, void *userData, bool transferDone, uint32_t tcds);
+
 
 #if defined(__cplusplus)
 }
 #endif
 
-#endif /* PROCESS_H_ */
+#endif /* HARDWARE_SPECIFIC_DMA_FUNCTIONS_H_ */

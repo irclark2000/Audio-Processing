@@ -1,5 +1,5 @@
 /*
- * updateSettings.c
+ * updateSettings.h
  *
  *  Created on: Aug 27, 2024
  *      Author: isaac
@@ -19,20 +19,16 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CON
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "process.h"
-#include "updateSettings.h"
-#define  GAININDEX 1
-void setGain (void);
-volatile float g_gain = 1.0;
+#ifndef HARDWARE_SPECIFIC_UPDATESETTINGS_H_
+#define HARDWARE_SPECIFIC_UPDATESETTINGS_H_
 
-void updateSettings() {
-	setGain();
-}
+#if AUDIO_EFFECTS_TESTER
+#include "compatibility_macros/compatibility.h"
+#else
+#include <hardware_specific/potentiometer.h>
+#endif
 
-volatile static uint32_t update_counter = 0;
-void setGain () {
-	g_gain = getPotentiometerValue (GAININDEX);
-	test_PROCESS (update_counter);  // simulate use of a potentiometer
-	update_counter++;
-	if (update_counter == 4000000000) update_counter = 0;
-}
+extern volatile float g_gain;
+void updateSettings(void);
+
+#endif /* HARDWARE_SPECIFIC_UPDATESETTINGS_H_ */

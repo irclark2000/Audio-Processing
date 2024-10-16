@@ -4,10 +4,10 @@
  *  Created on: Aug 14, 2024
  *      Author: isaac
  */
-#include <audio_wm8960.h>
-#include "boardStartup.h"
-#include "potentiometer.h"
-#include "blink.h"
+#include <hardware_specific/audio_wm8960.h>
+#include <hardware_specific/blink.h>
+#include <hardware_specific/boardStartup.h>
+#include <hardware_specific/potentiometer.h>
 
 void board_startup() {
     BOARD_ConfigMPU();
