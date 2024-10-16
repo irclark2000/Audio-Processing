@@ -54,7 +54,7 @@ static float OVERDRIVE_INPUT_LPF_COEF[OVERDRIVE_INPUT_LPF_LENGTH] = {
 };
 
 #if !defined USE_DSP_FIR || !USE_DSP_FIR
-const float PI = 3.1415926535;
+static const float PI = 3.1415926535;
 #endif
 
 
