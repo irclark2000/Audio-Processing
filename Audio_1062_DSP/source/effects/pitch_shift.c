@@ -22,7 +22,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #if !AUDIO_EFFECTS_TESTER
 #include <cr_section_macros.h>
 #else
-#include "compatibiliby_macros/compatibility.h"
+#include "compatibility_macros/compatibility.h"
 #endif
 #include "pitch_shift.h"
 
