@@ -31,8 +31,6 @@ static void data_callback(ma_device* pDevice, void* pOutput, const void* pInput,
     processHalf(pOutput, pOutput,
     		frameCount, (AUDIOFORMAT) (pDecoder->outputChannels),
     		pDecoder->outputSampleRate);
-    }
-
     (void)pInput;
 }
 
@@ -44,7 +42,7 @@ int simple_playback()
     ma_device device;
 
 
-    char * fileName = "alan-walker-type-guitar-loop-1-246365.wav";
+    char * fileName = "sounds/alan-walker-type-guitar-loop-1-246365.wav";
     result = ma_decoder_init_file(fileName, NULL, &decoder);
     if (result != MA_SUCCESS) {
         printf("Could not load file: %s\n", fileName);
