@@ -19,7 +19,11 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CON
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#if !AUDIO_EFFECTS_TESTER
 #include <cr_section_macros.h>
+#else
+#include "compatibiliby_macros/compatibility.h"
+#endif
 #include "pitch_shift.h"
 
 // as written, we can only have one instance of pitch shift.
