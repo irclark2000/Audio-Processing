@@ -70,7 +70,7 @@ int simple_playback()
         ma_decoder_uninit(&decoder);
         return -4;
     }
-
+    initializeEffects(decoder.outputSampleRate);
     printf("Press Enter to quit...");
     getchar();
 
