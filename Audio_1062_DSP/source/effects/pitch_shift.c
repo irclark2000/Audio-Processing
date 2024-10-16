@@ -30,7 +30,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 // the buffer would have to be moved outside.
 
 __NOINIT(RAM3) float pitch_buf[PITCH_BUFFER_SIZE];
-static int round (float value);
+static int roundOff (float value);
 HIGHPASS hp;
 
 
@@ -53,7 +53,7 @@ float applyPitchShift(PITCHSHIFT *ps, float input) {
 	ps->sum = applyHighPass(&(ps->hp), input);
 	ps->buffer[ps->WrtPtr] = ps->sum;
 
-	ps->RdPtr1 = round(ps->Rd_p);
+	ps->RdPtr1 = roundOff(ps->Rd_p);
 	ps->RdPtr2 = 0;
 	if (ps->RdPtr1 >= ps->size/2) {
 		ps->RdPtr2 = ps->RdPtr1 - ps->size/2;
@@ -87,7 +87,7 @@ float applyPitchShift(PITCHSHIFT *ps, float input) {
 	ps->Rd_p += ps->Shift;
 	ps->WrtPtr++;
 	if (ps->WrtPtr == ps->size) ps->WrtPtr = 0;
-	if (round(ps->Rd_p) >= ps->size) ps->Rd_p = 0.0f;
+	if (roundOff(ps->Rd_p) >= ps->size) ps->Rd_p = 0.0f;
 
 	return ps->sum;
 
@@ -96,7 +96,7 @@ float applyPitchShift(PITCHSHIFT *ps, float input) {
 void setPitchShift(PITCHSHIFT *ps, float potentiometer) {
 
 }
-static int round (float value) {
+static int roundOff (float value) {
 	if (value < 0) {
 		return (int)(value - 0.5);
 	}
