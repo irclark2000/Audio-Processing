@@ -35,8 +35,10 @@ typedef enum {
 } AUDIO_DATA_TYPE;
 
 void processHalf(const void *bufferIn, void *bufferOut,
-		uint32_t frameCount, AUDIOFORMAT audioFmt,
-		float sampleRate, AUDIO_DATA_TYPE dataFmt);
+		uint32_t frameCount,
+		AUDIOFORMAT audioFmt,
+		AUDIO_DATA_TYPE dataFmt,
+		float sampleRate);
 void initializeEffects(float sampleRate);
 void test_PROCESS (uint32_t update_counter);
 
