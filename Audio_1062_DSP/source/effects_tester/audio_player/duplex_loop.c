@@ -14,6 +14,7 @@ the simple_mixing example for how best to do this.
 #if AUDIO_EFFECTS_TESTER
 #define MINIAUDIO_IMPLEMENTATION
 #include "miniaudio.h"
+#include "tester_process.h"
 
 #include <stdio.h>
 
@@ -26,7 +27,11 @@ static void data_callback(ma_device* pDevice, void* pOutput, const void* pInput,
 
     ma_decoder_read_pcm_frames(pDecoder, pOutput, frameCount, NULL);
     /* In this example the format and channel count are the same for both input and output which means we can just memcpy(). */
-    MA_COPY_MEMORY(pOutput, pInput, frameCount * ma_get_bytes_per_frame(pDevice->capture.format, pDevice->capture.channels));
+    //MA_COPY_MEMORY(pOutput, pInput, frameCount * ma_get_bytes_per_frame(pDevice->capture.format, pDevice->capture.channels));
+    processHalf(pOutput, pOutput,
+    		frameCount, (AUDIOFORMAT) (pDecoder->outputChannels),
+    		pDecoder->outputSampleRate);
+    }
 
     (void)pInput;
 }

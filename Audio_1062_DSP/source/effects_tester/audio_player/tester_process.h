@@ -18,8 +18,10 @@ extern "C" {
 #define PHASEVOCODER 0
 #endif
 typedef enum {
-	MONO = 1,
+	MONO =   1,
 	STEREO = 2,
+	TRIO =   3,
+	QUAD =   4,
 	UNKNOWN
 } AUDIOFORMAT;
 
