@@ -36,8 +36,8 @@
 #define LIMITER_MAXMAKEUPGAIN_DB 24
 
 
-static float log10_9 = 0.95424250943f;
-static float ln9 = 2.19722457734f;
+//static const float log10_9 = 0.95424250943f;
+static const float ln9 = 2.19722457734f;
 #define TRY_FAST 0  // using fast approximations yields substantially better performance
 #if TRY_FAST
 #define EXP fastExp

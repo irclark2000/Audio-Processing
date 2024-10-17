@@ -22,7 +22,7 @@
 #include <dynamic_range_control/expander.h>
 #include <fast_math/fast_math.h>
 
-static const float log9 = 0.95424250943f;
+//static const float log10_9 = 0.95424250943f;
 static const float ln9 = 2.19722457734f;
 
 #define TRY_FAST 0

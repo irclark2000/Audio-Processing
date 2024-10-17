@@ -21,8 +21,8 @@
  */
 
 #include <dynamic_range_control/compressor.h>
-static float log9 = 0.95424250943f;
-static float ln9 = 2.19722457734f;
+//static const float log10_9 = 0.95424250943f;
+static const float ln9 = 2.19722457734f;
 
 #include <fast_math/fast_math.h>
 #include "components/effects_macros.h"
@@ -47,6 +47,7 @@ static float ln9 = 2.19722457734f;
 #define EXP expf
 #define LOG10 log10f
 #endif
+
 
 float compressor_gain_calc_smoothing(COMPRESSOR *comp, float xdb, float *xscOut, float * gcOut);
 void initialize_COMPRESSOR(COMPRESSOR *comp, float sample_rate) {
