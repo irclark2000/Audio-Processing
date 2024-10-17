@@ -13,10 +13,8 @@ typedef struct {
         long floatParms[4];
         void *buffer;
 } EFFECT_PARAMS;
-void  initializeExternalEffect(void *effect,
-                EFFECT_PARAMS *parameters,
-                float sampleRate);
-float applyExternalEffectCode (void * effect, float input);
+void  initializeExternalEffect(void *effect, float sampleRate);
+float applyExternalEffectCode (void *effect, float input);
 void * getExternalEffect();
 EFFECT_PARAMS * getExternalParameters();
 
