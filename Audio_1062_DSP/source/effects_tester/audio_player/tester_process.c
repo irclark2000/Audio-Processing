@@ -56,6 +56,7 @@ void processHalf(const void *bufferIn, void *bufferOut,
 		rightOut = rightIn;
 
 		leftOut = applyExternalEffectCode (0, leftIn);
+		rightOut = leftOut;
 
 		bufOut[i] = (int16_t)(leftOut * 32768.0f);
 		bufOut[i+1] = (int16_t)(rightOut * 32768.0f);
