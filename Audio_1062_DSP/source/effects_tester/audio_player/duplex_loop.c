@@ -65,6 +65,7 @@ int simple_playback()
         ma_decoder_uninit(&decoder);
         return -3;
     }
+    initializeEffects(decoder.outputSampleRate);
 
     if (ma_device_start(&device) != MA_SUCCESS) {
         printf("Failed to start playback device.\n");
@@ -72,7 +73,6 @@ int simple_playback()
         ma_decoder_uninit(&decoder);
         return -4;
     }
-    initializeEffects(decoder.outputSampleRate);
     printf("Press Enter to quit...");
     getchar();
 

@@ -9,8 +9,8 @@
 #define EFFECTS_TESTER_AUDIO_PLAYER_APPLY_EFFECT_H_
 
 typedef struct {
-        long intParams[10];
-        long floatParms[10];
+        long intParameter[10];
+        long floatParameter[10];
         void *buffer;
 } EFFECT_PARAMS;
 void  initializeExternalEffect(int index, float sampleRate);
