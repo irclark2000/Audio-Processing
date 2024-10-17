@@ -15,7 +15,7 @@ static const float S32_TO_FLOAT = 1.0f / (2147483648.0f);
 static const float F32_TO_FLOAT = 1.0f;
 
 void initializeEffects(float sampleRate) {
-	initializeExternalEffect(sampleRate);
+	initializeExternalEffect(0, sampleRate);
 }
 
 void processHalf(const void *bufferIn, void *bufferOut,
@@ -55,7 +55,7 @@ void processHalf(const void *bufferIn, void *bufferOut,
 		leftOut = leftIn;
 		rightOut = rightIn;
 
-		leftOut = applyExternalEffectCode (leftIn);
+		leftOut = applyExternalEffectCode (0, leftIn);
 
 		bufOut[i] = (int16_t)(leftOut * 32768.0f);
 		bufOut[i+1] = (int16_t)(rightOut * 32768.0f);
