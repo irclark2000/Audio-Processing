@@ -9,6 +9,7 @@
 #define TESTER_PROCESS_H_
 
 #include <stdint.h>
+#include "apply_effect.h"
 
 #if defined(__cplusplus)
 extern "C" {
