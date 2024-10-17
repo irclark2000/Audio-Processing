@@ -21,8 +21,8 @@ void processHalf(const void *bufferIn, void *bufferOut,
 		AUDIO_DATA_TYPE dataFmt, float sampleRate) {
 	static float leftIn, rightIn;
 	static float leftOut, rightOut;
-	const float *bufIn;
-	float *bufOut;
+	const int16_t *bufIn;    // use 16 bit pointers to match the word size
+	int16_t *bufOut;
 
 	if (dataFmt != S16) return;
 
@@ -37,8 +37,8 @@ void processHalf(const void *bufferIn, void *bufferOut,
 		return;
 	}
     loopCount = frameCount / channelCount;
-	bufIn = (float*) bufferIn;
-	bufOut = (float*) bufferOut;
+	bufIn = (int*) bufferIn;
+	bufOut = (int*) bufferOut;
 
 	for (int i = 0; i < loopCount; i += channelCount) {
 		leftIn = bufIn[i] * S16_TO_FLOAT;
