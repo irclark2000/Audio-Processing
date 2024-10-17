@@ -17,7 +17,7 @@ void  initializeExternalEffect(void *effect,
                 EFFECT_PARAMS *parameters,
                 float sampleRate);
 float applyExternalEffectCode (void * effect, float input);
-void * getExteralEffect();
+void * getExternalEffect();
 EFFECT_PARAMS * getExternalParameters();
 
 #endif /* EFFECTS_TESTER_AUDIO_PLAYER_APPLY_EFFECT_H_ */
