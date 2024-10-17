@@ -7,6 +7,8 @@
 
 #if AUDIO_EFFECTS_TESTER
 #include "tester_process.h"
+#include "apply_effect.h"
+
 static const float S16_TO_FLOAT = 1.0f / 32768.0f; // supported
 static const float S24_TO_FLOAT = 1.0f / (8388608.0f);
 static const float S32_TO_FLOAT = 1.0f / (2147483648.0f);
