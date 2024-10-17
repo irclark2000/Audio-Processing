@@ -39,8 +39,8 @@ void processHalf(const void *bufferIn, void *bufferOut,
 		return;
 	}
     loopCount = frameCount / channelCount;
-	bufIn = (int*) bufferIn;
-	bufOut = (int*) bufferOut;
+	bufIn =  (int16_t*) bufferIn;
+	bufOut = (int16_t*) bufferOut;
 
 	for (int i = 0; i < loopCount; i += channelCount) {
 		leftIn = bufIn[i] * S16_TO_FLOAT;
@@ -57,8 +57,8 @@ void processHalf(const void *bufferIn, void *bufferOut,
 
 		leftOut = applyExternalEffectCode (leftIn);
 
-		bufOut[i] = leftOut * 32768.0f;
-		bufOut[i+1] = rightOut * 32768.0f;
+		bufOut[i] = (int16_t)(leftOut * 32768.0f);
+		bufOut[i+1] = (int16_t)(rightOut * 32768.0f);
 	}
 
 }
