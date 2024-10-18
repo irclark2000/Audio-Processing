@@ -6,7 +6,7 @@
  */
 
 #include "tester_effect.h"
-#if 0
+#if AUDIO_TESTER_EFFECT
 #include "miniaudio.h"
 
 #define DELAY_IN_SECONDS    0.2f
