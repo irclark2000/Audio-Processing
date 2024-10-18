@@ -52,6 +52,7 @@ int simple_playback()
         printf("Could not load file: %s\n", fileName);
         return -2;
     }
+    ma_data_source_set_looping(&decoder, MA_TRUE);
 
     deviceConfig = ma_device_config_init(ma_device_type_playback);
     deviceConfig.playback.format   = decoder.outputFormat;
