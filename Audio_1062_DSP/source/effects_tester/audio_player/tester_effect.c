@@ -5,8 +5,8 @@
  *      Author: isaac
  */
 
+#if AUDIO_EFFECTS_TESTER
 #include "tester_effect.h"
-#if AUDIO_TESTER_EFFECT
 #include "miniaudio.h"
 
 #define DELAY_IN_SECONDS    0.2f
