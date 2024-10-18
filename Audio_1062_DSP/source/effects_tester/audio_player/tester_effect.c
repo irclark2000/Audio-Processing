@@ -8,6 +8,7 @@
 #if AUDIO_EFFECTS_TESTER
 #include "tester_effect.h"
 #include "miniaudio.h"
+#include <stdio.h>
 
 #define DELAY_IN_SECONDS    0.2f
 #define DECAY               0.25f   /* Volume falloff for each echo. */
