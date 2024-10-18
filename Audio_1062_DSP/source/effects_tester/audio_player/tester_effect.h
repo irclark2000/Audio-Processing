@@ -9,5 +9,5 @@
 #define EFFECTS_TESTER_AUDIO_PLAYER_TESTER_EFFECT_H_
 
 
-void apply_effect();
+int apply_effect();
 #endif /* EFFECTS_TESTER_AUDIO_PLAYER_TESTER_EFFECT_H_ */

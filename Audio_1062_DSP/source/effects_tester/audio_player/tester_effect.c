@@ -17,8 +17,10 @@ static ma_engine g_engine;
 static ma_sound g_sound;            /* This example will play only a single sound at once, so we only need one `ma_sound` object. */
 static ma_delay_node g_delayNode;   /* The echo effect is achieved using a delay node. */
 
-void apply_effect() {
+int apply_effect() {
     /* The engine needs to be initialized first. */
+	ma_result result;
+
     char * fileName = "sounds/alan-walker-type-guitar-loop-1-246365.wav";
 
     result = ma_engine_init(NULL, &g_engine);
