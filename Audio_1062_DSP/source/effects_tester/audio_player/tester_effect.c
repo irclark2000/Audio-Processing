@@ -71,6 +71,6 @@ int apply_effect() {
     ma_sound_uninit(&g_sound);
     ma_delay_node_uninit(&g_delayNode, NULL);
     ma_engine_uninit(&g_engine);
-
+    return 0;
 }
 #endif

@@ -4,13 +4,14 @@
  *  Created on: Oct 17, 2024
  *      Author: isaac
  */
+#include <stdint.h>
 
 #ifndef EFFECTS_TESTER_AUDIO_PLAYER_APPLY_EFFECT_H_
 #define EFFECTS_TESTER_AUDIO_PLAYER_APPLY_EFFECT_H_
-
+#define MAX_FLOAT_PARAMETERS 20
 typedef struct {
-        long intParameter[10];
-        long floatParameter[10];
+        uint32_t intParameter[10];
+        float floatParameter[MAX_FLOAT_PARAMETERS];
         void *buffer;
 } EFFECT_PARAMS;
 void  initializeExternalEffect(int index, float sampleRate);
