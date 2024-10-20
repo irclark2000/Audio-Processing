@@ -6,6 +6,7 @@
  */
 
 #if AUDIO_EFFECTS_TESTER
+#define MINIAUDIO_IMPLEMENTATION
 #include "tester_effect.h"
 #include "miniaudio.h"
 #include <stdio.h>
