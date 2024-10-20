@@ -78,7 +78,7 @@ MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sa
     return config;
 }
 
-MA_API ma_result ma_effects_process_pcm_frames(ma_delay* pEffects, void* pFramesOut, const void* pFramesIn, ma_uint32 frameCount)
+MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFramesOut, const void* pFramesIn, ma_uint32 frameCount)
 {
     ma_uint32 iFrame;
     ma_uint32 iChannel;
@@ -93,25 +93,25 @@ MA_API ma_result ma_effects_process_pcm_frames(ma_delay* pEffects, void* pFrames
         for (iChannel = 0; iChannel < pEffects->config.channels; iChannel += 1) {
             ma_uint32 iBuffer = (pEffects->cursor * pEffects->config.channels) + iChannel;
 
-            if (!true) {
+            if (0) {
                 /* Delayed start. */
 #if 0
                 /* Read */
                 pFramesOutF32[iChannel] = pEffects->pBuffer[iBuffer] * pEffects->config.wet;
 
                 /* Feedback */
-                pDelay->pBuffer[iBuffer] = (pDelay->pBuffer[iBuffer] * pDelay->config.decay) + (pFramesInF32[iChannel] * pDelay->config.dry);
+                pEffects->pBuffer[iBuffer] = (pEffects->pBuffer[iBuffer] * pDelay->config.decay) + (pFramesInF32[iChannel] * pDelay->config.dry);
 #endif
             } else {
                 /* Immediate start */
 #if 0
                 /* Feedback */
-                pDelay->pBuffer[iBuffer] = (pDelay->pBuffer[iBuffer] * pDelay->config.decay) + (pFramesInF32[iChannel] * pDelay->config.dry);
+                pDelay->pBuffer[iBuffer] = (pEffects->pBuffer[iBuffer] * pDelay->config.decay) + (pFramesInF32[iChannel] * pDelay->config.dry);
 
                 /* Read */
                 // Just copying for now
 #endif
-                pFramesOutF32[iChannel] = pDelay->pBuffer[iBuffer];
+                pFramesOutF32[iChannel] = pEffects->pBuffer[iBuffer];
             }
         }
 
