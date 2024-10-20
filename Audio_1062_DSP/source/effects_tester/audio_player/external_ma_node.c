@@ -45,11 +45,11 @@ MA_API ma_effects_node_config ma_effects_node_config_init(ma_uint32 channels, ma
 
 static void ma_effects_node_process_pcm_frames(ma_node* pNode, const float** ppFramesIn, ma_uint32* pFrameCountIn, float** ppFramesOut, ma_uint32* pFrameCountOut)
 {
-    ma_effects_node* pDelayNode = (ma_effects_node*)pNode;
+    ma_effects_node* pEffectsNode = (ma_effects_node*)pNode;
 
     (void)pFrameCountIn;
 
-    ma_effects_process_pcm_frames(&pDelayNode->effects, ppFramesOut[0], ppFramesIn[0], *pFrameCountOut);
+    ma_effects_process_pcm_frames(&pEffectsNode->effects, ppFramesOut[0], ppFramesIn[0], *pFrameCountOut);
 }
 
 static ma_node_vtable g_ma_effects_node_vtable =
@@ -78,6 +78,51 @@ MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sa
     return config;
 }
 
+MA_API ma_result ma_effects_process_pcm_frames(ma_delay* pEffects, void* pFramesOut, const void* pFramesIn, ma_uint32 frameCount)
+{
+    ma_uint32 iFrame;
+    ma_uint32 iChannel;
+    float* pFramesOutF32 = (float*)pFramesOut;
+    const float* pFramesInF32 = (const float*)pFramesIn;
+
+    if (pEffects == NULL || pFramesOut == NULL || pFramesIn == NULL) {
+        return MA_INVALID_ARGS;
+    }
+
+    for (iFrame = 0; iFrame < frameCount; iFrame += 1) {
+        for (iChannel = 0; iChannel < pEffects->config.channels; iChannel += 1) {
+            ma_uint32 iBuffer = (pEffects->cursor * pEffects->config.channels) + iChannel;
+
+            if (!true) {
+                /* Delayed start. */
+#if 0
+                /* Read */
+                pFramesOutF32[iChannel] = pEffects->pBuffer[iBuffer] * pEffects->config.wet;
+
+                /* Feedback */
+                pDelay->pBuffer[iBuffer] = (pDelay->pBuffer[iBuffer] * pDelay->config.decay) + (pFramesInF32[iChannel] * pDelay->config.dry);
+#endif
+            } else {
+                /* Immediate start */
+#if 0
+                /* Feedback */
+                pDelay->pBuffer[iBuffer] = (pDelay->pBuffer[iBuffer] * pDelay->config.decay) + (pFramesInF32[iChannel] * pDelay->config.dry);
+
+                /* Read */
+                // Just copying for now
+#endif
+                pFramesOutF32[iChannel] = pDelay->pBuffer[iBuffer];
+            }
+        }
+
+        pEffects->cursor = (pEffects->cursor + 1) % pEffects->bufferSizeInFrames;
+
+        pFramesOutF32 += pEffects->config.channels;
+        pFramesInF32  += pEffects->config.channels;
+    }
+
+    return MA_SUCCESS;
+}
 
 
 #endif
