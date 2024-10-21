@@ -5,20 +5,19 @@
  *      Author: isaac
  */
 /*
-Copyright 2024 Isaac R. Clark, Jr.
+ Copyright 2024 Isaac R. Clark, Jr.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
-files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy,
-modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
-is furnished to do so, subject to the following conditions:
+ Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
+ files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ is furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
-BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
-OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
-
+ The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
+ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 #if AUDIO_EFFECTS_TESTER
 #include "tester_effect.h"
@@ -32,11 +31,25 @@ static ma_engine g_engine;
 static ma_sound g_sound;            /* This example will play only a single sound at once, so we only need one `ma_sound` object. */
 static ma_delay_node g_delayNode;   /* The echo effect is achieved using a delay node. */
 
-int apply_effect() {
+int apply_effect(int source) {
     /* The engine needs to be initialized first. */
 	ma_result result;
 
     char * fileName = "sounds/alan-walker-type-guitar-loop-1-246365.wav";
+    switch (source) {
+    case 0:
+      	 fileName = "sounds/alan-walker-type-guitar-loop-1-246365.wav";
+      	 break
+    case 1:
+    	 fileName = "sounds/rampb-acoustic-guitar-loop-1-70bpm-143363.wav";
+    	break;
+    case 2:
+    	 fileName = "sounds/relaxing-guitar-128296.wav";
+    	break;
+    default:
+    	 fileName = "sounds/alan-walker-type-guitar-loop-1-246365.wav";
+
+    }
 
     result = ma_engine_init(NULL, &g_engine);
     if (result != MA_SUCCESS) {
