@@ -56,19 +56,19 @@ void initFreeverb(FREEVERB * fv) {
 	fv->allCount = sizeof(fv->allpass) / sizeof(fv->allpass[0]);
 	fv->lpfcCount = sizeof(fv->lpfc) / sizeof(fv->lpfc[0]);
 #if AUDIO_EFFECTS_TESTER
-	initAllpassFilter(&(fv->allpass[0]), 0), AP0, 0.5f);
-	initAllpassFilter(&(fv->allpass[1]), 0), AP1, 0.5f);
-	initAllpassFilter(&(fv->allpass[2]), 0), AP2, 0.5f);
-	initAllpassFilter(&(fv->allpass[3]), 0), AP3, 0.5f);
+	initAllpassFilter(&(fv->allpass[0]), 0, AP0, 0.5f);
+	initAllpassFilter(&(fv->allpass[1]), 0, AP1, 0.5f);
+	initAllpassFilter(&(fv->allpass[2]), 0, AP2, 0.5f);
+	initAllpassFilter(&(fv->allpass[3]), 0, AP3, 0.5f);
 
-	initCombFilter(&(fv->lpfc[0]), 0), COMB0, 0.2f, 0.84f);
-	initCombFilter(&(fv->lpfc[1]), 0), COMB1, 0.2f, 0.84f);
-	initCombFilter(&(fv->lpfc[2]), 0), COMB2, 0.2f, 0.84f);
-	initCombFilter(&(fv->lpfc[3]), 0), COMB3, 0.2f, 0.84f);
-	initCombFilter(&(fv->lpfc[4]), 0]), COMB4, 0.2f, 0.84f);
-	initCombFilter(&(fv->lpfc[5]), 0), COMB5, 0.2f, 0.84f);
-	initCombFilter(&(fv->lpfc[6]), 0), COMB6, 0.2f, 0.84f);
-	initCombFilter(&(fv->lpfc[7]), 0), COMB7, 0.2f, 0.84f);
+	initCombFilter(&(fv->lpfc[0]), 0, COMB0, 0.2f, 0.84f);
+	initCombFilter(&(fv->lpfc[1]), 0, COMB1, 0.2f, 0.84f);
+	initCombFilter(&(fv->lpfc[2]), 0, COMB2, 0.2f, 0.84f);
+	initCombFilter(&(fv->lpfc[3]), 0, COMB3, 0.2f, 0.84f);
+	initCombFilter(&(fv->lpfc[4]), 0, COMB4, 0.2f, 0.84f);
+	initCombFilter(&(fv->lpfc[5]), 0, COMB5, 0.2f, 0.84f);
+	initCombFilter(&(fv->lpfc[6]), 0, COMB6, 0.2f, 0.84f);
+	initCombFilter(&(fv->lpfc[7]), 0, COMB7, 0.2f, 0.84f);
 #else
 	initAllpassFilter(&(fv->allpass[0]), &(ap0_buf[0]), AP0, 0.5f);
 	initAllpassFilter(&(fv->allpass[1]), &(ap1_buf[0]), AP1, 0.5f);

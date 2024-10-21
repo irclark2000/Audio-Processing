@@ -45,14 +45,14 @@ void initSchroederVerb(SCHROEDERVERB * fv) {
 	fv->allCount = sizeof(fv->allpass) / sizeof(fv->allpass[0]);
 	fv->lpfcCount = sizeof(fv->lpfc) / sizeof(fv->lpfc[0]);
 #if AUDIO_EFFECTS_TESTER
-	initAllpassFilter1(&(fv->allpass[0]), 0), SAP0, 0.7f);
-	initAllpassFilter1(&(fv->allpass[1]), 0), SAP1, 0.7f);
-	initAllpassFilter1(&(fv->allpass[2]), 0), SAP2, 0.7f);
+	initAllpassFilter1(&(fv->allpass[0]), 0, SAP0, 0.7f);
+	initAllpassFilter1(&(fv->allpass[1]), 0, SAP1, 0.7f);
+	initAllpassFilter1(&(fv->allpass[2]), 0, SAP2, 0.7f);
 
-	initCombFilter1(&(fv->lpfc[0]), 0), SCOMB0, 0.805f);
-	initCombFilter1(&(fv->lpfc[1]), 0), SCOMB1, 0.827f);
-	initCombFilter1(&(fv->lpfc[2]), 0), SCOMB2, 0.783f);
-	initCombFilter1(&(fv->lpfc[3]), 0), SCOMB3, 0.764f);
+	initCombFilter1(&(fv->lpfc[0]), 0, SCOMB0, 0.805f);
+	initCombFilter1(&(fv->lpfc[1]), 0, SCOMB1, 0.827f);
+	initCombFilter1(&(fv->lpfc[2]), 0, SCOMB2, 0.783f);
+	initCombFilter1(&(fv->lpfc[3]), 0, SCOMB3, 0.764f);
 #else
 	initAllpassFilter1(&(fv->allpass[0]), &(ap0_buf[0]), SAP0, 0.7f);
 	initAllpassFilter1(&(fv->allpass[1]), &(ap1_buf[0]), SAP1, 0.7f);
