@@ -163,7 +163,7 @@ uint16_t cb_addOverlap(CIRCBUFFER *cb, float *buf, uint32_t hop_size,
 void cb_initialize(CIRCBUFFER *cb, float *buf, uint32_t size) {
 #if AUDIO_EFFECTS_TESTER
 	if (buf == 0) {
-		buf = (float *) malloc(int * sizeof(float));
+		buf = (float *) malloc(size * sizeof(float));
 	}
 #endif
 

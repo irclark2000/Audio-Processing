@@ -31,7 +31,7 @@ void initCombFilter(LPFCOMB_FILTER *comb, float *buffer, int size, float damp,
 		float feedback) {
 #if AUDIO_EFFECTS_TESTER
 	if (buffer == 0) {
-		buffer = (float *) malloc(int * sizeof(float));
+		buffer = (float *) malloc(size * sizeof(float));
 	}
 #endif
 	comb->damp = damp;

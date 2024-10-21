@@ -27,7 +27,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 void initialize_variable_delay (VARDELAY * vDelay, float *buf, float buf_size, float sampleRate) {
 #if AUDIO_EFFECTS_TESTER
 	if (buf == 0) {
-		buf = (float *) malloc(int * sizeof(float));
+		buf = (float *) malloc(buf_size * sizeof(float));
 	}
 #endif
 	vDelay->sampleTime = 1.0f / sampleRate;

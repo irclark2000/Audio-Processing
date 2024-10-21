@@ -30,7 +30,7 @@ static void mute (COMB_FILTER *comb);
 void initCombFilter1(COMB_FILTER * comb, float *buffer, int size, float gain) {
 #if AUDIO_EFFECTS_TESTER
 	if (buffer == 0) {
-		buffer = (float *) malloc(int * sizeof(float));
+		buffer = (float *) malloc(size * sizeof(float));
 	}
 #endif
 	comb->gain = gain;

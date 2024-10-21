@@ -16,7 +16,7 @@ static void mute (ALLPASS1 *pass);
 void initAllpassFilter1(ALLPASS1 * pass, float *buffer, int size, float gain) {
 #if AUDIO_EFFECTS_TESTER
 	if (buffer == 0) {
-		buffer = (float *) malloc(int * sizeof(float));
+		buffer = (float *) malloc(size * sizeof(float));
 	}
 #endif
 	pass->buf = buffer;
