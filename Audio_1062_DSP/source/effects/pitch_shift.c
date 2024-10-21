@@ -41,7 +41,7 @@ HIGHPASS hp;
 void initPitchShift(PITCHSHIFT *ps, float *buf, int size, float shift, float crossfade) {
 #if AUDIO_EFFECTS_TESTER
 	if (buf == 0) {
-		buf = (float *) malloc(int * sizeof(float));
+		buf = (float *) malloc(size * sizeof(float));
 	}
 #endif
 	ps->WrtPtr = 0;
