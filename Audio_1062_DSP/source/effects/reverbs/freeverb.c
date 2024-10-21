@@ -36,7 +36,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define AP1   556 * 48 / 44
 #define AP2   441 * 48 / 44
 #define AP3   341 * 48 / 44
-
+#if !AUDIO_EFFECTS_TESTER
 AT_NONCACHEABLE_SECTION_ALIGN(static float comb0_buf[COMB0], 4);
 AT_NONCACHEABLE_SECTION_ALIGN(static float comb1_buf[COMB1], 4);
 AT_NONCACHEABLE_SECTION_ALIGN(static float comb2_buf[COMB2], 4);
@@ -50,12 +50,26 @@ AT_NONCACHEABLE_SECTION_ALIGN(static float ap0_buf[AP0], 4);
 AT_NONCACHEABLE_SECTION_ALIGN(static float ap1_buf[AP1], 4);
 AT_NONCACHEABLE_SECTION_ALIGN(static float ap2_buf[AP2], 4);
 AT_NONCACHEABLE_SECTION_ALIGN(static float ap3_buf[AP3], 4);
-
+#endif
 void initFreeverb(FREEVERB * fv) {
 
 	fv->allCount = sizeof(fv->allpass) / sizeof(fv->allpass[0]);
 	fv->lpfcCount = sizeof(fv->lpfc) / sizeof(fv->lpfc[0]);
+#if AUDIO_EFFECTS_TESTER
+	initAllpassFilter(&(fv->allpass[0]), 0), AP0, 0.5f);
+	initAllpassFilter(&(fv->allpass[1]), 0), AP1, 0.5f);
+	initAllpassFilter(&(fv->allpass[2]), 0), AP2, 0.5f);
+	initAllpassFilter(&(fv->allpass[3]), 0), AP3, 0.5f);
 
+	initCombFilter(&(fv->lpfc[0]), 0), COMB0, 0.2f, 0.84f);
+	initCombFilter(&(fv->lpfc[1]), 0), COMB1, 0.2f, 0.84f);
+	initCombFilter(&(fv->lpfc[2]), 0), COMB2, 0.2f, 0.84f);
+	initCombFilter(&(fv->lpfc[3]), 0), COMB3, 0.2f, 0.84f);
+	initCombFilter(&(fv->lpfc[4]), 0]), COMB4, 0.2f, 0.84f);
+	initCombFilter(&(fv->lpfc[5]), 0), COMB5, 0.2f, 0.84f);
+	initCombFilter(&(fv->lpfc[6]), 0), COMB6, 0.2f, 0.84f);
+	initCombFilter(&(fv->lpfc[7]), 0), COMB7, 0.2f, 0.84f);
+#else
 	initAllpassFilter(&(fv->allpass[0]), &(ap0_buf[0]), AP0, 0.5f);
 	initAllpassFilter(&(fv->allpass[1]), &(ap1_buf[0]), AP1, 0.5f);
 	initAllpassFilter(&(fv->allpass[2]), &(ap2_buf[0]), AP2, 0.5f);
@@ -69,7 +83,7 @@ void initFreeverb(FREEVERB * fv) {
 	initCombFilter(&(fv->lpfc[5]), &(comb5_buf[0]), COMB5, 0.2f, 0.84f);
 	initCombFilter(&(fv->lpfc[6]), &(comb6_buf[0]), COMB6, 0.2f, 0.84f);
 	initCombFilter(&(fv->lpfc[7]), &(comb7_buf[0]), COMB7, 0.2f, 0.84f);
-
+#endif
 
 }
 float applyFreeverb(FREEVERB *fv, float input) {

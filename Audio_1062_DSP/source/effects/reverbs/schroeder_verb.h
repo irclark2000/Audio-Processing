@@ -25,8 +25,6 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #if !AUDIO_EFFECTS_TESTER
 #include <cr_section_macros.h>
-#else
-#include "compatibility_macros/compatibility.h"
 #endif
 
 #include <reverbs/schroeder_verb.h>

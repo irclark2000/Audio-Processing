@@ -7,10 +7,17 @@
 
 #include <filters/all_pass.h>
 #include <hardware_specific/denormals.h>
-
+#if AUDIO_EFFECTS_TESTER
+#include <stdlib.h>
+#endif
 static void mute (ALLPASS *pass);
 
 void initAllpassFilter(ALLPASS * pass, float *buffer, int size, float feedback) {
+#if AUDIO_EFFECTS_TESTER
+	if (buffer == 0) {
+		buffer = (float *) malloc(int * sizeof(float));
+	}
+#endif
 	pass->buf = buffer;
 	pass->bufSize = size;
 	pass->feedback = feedback;

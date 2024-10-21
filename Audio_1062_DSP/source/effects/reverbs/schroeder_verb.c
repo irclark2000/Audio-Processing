@@ -30,7 +30,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define SAP0 480 * 44 / 96 * MULT
 #define SAP1 161 * 44 / 96 * MULT
 #define SAP2 46  * 44 / 96 * MULT
-
+#if !AUDIO_EFFECTS_TESTER
 __NOINIT(RAM3) static float comb0_buf[SCOMB0];
 __NOINIT(RAM3) static float comb1_buf[SCOMB1];
 __NOINIT(RAM3) static float comb2_buf[SCOMB2];
@@ -39,12 +39,21 @@ __NOINIT(RAM3) static float comb3_buf[SCOMB3];
 __NOINIT(RAM3) static float ap0_buf[SAP0];
 __NOINIT(RAM3) static float ap1_buf[SAP1];
 __NOINIT(RAM3) static float ap2_buf[SAP2];
-
+#endif
 
 void initSchroederVerb(SCHROEDERVERB * fv) {
 	fv->allCount = sizeof(fv->allpass) / sizeof(fv->allpass[0]);
 	fv->lpfcCount = sizeof(fv->lpfc) / sizeof(fv->lpfc[0]);
+#if AUDIO_EFFECTS_TESTER
+	initAllpassFilter1(&(fv->allpass[0]), 0), SAP0, 0.7f);
+	initAllpassFilter1(&(fv->allpass[1]), 0), SAP1, 0.7f);
+	initAllpassFilter1(&(fv->allpass[2]), 0), SAP2, 0.7f);
 
+	initCombFilter1(&(fv->lpfc[0]), 0), SCOMB0, 0.805f);
+	initCombFilter1(&(fv->lpfc[1]), 0), SCOMB1, 0.827f);
+	initCombFilter1(&(fv->lpfc[2]), 0), SCOMB2, 0.783f);
+	initCombFilter1(&(fv->lpfc[3]), 0), SCOMB3, 0.764f);
+#else
 	initAllpassFilter1(&(fv->allpass[0]), &(ap0_buf[0]), SAP0, 0.7f);
 	initAllpassFilter1(&(fv->allpass[1]), &(ap1_buf[0]), SAP1, 0.7f);
 	initAllpassFilter1(&(fv->allpass[2]), &(ap2_buf[0]), SAP2, 0.7f);
@@ -53,7 +62,7 @@ void initSchroederVerb(SCHROEDERVERB * fv) {
 	initCombFilter1(&(fv->lpfc[1]), &(comb1_buf[0]), SCOMB1, 0.827f);
 	initCombFilter1(&(fv->lpfc[2]), &(comb2_buf[0]), SCOMB2, 0.783f);
 	initCombFilter1(&(fv->lpfc[3]), &(comb3_buf[0]), SCOMB3, 0.764f);
-
+#endif
 }
 float applyShroederVerb(SCHROEDERVERB*fv, float input) {
 	fv->out = 0;

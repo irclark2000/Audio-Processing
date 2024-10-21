@@ -20,8 +20,16 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include <components/variable_delay.h>
+#if AUDIO_EFFECTS_TESTER
+#include <stdlib.h>
+#endif
 
 void initialize_variable_delay (VARDELAY * vDelay, float *buf, float buf_size, float sampleRate) {
+#if AUDIO_EFFECTS_TESTER
+	if (buf == 0) {
+		buf = (float *) malloc(int * sizeof(float));
+	}
+#endif
 	vDelay->sampleTime = 1.0f / sampleRate;
 	vDelay->sampleRate = sampleRate;
 	vDelay->delayInSamples = 0;

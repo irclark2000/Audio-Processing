@@ -20,6 +20,10 @@
  OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include <components/circular_buffer.h>
+#if AUDIO_EFFECTS_TESTER
+#include <stdlib.h>
+#endif
+
 
 uint16_t cb_transferInFloat(CIRCBUFFER *cb, float input) {
 		cb->storage[cb->wr_ptr++] = input;
@@ -157,6 +161,12 @@ uint16_t cb_addOverlap(CIRCBUFFER *cb, float *buf, uint32_t hop_size,
 }
 #endif
 void cb_initialize(CIRCBUFFER *cb, float *buf, uint32_t size) {
+#if AUDIO_EFFECTS_TESTER
+	if (buf == 0) {
+		buf = (float *) malloc(int * sizeof(float));
+	}
+#endif
+
 	cb->storage = buf;
 	cb->rd_ptr = 0;
 	cb->wr_ptr = 0;

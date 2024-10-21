@@ -28,13 +28,22 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 // as written, we can only have one instance of pitch shift.
 // the buffer would have to be moved outside.
-
+#if AUDIO_EFFECTS_TESTER
+#include <stdlib.h>
+#else
 __NOINIT(RAM3) float pitch_buf[PITCH_BUFFER_SIZE];
+#endif
+
 static int roundOff (float value);
 HIGHPASS hp;
 
 
 void initPitchShift(PITCHSHIFT *ps, float *buf, int size, float shift, float crossfade) {
+#if AUDIO_EFFECTS_TESTER
+	if (buf == 0) {
+		buf = (float *) malloc(int * sizeof(float));
+	}
+#endif
 	ps->WrtPtr = 0;
 	ps->Rd_p = 0.0f;
 	ps->Shift = shift;

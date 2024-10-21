@@ -21,10 +21,18 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <filters/comb_filter1.h>
 #include <hardware_specific/denormals.h>
+#if AUDIO_EFFECTS_TESTER
+#include <stdlib.h>
+#endif
 
 static void mute (COMB_FILTER *comb);
 
 void initCombFilter1(COMB_FILTER * comb, float *buffer, int size, float gain) {
+#if AUDIO_EFFECTS_TESTER
+	if (buffer == 0) {
+		buffer = (float *) malloc(int * sizeof(float));
+	}
+#endif
 	comb->gain = gain;
 	comb->buf = buffer;
 	comb->bufLimit = size;
