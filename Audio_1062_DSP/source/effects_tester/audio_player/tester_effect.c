@@ -21,7 +21,6 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 #if AUDIO_EFFECTS_TESTER
-#define MINIAUDIO_IMPLEMENTATION
 #include "tester_effect.h"
 #include "miniaudio.h"
 #include <stdio.h>

@@ -21,6 +21,8 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 #if AUDIO_EFFECTS_TESTER
+#define MINIAUDIO_IMPLEMENTATION
+
 #include "external_ma_node.h"
 
 MA_API ma_result ma_effects_init(const ma_effects_config* pConfig, const ma_allocation_callbacks* pAllocationCallbacks, EFFECT_PARAMS* parameter);
