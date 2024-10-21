@@ -35,11 +35,11 @@ int apply_effect(int source) {
     /* The engine needs to be initialized first. */
 	ma_result result;
 
-    char * fileName = "sounds/alan-walker-type-guitar-loop-1-246365.wav";
+    char * fileName = 0;
     switch (source) {
     case 0:
       	 fileName = "sounds/alan-walker-type-guitar-loop-1-246365.wav";
-      	 break
+      	 break;
     case 1:
     	 fileName = "sounds/rampb-acoustic-guitar-loop-1-70bpm-143363.wav";
     	break;
