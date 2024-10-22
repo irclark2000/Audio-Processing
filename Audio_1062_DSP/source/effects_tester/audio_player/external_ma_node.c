@@ -25,23 +25,63 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "external_ma_node.h"
 
-MA_API ma_result ma_effects_init(const ma_effects_config* pConfig, const ma_allocation_callbacks* pAllocationCallbacks, EFFECT_PARAMS* parameter);
+MA_API ma_result ma_effects_init(const ma_effects_config* pConfig, const ma_allocation_callbacks* pAllocationCallbacks, ma_effects *pEffect) {
+    if (pEffect == NULL) {
+        return MA_INVALID_ARGS;
+    }
+
+    MA_ZERO_OBJECT(pEffect);
+
+    if (pConfig == NULL) {
+        return MA_INVALID_ARGS;
+    }
+
+    pEffect->config             = *pConfig;
+    return MA_SUCCESS;
+}
+
 MA_API void ma_effects_uninit(ma_effects* pEffects, const ma_allocation_callbacks* pAllocationCallbacks) {
 }
-MA_API void ma_effects_set_parameter(ma_effects* pEffect, EFFECT_PARAMS *parameter, float value, uint8_t pIndex) {
-	parameter->floatParameter[pIndex] = value;
+MA_API void ma_effects_set_parameter(ma_effects* pEffect, EFFECT_COMPONENT *component, float value) {
+
 }
-MA_API float ma_effects_get_parameter(const ma_effects* pEffect, EFFECT_PARAMS *parameter, uint8_t pIndex) {
-	return parameter->floatParameter[pIndex];
+MA_API float ma_effects_get_parameter(const ma_effects* pEffect, EFFECT_COMPONENT *component) {
+	return 0.0f;
 }
 MA_API ma_effects_node_config ma_effects_node_config_init(ma_uint32 channels, ma_uint32 sampleRate, EFFECT_COMPONENT *component)
 {
     ma_effects_node_config config;
 
     config.nodeConfig = ma_node_config_init();
-    config.effects = ma_effects_config_init(channels, sampleRate, component);
+    config.effect = ma_effects_config_init(channels, sampleRate, component);
 
     return config;
+}
+MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sampleRate, EFFECT_COMPONENT *component)
+{
+    ma_effects_config config;
+
+    MA_ZERO_OBJECT(&config);
+    config.channels      = channels;
+    config.sampleRate    = sampleRate;
+    config.component = component;
+   /*
+    config.delayStart    = (decay == 0) ? MA_TRUE : MA_FALSE;
+    config.wet           = 1;
+    config.dry           = 1;
+    config.decay         = decay;
+ */
+    return config;
+}
+
+
+static void ma_effects_node_process_pcm_frames(ma_node* pNode, const float** ppFramesIn, ma_uint32* pFrameCountIn, float** ppFramesOut, ma_uint32* pFrameCountOut)
+{
+    ma_effects_node* pEffectsNode = (ma_effects_node*)pNode;
+
+    (void)pFrameCountIn;
+
+    ma_effects_process_pcm_frames(&pEffectsNode->effects, ppFramesOut[0], ppFramesIn[0], *pFrameCountOut);
 }
 
 static ma_node_vtable g_ma_effects_node_vtable =
@@ -53,29 +93,6 @@ static ma_node_vtable g_ma_effects_node_vtable =
     MA_NODE_FLAG_CONTINUOUS_PROCESSING  /* Delay requires continuous processing to ensure the tail get's processed. */
 };
 
-MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sampleRate, EFFECT_COMPONENT *component)
-{
-    ma_effects_config config;
-
-    MA_ZERO_OBJECT(&config);
-    config.channels      = channels;
-    config.sampleRate    = sampleRate;
-   /*
-    config.delayStart    = (decay == 0) ? MA_TRUE : MA_FALSE;
-    config.wet           = 1;
-    config.dry           = 1;
-    config.decay         = decay;
- */
-    return config;
-}
-static void ma_effect_node_process_pcm_frames(ma_node* pNode, const float** ppFramesIn, ma_uint32* pFrameCountIn, float** ppFramesOut, ma_uint32* pFrameCountOut)
-{
-    ma_effects_node* pEffectsNode = (ma_effects_node*)pNode;
-
-    (void)pFrameCountIn;
-
-    ma_effect_process_pcm_frames(&pEffectsNode->effects, ppFramesOut[0], ppFramesIn[0], *pFrameCountOut);
-}
 
 MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFramesOut, const void* pFramesIn, ma_uint32 frameCount)
 {
@@ -90,31 +107,10 @@ MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFram
 
     for (iFrame = 0; iFrame < frameCount; iFrame += 1) {
         for (iChannel = 0; iChannel < pEffects->config.channels; iChannel += 1) {
-            ma_uint32 iBuffer = (pEffects->cursor * pEffects->config.channels) + iChannel;
 
-            if (0) {
-                /* Delayed start. */
-#if 0
-                /* Read */
-                pFramesOutF32[iChannel] = pEffects->pBuffer[iBuffer] * pEffects->config.wet;
-
-                /* Feedback */
-                pEffects->pBuffer[iBuffer] = (pEffects->pBuffer[iBuffer] * pDelay->config.decay) + (pFramesInF32[iChannel] * pDelay->config.dry);
-#endif
-            } else {
-                /* Immediate start */
-#if 0
-                /* Feedback */
-                pDelay->pBuffer[iBuffer] = (pEffects->pBuffer[iBuffer] * pDelay->config.decay) + (pFramesInF32[iChannel] * pDelay->config.dry);
-
-                /* Read */
                 // Just copying for now
-#endif
-                pFramesOutF32[iChannel] = pEffects->pBuffer[iBuffer];
-            }
+                pFramesOutF32[iChannel] = pFramesInF32[iChannel];
         }
-
-        pEffects->cursor = (pEffects->cursor + 1) % pEffects->bufferSizeInFrames;
 
         pFramesOutF32 += pEffects->config.channels;
         pFramesInF32  += pEffects->config.channels;
@@ -134,15 +130,15 @@ MA_API ma_result ma_effects_node_init(ma_node_graph* pNodeGraph, const ma_effect
 
     MA_ZERO_OBJECT(pEffectsNode);
 
-    result = ma_effects_init(&pConfig->effects, pAllocationCallbacks, &pEffectsNode->effects);
+    result = ma_effects_init(&pConfig->effect, pAllocationCallbacks, &pEffectsNode->effects);
     if (result != MA_SUCCESS) {
         return result;
     }
 
     baseConfig = pConfig->nodeConfig;
     baseConfig.vtable          = &g_ma_effects_node_vtable;
-    baseConfig.pInputChannels  = &pConfig->effects.channels;
-    baseConfig.pOutputChannels = &pConfig->effects.channels;
+    baseConfig.pInputChannels  = &pConfig->effect.channels;
+    baseConfig.pOutputChannels = &pConfig->effect.channels;
 
     result = ma_node_init(pNodeGraph, &baseConfig, pAllocationCallbacks, &pEffectsNode->baseNode);
     if (result != MA_SUCCESS) {

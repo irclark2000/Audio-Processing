@@ -30,20 +30,17 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 typedef struct {
 	ma_uint32 channels;
 	ma_uint32 sampleRate;
-	EFFECT_PARAMS *parameters;
+	EFFECT_COMPONENT *component;
 }ma_effects_config;
 
 typedef struct {
 	ma_node_config nodeConfig;
-	ma_effects_config effects;
+	ma_effects_config effect;
 } ma_effects_node_config;
 
 typedef struct
 {
 	ma_effects_config config;
-	ma_uint32 cursor;               /* Feedback is written to this cursor. Always equal or in front of the read cursor. */
-	ma_uint32 bufferSizeInFrames;
-	float* pBuffer;
 } ma_effects;
 
 typedef struct {
@@ -51,15 +48,16 @@ typedef struct {
 	ma_effects effects;
 } ma_effects_node;
 
-MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sampleRate, EFFECT_COMPONENT * component);
-MA_API ma_result ma_effects_init(const ma_effects_config* pConfig, const ma_allocation_callbacks* pAllocationCallbacks, EFFECT_COMPONENT * component);
+MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sampleRate, EFFECT_COMPONENT *component);
+MA_API ma_result ma_effects_init(const ma_effects_config* pConfig, const ma_allocation_callbacks* pAllocationCallbacks, ma_effects *pEffect);
 MA_API void ma_effects_uninit(ma_effects* pEffect, const ma_allocation_callbacks* pAllocationCallbacks);
-MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sampleRate, EFFECT_COMPONENT * component);
-MA_API ma_effects_node_config ma_effects_node_config_init(ma_uint32 channels, ma_uint32 sampleRate, EFFECT_COMPONENT * component);
+MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sampleRate, EFFECT_COMPONENT *component);
+MA_API ma_effects_node_config ma_effects_node_config_init(ma_uint32 channels, ma_uint32 sampleRate, EFFECT_COMPONENT *component);
 MA_API ma_result ma_effects_node_init(ma_node_graph* pNodeGraph, const ma_effects_node_config* pConfig, const ma_allocation_callbacks* pAllocationCallbacks, ma_effects_node* pEffectsNode);
+MA_API void ma_effects_node_uninit(ma_effects_node* pEffectsNode, const ma_allocation_callbacks* pAllocationCallbacks);
 MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFramesOut, const void* pFramesIn, ma_uint32 frameCount);
-MA_API void ma_effects_set_parameter(ma_effects* pEffect, EFFECT_PARAMS *parameter, float value, uint8_t pIndex);
-MA_API float ma_effects_get_parameter(const ma_effects* pEffect, EFFECT_PARAMS *parameter, uint8_t pIndex);
+MA_API void ma_effects_set_parameter(ma_effects* pEffect, EFFECT_COMPONENT *component, float value);
+MA_API float ma_effects_get_parameter(const ma_effects* pEffect, EFFECT_COMPONENT *component);
 
 
 #endif /* EFFECTS_TESTER_AUDIO_PLAYER_EXTERNAL_MA_NODE_H_ */

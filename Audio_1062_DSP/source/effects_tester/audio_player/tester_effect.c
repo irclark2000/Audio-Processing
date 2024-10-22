@@ -65,7 +65,8 @@ int apply_effect(int source) {
         channels   = ma_engine_get_channels(&g_engine);
         sampleRate = ma_engine_get_sample_rate(&g_engine);
 
-        effectsNodeConfig = ma_effects_node_config_init(channels, sampleRate, (ma_uint32)(sampleRate * DELAY_IN_SECONDS), 0);
+	// the third parameter should be of type EFFECT_COMPONENT
+        effectsNodeConfig = ma_effects_node_config_init(channels, sampleRate, 0);
 
         result = ma_effects_node_init(ma_engine_get_node_graph(&g_engine), &effectsNodeConfig, NULL, &g_effects_node);
         if (result != MA_SUCCESS) {
