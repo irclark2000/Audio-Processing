@@ -21,6 +21,7 @@
 
 #if AUDIO_EFFECTS_TESTER
 #include "tester_effect.h"
+#include "external_ma_node.h"
 #include "miniaudio.h"
 #include <stdio.h>
 
@@ -29,7 +30,7 @@
 
 static ma_engine g_engine;
 static ma_sound g_sound;            /* This example will play only a single sound at once, so we only need one `ma_sound` object. */
-static ma_delay_node g_delayNode;   /* The echo effect is achieved using a delay node. */
+static ma_effects_node g_effects_node;   /* The echo effect is achieved using a delay node. */
 
 int apply_effect(int source) {
     /* The engine needs to be initialized first. */
@@ -57,23 +58,23 @@ int apply_effect(int source) {
         return -1;
     }
     {
-        ma_delay_node_config delayNodeConfig;
+        ma_effects_node_config effectsNodeConfig;
         ma_uint32 channels;
         ma_uint32 sampleRate;
 
         channels   = ma_engine_get_channels(&g_engine);
         sampleRate = ma_engine_get_sample_rate(&g_engine);
 
-        delayNodeConfig = ma_delay_node_config_init(channels, sampleRate, (ma_uint32)(sampleRate * DELAY_IN_SECONDS), DECAY);
+        effectsNodeConfig = ma_effects_node_config_init(channels, sampleRate, (ma_uint32)(sampleRate * DELAY_IN_SECONDS), 0);
 
-        result = ma_delay_node_init(ma_engine_get_node_graph(&g_engine), &delayNodeConfig, NULL, &g_delayNode);
+        result = ma_effects_node_init(ma_engine_get_node_graph(&g_engine), &effectsNodeConfig, NULL, &g_effects_node);
         if (result != MA_SUCCESS) {
-            printf("Failed to initialize delay node.");
+            printf("Failed to initialize effects node.");
             return -1;
         }
 
         /* Connect the output of the delay node to the input of the endpoint. */
-        ma_node_attach_output_bus(&g_delayNode, 0, ma_engine_get_endpoint(&g_engine), 0);
+        ma_node_attach_output_bus(&g_effects_node, 0, ma_engine_get_endpoint(&g_engine), 0);
     }
     /* Now we can load the sound and connect it to the delay node. */
     {
@@ -84,7 +85,7 @@ int apply_effect(int source) {
         }
 
         /* Connect the output of the sound to the input of the effect. */
-        ma_node_attach_output_bus(&g_sound, 0, &g_delayNode, 0);
+        ma_node_attach_output_bus(&g_sound, 0, &g_effects_node, 0);
 
         /*
         Start the sound after it's applied to the sound. Otherwise there could be a scenario where
@@ -97,7 +98,7 @@ int apply_effect(int source) {
     getchar();
 
     ma_sound_uninit(&g_sound);
-    ma_delay_node_uninit(&g_delayNode, NULL);
+    ma_effects_node_uninit(&g_effects_node, NULL);
     ma_engine_uninit(&g_engine);
     return 0;
 }

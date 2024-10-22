@@ -126,5 +126,45 @@ MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFram
     return MA_SUCCESS;
 }
 
+MA_API ma_result ma_effects_node_init(ma_node_graph* pNodeGraph, const ma_effects_node_config* pConfig, const ma_allocation_callbacks* pAllocationCallbacks, ma_effects_node* pEffectsNode)
+{
+    ma_result result;
+    ma_node_config baseConfig;
+
+    if (pEffectsNode == NULL) {
+        return MA_INVALID_ARGS;
+    }
+
+    MA_ZERO_OBJECT(pEffectsNode);
+
+    result = ma_effects_init(&pConfig->effects, pAllocationCallbacks, &pEffectsNode->effects);
+    if (result != MA_SUCCESS) {
+        return result;
+    }
+
+    baseConfig = pConfig->nodeConfig;
+    baseConfig.vtable          = &g_ma_effects_node_vtable;
+    baseConfig.pInputChannels  = &pConfig->effects.channels;
+    baseConfig.pOutputChannels = &pConfig->effects.channels;
+
+    result = ma_node_init(pNodeGraph, &baseConfig, pAllocationCallbacks, &pEffectsNode->baseNode);
+    if (result != MA_SUCCESS) {
+        ma_effects_uninit(&pEffectsNode->effects, pAllocationCallbacks);
+        return result;
+    }
+
+    return result;
+}
+
+MA_API void ma_effects_node_uninit(ma_effects_node* pEffectsNode, const ma_allocation_callbacks* pAllocationCallbacks)
+{
+    if (pEffectsNode == NULL) {
+        return;
+    }
+
+    /* The base node is always uninitialized first. */
+    ma_node_uninit(pEffectsNode, pAllocationCallbacks);
+    ma_effects_uninit(&pEffectsNode->effects, pAllocationCallbacks);
+}
 
 #endif
