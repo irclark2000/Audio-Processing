@@ -34,24 +34,14 @@ MA_API void ma_effects_set_parameter(ma_effects* pEffect, EFFECT_PARAMS *paramet
 MA_API float ma_effects_get_parameter(const ma_effects* pEffect, EFFECT_PARAMS *parameter, uint8_t pIndex) {
 	return parameter->floatParameter[pIndex];
 }
-MA_API ma_effects_node_config ma_effects_node_config_init(ma_uint32 channels, ma_uint32 sampleRate, ma_uint32 delayInFrames, EFFECT_PARAMS *parameters)
+MA_API ma_effects_node_config ma_effects_node_config_init(ma_uint32 channels, ma_uint32 sampleRate, EFFECT_COMPONENT *component)
 {
     ma_effects_node_config config;
 
     config.nodeConfig = ma_node_config_init();
-    config.effects = ma_effects_config_init(channels, sampleRate, delayInFrames, parameters);
+    config.effects = ma_effects_config_init(channels, sampleRate, component);
 
     return config;
-}
-
-
-static void ma_effects_node_process_pcm_frames(ma_node* pNode, const float** ppFramesIn, ma_uint32* pFrameCountIn, float** ppFramesOut, ma_uint32* pFrameCountOut)
-{
-    ma_effects_node* pEffectsNode = (ma_effects_node*)pNode;
-
-    (void)pFrameCountIn;
-
-    ma_effects_process_pcm_frames(&pEffectsNode->effects, ppFramesOut[0], ppFramesIn[0], *pFrameCountOut);
 }
 
 static ma_node_vtable g_ma_effects_node_vtable =
@@ -63,14 +53,13 @@ static ma_node_vtable g_ma_effects_node_vtable =
     MA_NODE_FLAG_CONTINUOUS_PROCESSING  /* Delay requires continuous processing to ensure the tail get's processed. */
 };
 
-MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sampleRate, ma_uint32 delayInFrames, EFFECT_PARAMS *parameters)
+MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sampleRate, EFFECT_COMPONENT *component)
 {
     ma_effects_config config;
 
     MA_ZERO_OBJECT(&config);
     config.channels      = channels;
     config.sampleRate    = sampleRate;
-    config.delayInFrames = delayInFrames;
    /*
     config.delayStart    = (decay == 0) ? MA_TRUE : MA_FALSE;
     config.wet           = 1;
@@ -78,6 +67,14 @@ MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sa
     config.decay         = decay;
  */
     return config;
+}
+static void ma_delay_node_process_pcm_frames(ma_node* pNode, const float** ppFramesIn, ma_uint32* pFrameCountIn, float** ppFramesOut, ma_uint32* pFrameCountOut)
+{
+    ma_effects_node* pEffectsNode = (ma_effects_node*)pNode;
+
+    (void)pFrameCountIn;
+
+    ma_delay_process_pcm_frames(&pEffectsNode->effects, ppFramesOut[0], ppFramesIn[0], *pFrameCountOut);
 }
 
 MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFramesOut, const void* pFramesIn, ma_uint32 frameCount)
