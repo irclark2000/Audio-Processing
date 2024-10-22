@@ -24,6 +24,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "miniaudio.h"
 #include "apply_effect.h"
+#include "effect_component.h"
 #include <stdint.h>
 
 typedef struct {
