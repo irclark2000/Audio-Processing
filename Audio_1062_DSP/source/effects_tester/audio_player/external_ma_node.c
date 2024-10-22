@@ -68,13 +68,13 @@ MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sa
  */
     return config;
 }
-static void ma_delay_node_process_pcm_frames(ma_node* pNode, const float** ppFramesIn, ma_uint32* pFrameCountIn, float** ppFramesOut, ma_uint32* pFrameCountOut)
+static void ma_effect_node_process_pcm_frames(ma_node* pNode, const float** ppFramesIn, ma_uint32* pFrameCountIn, float** ppFramesOut, ma_uint32* pFrameCountOut)
 {
     ma_effects_node* pEffectsNode = (ma_effects_node*)pNode;
 
     (void)pFrameCountIn;
 
-    ma_delay_process_pcm_frames(&pEffectsNode->effects, ppFramesOut[0], ppFramesIn[0], *pFrameCountOut);
+    ma_effect_process_pcm_frames(&pEffectsNode->effects, ppFramesOut[0], ppFramesIn[0], *pFrameCountOut);
 }
 
 MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFramesOut, const void* pFramesIn, ma_uint32 frameCount)

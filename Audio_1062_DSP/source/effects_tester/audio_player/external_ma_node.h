@@ -30,7 +30,6 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 typedef struct {
 	ma_uint32 channels;
 	ma_uint32 sampleRate;
-	ma_uint32 delayInFrames;
 	EFFECT_PARAMS *parameters;
 }ma_effects_config;
 
@@ -52,9 +51,7 @@ typedef struct {
 	ma_effects effects;
 } ma_effects_node;
 
-MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sampleRate, ma_uint32 delayInFrames,
-		EFFECT_PARAMS *eParamters);
-
+MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sampleRate, EFFECT_COMPONENT * component);
 MA_API ma_result ma_effects_init(const ma_effects_config* pConfig, const ma_allocation_callbacks* pAllocationCallbacks, EFFECT_COMPONENT * component);
 MA_API void ma_effects_uninit(ma_effects* pEffect, const ma_allocation_callbacks* pAllocationCallbacks);
 MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sampleRate, EFFECT_COMPONENT * component);
