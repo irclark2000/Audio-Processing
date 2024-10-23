@@ -24,6 +24,9 @@
 #include "external_ma_node.h"
 #include "miniaudio.h"
 #include <stdio.h>
+#include "effects/reverbs/freeverb.h"
+
+FREEVERB fv
 
 #define DELAY_IN_SECONDS    0.2f
 #define DECAY               0.25f   /* Volume falloff for each echo. */
@@ -35,7 +38,6 @@ static ma_effects_node g_effects_node;   /* The echo effect is achieved using a 
 int apply_effect(int source) {
     /* The engine needs to be initialized first. */
 	ma_result result;
-
     char * fileName = 0;
     switch (source) {
     case 0:
@@ -51,6 +53,10 @@ int apply_effect(int source) {
     	 fileName = "sounds/alan-walker-type-guitar-loop-1-246365.wav";
 
     }
+    FREEVERB fv;
+    EFFECT_COMPONENT ec;
+	component = initializeComponent_Freeverb(&fv, &ec);
+	ec->initialize(&fv, &ec);
 
     result = ma_engine_init(NULL, &g_engine);
     if (result != MA_SUCCESS) {
@@ -65,8 +71,8 @@ int apply_effect(int source) {
         channels   = ma_engine_get_channels(&g_engine);
         sampleRate = ma_engine_get_sample_rate(&g_engine);
 
-	// the third parameter should be of type EFFECT_COMPONENT
-        effectsNodeConfig = ma_effects_node_config_init(channels, sampleRate, 0);
+	// the third parameter should be of type EFFECT_COMPONENT *
+        effectsNodeConfig = ma_effects_node_config_init(channels, sampleRate, &ec);
 
         result = ma_effects_node_init(ma_engine_get_node_graph(&g_engine), &effectsNodeConfig, NULL, &g_effects_node);
         if (result != MA_SUCCESS) {
