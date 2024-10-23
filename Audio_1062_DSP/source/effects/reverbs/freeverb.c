@@ -103,7 +103,7 @@ float applyFreeverb(void *vfv, float input) {
 }
 #if AUDIO_EFFECTS_TESTER
 void initialize_FREEVERB(void *vfv, EFFECT_PARAMS *params) {
-	initFreeverb(fv);
+	initFreeverb(vfv);
 }
 /*
   	char *componentName;
@@ -121,7 +121,7 @@ void initialize_FREEVERB(void *vfv, EFFECT_PARAMS *params) {
 EFFECT_COMPONENT * initializeComponent_Freeverb (FREEVERB *fv, EFFECT_COMPONENT *component) {
 	component->name = "freeverb";
 	component->effect = fv;
-	component->initialize = initialize_Freeverb;
+	component->initialize = initialize_FREEVERB;
 	component->uninitialize = uninitialize_Freeverb;
 	component->parameterCount = 0;
 	component->childrenCount = 0;
