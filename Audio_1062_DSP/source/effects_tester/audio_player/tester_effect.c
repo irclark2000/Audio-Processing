@@ -26,7 +26,6 @@
 #include <stdio.h>
 #include "effects/reverbs/freeverb.h"
 
-FREEVERB fv
 
 #define DELAY_IN_SECONDS    0.2f
 #define DECAY               0.25f   /* Volume falloff for each echo. */
