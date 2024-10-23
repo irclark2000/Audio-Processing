@@ -69,4 +69,8 @@ static void mute(LPFCOMB_FILTER *comb) {
 		comb->buf[comb->i] = 0.0f;
 	}
 }
-
+void uninitialize_CombFilter(LPFCOMB_FILTER *comb) {
+#if AUDIO_EFFECTS_TESTER
+	free(comb->buf);
+#endif
+}

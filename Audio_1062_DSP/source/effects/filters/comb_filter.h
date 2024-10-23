@@ -39,5 +39,5 @@ typedef struct {
 void initCombFilter(LPFCOMB_FILTER * comb, float *buffer, int size, float damp, float feedback);
 void upDateCombFilter(LPFCOMB_FILTER * comb, float limitFactor);
 float applyCombFilter(LPFCOMB_FILTER * comb, float input);
-
+void uninitialize_CombFilter(LPFCOMB_FILTER *comb);
 #endif /* EFFECTS_FILTERS_COMB_FILTER_H_ */

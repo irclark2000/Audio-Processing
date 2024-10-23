@@ -61,4 +61,9 @@ static void mute (COMB_FILTER *comb) {
 		comb->buf[comb->i] = 0.0f;
 	}
 }
+void uninitialize_CombFilter1(COMB_FILTER *comb) {
+#if AUDIO_EFFECTS_TESTER
+	free(comb->buf);
+#endif
+}
 

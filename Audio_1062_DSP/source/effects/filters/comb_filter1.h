@@ -37,6 +37,6 @@ typedef struct {
 void initCombFilter1(COMB_FILTER * comb, float *buffer, int size, float gain);
 void upDateCombFilter1(COMB_FILTER * comb, float limitFactor);
 float applyCombFilter1(COMB_FILTER * comb, float input);
-
+void uninitialize_CombFilter1(COMB_FILTER *comb);
 
 #endif /* EFFECTS_FILTERS_COMB_FILTER1_H_ */

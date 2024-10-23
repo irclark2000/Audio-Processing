@@ -21,5 +21,5 @@ typedef struct {
 
 void initAllpassFilter(ALLPASS * pass, float *buffer, int size, float feedback);
 float applyAllpassFilter(ALLPASS *pass, float input);
-
+void uninitialize_AllpassFilter(ALLPASS *pass);
 #endif /* EFFECTS_FILTERS_ALL_PASS_H_ */

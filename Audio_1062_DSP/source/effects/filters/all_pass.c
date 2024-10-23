@@ -43,3 +43,10 @@ static void mute (ALLPASS *pass) {
 		pass->buf[pass->i] = 0.0f;
 	}
 }
+
+void uninitialize_AllpassFilter(ALLPASS *pass) {
+#if AUDIO_EFFECTS_TESTER
+	free(pass->buf);
+#endif
+}
+
