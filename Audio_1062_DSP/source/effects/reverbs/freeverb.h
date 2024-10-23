@@ -22,7 +22,9 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef FREEVERB_H_
 #define FREEVERB_H_
 
-#if !AUDIO_EFFECTS_TESTER
+#if AUDIO_EFFECTS_TESTER
+#include "effects_tester/audio_player/effect_component.h"
+#else
 #include <fsl_common.h>
 #endif
 #include <filters/all_pass.h>
@@ -41,5 +43,8 @@ typedef struct {
 
 void initFreeverb(FREEVERB * fv);
 float applyFreeverb(FREEVERB *fv, float input);
-
+void uninitialize_Freeverb(FREEVERB *fv);
+#if AUDIO_EFFECTS_TESTER
+void initialize_Freeverb(FREEVERB *fv, EFFECT_PARAMS *params);
+#endif
 #endif /* FREEVERB_H_ */

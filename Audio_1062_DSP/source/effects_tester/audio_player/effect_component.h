@@ -14,12 +14,13 @@ struct EFFECT_COMPONENT;
 #define MAX_CHILD_EFFECT_COMPONENTS 10
 
 typedef struct {
-	char componentName[10];
+	char *name;
 	void * effect;
+	void *(*initialize) (void *, EFFECT_PARAMS *parameters);
+	void *(*uninitialize) (void *);
 	char component_parameters[5][80];
 	EFFECT_PARAMS *parameters;
-	uint8_t parameterCont;
-	int parametersCount;
+	uint8_t parameterCount;
 	struct EFFECT_COMPONENT *childComponents[MAX_CHILD_EFFECT_COMPONENTS];
 	uint8_t childrenCount;
 } EFFECT_COMPONENT;

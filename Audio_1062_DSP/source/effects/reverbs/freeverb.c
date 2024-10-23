@@ -99,3 +99,44 @@ float applyFreeverb(FREEVERB *fv, float input) {
 
 	return fv->out;
 }
+#if AUDIO_EFFECTS_TESTER
+void initialize_Freeverb(FREEVERB *fv, EFFECT_PARAMS *params) {
+	initFreeverb(fv);
+}
+/*
+  	char *componentName;
+	void * effect;
+	void *(*initialize) (void *, EFFECT_PARAMS *parameters);
+	void *(*uninitialize) (void *);
+	char component_parameters[5][80];
+	EFFECT_PARAMS *parameters;
+	uint8_t parameterCont;
+	int parametersCount;
+	struct EFFECT_COMPONENT *childComponents[MAX_CHILD_EFFECT_COMPONENTS];
+	uint8_t childrenCount;
+ */
+
+EFFECT_COMPONENT * initializeComponent_Freeverb (FREEVERB *fv, EFFECT_COMPONENT *component) {
+	component->name = "freeverb";
+	commponent->effect = fv;
+	component->initialize = initialize_Freeverb;
+	component->uninitialize = uninitialize_Freeverb;
+	component->parameterCount = 0;
+	component->childrenCount = 0;
+	return component;
+}
+#endif
+void uninitialize_Freeverb(FREEVERB *fv) {
+	uninitialize_CombFilter(&(fv->lpfc[0]));
+	uninitialize_CombFilter(&(fv->lpfc[1]));
+	uninitialize_CombFilter(&(fv->lpfc[2]));
+	uninitialize_CombFilter(&(fv->lpfc[3]));
+	uninitialize_CombFilter(&(fv->lpfc[4]));
+	uninitialize_CombFilter(&(fv->lpfc[5]));
+	uninitialize_CombFilter(&(fv->lpfc[6]));
+	uninitialize_CombFilter(&(fv->lpfc[7]));
+	uninitialize_AllpassFilter(&(fv->allpass[0]));
+	uninitialize_AllpassFilter(&(fv->allpass[1]));
+	uninitialize_AllpassFilter(&(fv->allpass[2]));
+	uninitialize_AllpassFilter(&(fv->allpass[3]));
+}
