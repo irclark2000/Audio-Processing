@@ -16,8 +16,8 @@ struct EFFECT_COMPONENT;
 typedef struct {
 	char *name;
 	void * effect;
-	void *(*initialize) (void *, EFFECT_PARAMS *parameters);
-	void *(*uninitialize) (void *);
+	void (*initialize) (void *, EFFECT_PARAMS *parameters);
+	void (*uninitialize) (void *);
 	char component_parameters[5][80];
 	EFFECT_PARAMS *parameters;
 	uint8_t parameterCount;
