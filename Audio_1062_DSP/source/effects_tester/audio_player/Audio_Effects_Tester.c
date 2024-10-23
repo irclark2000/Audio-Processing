@@ -30,7 +30,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 int main(int argc, char ** argv) {
 	//simple_playback ();
-	apply_effect(2);
+	apply_effect(1);
 	return EXIT_SUCCESS;
 }
 #endif //AUDIO_EFFECTS_TESTER

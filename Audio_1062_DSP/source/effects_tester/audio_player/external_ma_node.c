@@ -42,7 +42,7 @@ MA_API ma_result ma_effects_init(const ma_effects_config* pConfig, const ma_allo
 
 MA_API void ma_effects_uninit(ma_effects* pEffects, const ma_allocation_callbacks* pAllocationCallbacks) {
 }
-MA_API void ma_effects_set_parameter(ma_effects* pEffect, EFFECT_COMPONENT *component, float value) {
+MA_API void ma_effects_set_parameter(ma_effects* pEffect, EFFECT_COMPONENT *compo nent, float value) {
 
 }
 MA_API float ma_effects_get_parameter(const ma_effects* pEffect, EFFECT_COMPONENT *component) {
@@ -104,12 +104,15 @@ MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFram
     if (pEffects == NULL || pFramesOut == NULL || pFramesIn == NULL) {
         return MA_INVALID_ARGS;
     }
+    EFFECT_COMPONENT *component = pEffects->config.component;
 
     for (iFrame = 0; iFrame < frameCount; iFrame += 1) {
         for (iChannel = 0; iChannel < pEffects->config.channels; iChannel += 1) {
 
+		float out = component->apply(component->effect, pFramesInF32[iChannel]);
                 // Just copying for now
                 pFramesOutF32[iChannel] = pFramesInF32[iChannel];
+                pFramesOutF32[iChannel] = out;
         }
 
         pFramesOutF32 += pEffects->config.channels;
