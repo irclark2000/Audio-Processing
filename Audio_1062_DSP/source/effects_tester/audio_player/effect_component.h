@@ -17,7 +17,7 @@ typedef struct {
 	char *name;
 	void * effect;
 	void (*initialize) (void *, EFFECT_PARAMS *parameters);
-	void (*apply) (void *, float);
+	float (*apply) (void *, float);
 	void (*uninitialize) (void *);
 	char component_parameters[5][80];
 	EFFECT_PARAMS *parameters;
