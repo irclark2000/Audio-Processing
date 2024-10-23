@@ -123,6 +123,7 @@ EFFECT_COMPONENT * initializeComponent_Freeverb (FREEVERB *fv, EFFECT_COMPONENT 
 	component->effect = fv;
 	component->initialize = initialize_FREEVERB;
 	component->uninitialize = uninitialize_Freeverb;
+	component->apply = applyFreeverb;
 	component->parameterCount = 0;
 	component->childrenCount = 0;
 	return component;
