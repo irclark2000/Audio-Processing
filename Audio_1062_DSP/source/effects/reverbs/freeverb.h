@@ -41,10 +41,10 @@ typedef struct {
 
 } FREEVERB;
 
-void initFreeverb(FREEVERB * fv);
-float applyFreeverb(FREEVERB *fv, float input);
-void uninitialize_Freeverb(FREEVERB *fv);
+void initFreeverb(void* vfv);
+float applyFreeverb(void *vfv, float input);
+void uninitialize_Freeverb(void *vfv);
 #if AUDIO_EFFECTS_TESTER
-void initialize_Freeverb(FREEVERB *fv, EFFECT_PARAMS *params);
+void initialize_FREEVERB(void *vfv, EFFECT_PARAMS *params);
 #endif
 #endif /* FREEVERB_H_ */

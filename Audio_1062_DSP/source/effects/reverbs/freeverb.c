@@ -51,8 +51,8 @@ AT_NONCACHEABLE_SECTION_ALIGN(static float ap1_buf[AP1], 4);
 AT_NONCACHEABLE_SECTION_ALIGN(static float ap2_buf[AP2], 4);
 AT_NONCACHEABLE_SECTION_ALIGN(static float ap3_buf[AP3], 4);
 #endif
-void initFreeverb(FREEVERB * fv) {
-
+void initFreeverb(void * vfv) {
+	FREEVERB *fv = (FREEVERB *)vfv;
 	fv->allCount = sizeof(fv->allpass) / sizeof(fv->allpass[0]);
 	fv->lpfcCount = sizeof(fv->lpfc) / sizeof(fv->lpfc[0]);
 #if AUDIO_EFFECTS_TESTER
@@ -86,7 +86,9 @@ void initFreeverb(FREEVERB * fv) {
 #endif
 
 }
-float applyFreeverb(FREEVERB *fv, float input) {
+float applyFreeverb(void *vfv, float input) {
+	FREEVERB *fv = (FREEVERB *)vfv;
+
 	fv->out = 0;
 	// all in parallel
 	for (fv->i = 0; fv->i < fv->lpfcCount; fv->i++) {
@@ -100,7 +102,7 @@ float applyFreeverb(FREEVERB *fv, float input) {
 	return fv->out;
 }
 #if AUDIO_EFFECTS_TESTER
-void initialize_Freeverb(FREEVERB *fv, EFFECT_PARAMS *params) {
+void initialize_FREEVERB(void *vfv, EFFECT_PARAMS *params) {
 	initFreeverb(fv);
 }
 /*
@@ -118,7 +120,7 @@ void initialize_Freeverb(FREEVERB *fv, EFFECT_PARAMS *params) {
 
 EFFECT_COMPONENT * initializeComponent_Freeverb (FREEVERB *fv, EFFECT_COMPONENT *component) {
 	component->name = "freeverb";
-	commponent->effect = fv;
+	component->effect = fv;
 	component->initialize = initialize_Freeverb;
 	component->uninitialize = uninitialize_Freeverb;
 	component->parameterCount = 0;
@@ -126,7 +128,8 @@ EFFECT_COMPONENT * initializeComponent_Freeverb (FREEVERB *fv, EFFECT_COMPONENT 
 	return component;
 }
 #endif
-void uninitialize_Freeverb(FREEVERB *fv) {
+void uninitialize_Freeverb(void *vfv) {
+	FREEVERB *fv = (FREEVERB *)vfv;
 	uninitialize_CombFilter(&(fv->lpfc[0]));
 	uninitialize_CombFilter(&(fv->lpfc[1]));
 	uninitialize_CombFilter(&(fv->lpfc[2]));
