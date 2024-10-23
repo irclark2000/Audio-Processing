@@ -56,7 +56,7 @@ int apply_effect(int source) {
     FREEVERB fv;
     EFFECT_COMPONENT ec;
 	initializeComponent_Freeverb(&fv, &ec);
-	ec->initialize(&fv, &ec);
+	ec.initialize(&fv, 0);
 
     result = ma_engine_init(NULL, &g_engine);
     if (result != MA_SUCCESS) {
