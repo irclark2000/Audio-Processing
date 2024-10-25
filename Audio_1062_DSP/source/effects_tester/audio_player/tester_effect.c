@@ -49,7 +49,6 @@ int apply_effect(int source) {
     	 fileName = "sounds/alan-walker-type-guitar-loop-1-246365.wav";
 
     }
-    FREEVERB fv;
     EFFECT_COMPONENT *echo;
     echo = createComponent("Echo", 0);
 	//ec.initialize(&fv, 0);
@@ -68,7 +67,7 @@ int apply_effect(int source) {
         sampleRate = ma_engine_get_sample_rate(&g_engine);
 
 	// the third parameter should be of type EFFECT_COMPONENT *
-        effectsNodeConfig = ma_effects_node_config_init(channels, sampleRate, &ec);
+        effectsNodeConfig = ma_effects_node_config_init(channels, sampleRate, echo);
 
         result = ma_effects_node_init(ma_engine_get_node_graph(&g_engine), &effectsNodeConfig, NULL, &g_effects_node);
         if (result != MA_SUCCESS) {
