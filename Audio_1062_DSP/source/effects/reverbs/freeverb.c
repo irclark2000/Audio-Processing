@@ -105,27 +105,16 @@ float applyFreeverb(void *vfv, float input) {
 void initialize_FREEVERB(void *vfv, EFFECT_PARAMS *params) {
 	initFreeverb(vfv);
 }
-/*
-  	char *componentName;
-	void * effect;
-	void *(*initialize) (void *, EFFECT_PARAMS *parameters);
-	void *(*uninitialize) (void *);
-	char component_parameters[5][80];
-	EFFECT_PARAMS *parameters;
-	uint8_t parameterCont;
-	int parametersCount;
-	struct EFFECT_COMPONENT *childComponents[MAX_CHILD_EFFECT_COMPONENTS];
-	uint8_t childrenCount;
- */
 
 EFFECT_COMPONENT * initializeComponent_Freeverb (FREEVERB *fv, EFFECT_COMPONENT *component) {
-	component->name = "freeverb";
+	component->name = "Freeverb";
 	component->effect = fv;
 	component->initialize = initialize_FREEVERB;
 	component->uninitialize = uninitialize_Freeverb;
 	component->apply = applyFreeverb;
 	component->parameterCount = 0;
 	component->childrenCount = 0;
+	component->bypass = 0;
 	return component;
 }
 #endif

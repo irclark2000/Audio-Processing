@@ -42,7 +42,7 @@ MA_API ma_result ma_effects_init(const ma_effects_config* pConfig, const ma_allo
 
 MA_API void ma_effects_uninit(ma_effects* pEffects, const ma_allocation_callbacks* pAllocationCallbacks) {
 }
-MA_API void ma_effects_set_parameter(ma_effects* pEffect, EFFECT_COMPONENT *compo nent, float value) {
+MA_API void ma_effects_set_parameter(ma_effects* pEffect, EFFECT_COMPONENT *component, float value) {
 
 }
 MA_API float ma_effects_get_parameter(const ma_effects* pEffect, EFFECT_COMPONENT *component) {

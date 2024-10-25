@@ -11,6 +11,9 @@
 
 void intialize_ECHO (ECHO *echo, float *buf, uint32_t buf_size, float delayMSec,
 		float feedback_level, float feedback_gain, float wet_dry, float sampleRate) {
+#if AUDIO_EFFECTS_TESTER
+	buf = (float *)malloc (buf_size * sizeof(float));
+#endif
 	initialize_variable_delay (&(echo->vDelay), buf, buf_size, sampleRate);
 	setDelayMSec_ECHO (echo, delayMSec);
 	setFeedback_level_ECHO (echo, feedback_level);
@@ -33,7 +36,8 @@ float getMaxDelayMS_ECHO (ECHO *echo) {
 static float delayed;
 static float wet;
 
-float update_Echo (ECHO * echo, float input) {
+float update_Echo (void * vEcho, float input) {
+	ECHO * echo = (ECHO *)vEcho;
 	// get sample should be called before adding new sample to buffer
 	// add feedback (with gain) to the input
 	delayed = getDelayedSample_VARDELAY(&(echo->vDelay), input, echo->feedBack_level);
@@ -42,3 +46,26 @@ float update_Echo (ECHO * echo, float input) {
 
 	return echo->out;
 }
+#if AUDIO_EFFECTS_TESTER
+void initialize_FREEVERB(void *vfv, EFFECT_PARAMS *params) {
+	initFreeverb(vfv);
+}
+
+EFFECT_COMPONENT * initializeComponent_ECHO (ECHO *Echo, EFFECT_COMPONENT *component) {
+	component->name = "Echo";
+	component->effect = Echo;
+	component->initialize = initialize_FREEVERB;
+	component->uninitialize = uninitialize_ECHO;
+	component->apply = applyFreeverb;
+	component->parameterCount = 0;
+	component->childrenCount = 0;
+	component->bypass = 0;
+	return component;
+}
+#endif
+#if AUDIO_EFFECTS_TESTER
+void uninitialize_ECHO(void *vEcho) {
+	ECHO *echo = (ECHO*) vEcho;
+	uninitialize_VARDELAY(&(echo->vDelay));
+}
+#endif

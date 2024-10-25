@@ -1,7 +1,7 @@
 /*
- * mixer.c
+ * feedback_comb_filter.c
  *
- *  Created on: Sep 23, 2024
+ *  Created on: Oct 24, 2024
  *      Author: isaac
  */
 /*
@@ -18,28 +18,37 @@ OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO 
 BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+#include "feedback_comb_filter.h"
 
-#include <components/mixer.h>
-void initialize_MIXER (MIXER * mixer, float wet_dry) {
-	setWetDry_MIXER(mixer, wet_dry);
-}
-float applyWetDry_MIXER (MIXER * mixer, float input_wet, float input_dry){
-	return (mixer->out = input_dry * (1.0f - mixer->wet_dry) + input_wet * mixer->wet_dry);
-}
-void setWetDry_MIXER (MIXER *mixer, float wet_dry){
-	mixer->wet_dry = wet_dry < 0.0f ? 0.0f : (wet_dry > 1.0f ? 1.0f : wet_dry);
-}
+void initialize_FBCF (FBCF *filter, float *buf, uint32_t buf_size, float feedbackGain, float sampleRate) {
 #if AUDIO_EFFECTS_TESTER
-
-EFFECT_COMPONENT * initializeComponent_MIXER (MIXER *mixer, EFFECT_COMPONENT *component) {
-	component->name = "Mixer";
-	component->effect = mixer;
-	component->initialize = do_nothing1_Component;
-	component->uninitialize = do_nothing0_Component;
-	component->apply = do_nothing0_Component;
-	component->parameterCount = 1;
-	component->childrenCount = 0;
-	component->bypass = 0;
-	return component;
-}
+	if (buf == 0) {
+		buf = malloc(buf_size * sizeof(float));
+	}
 #endif
+	memset(buf, 0, buf_size * sizeof(float));
+	filter->sampleRate = sampleRate;
+	filter->sampleTime = 1.0/sampleRate;  // 1/sampleRate: avoids division in process loop
+	filter->fcbfOut = 0;
+	setFeedback_FCFB(filter, feedbackGain);
+	filter->buf = buf;
+	filter->buf_size = buf_size;
+	filter->index = 0;
+}
+void setFeedback_FBCF(FBCF *filter, float feedback) {
+	feedback = MIN_MAX (feedback, -0.98, 0.98);
+	filter->g0 = feedback;
+}
+
+float applyFilter_FBCF(FBCF *filter, float input) {
+	filter->fcbfOut = input + filter->g0 * filter->buf[filter->index];
+	filter->buf[filter->index] = filter->fcbfOut;
+	filter->index = (filter->index + 1) % filter->buf_size;
+	return filter->fcbfOut;
+}
+
+void unInitialize_FBCF (FBCF *filter) {
+#if AUDIO_EFFECTS_TESTER
+	free(filter->buf);
+#endif
+}

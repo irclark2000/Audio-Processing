@@ -97,4 +97,8 @@ float getFloatAtReadPtrWithIndex_VARDELAY(VARDELAY *vDelay, uint32_t index) {
 	index = (index + 5 * vDelay->cBufPtr->size) % vDelay->cBufPtr->size;
 	return vDelay->cBufPtr->storage[index];
 }
-
+#if AUDIO_EFFECTS_TESTER
+void uninitialize_VARDELAY(VARDELAY *vDelay) {
+	free(vDelay->cBuf);
+}
+#endif

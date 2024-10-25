@@ -1,7 +1,7 @@
 /*
- * effect_component.h
+ * feedback_comb_filter.h
  *
- *  Created on: Oct 21, 2024
+ *  Created on: Oct 24, 2024
  *      Author: isaac
  */
 /*
@@ -19,38 +19,30 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CON
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
+#ifndef EFFECTS_COMPONENTS_FEEDBACK_COMB_FILTER_H_
+#define EFFECTS_COMPONENTS_FEEDBACK_COMB_FILTER_H_
 #include <stdint.h>
-#include "apply_effect.h"
-#ifndef EFFECTS_TESTER_AUDIO_PLAYER_EFFECT_COMPONENT_H_
-#define EFFECTS_TESTER_AUDIO_PLAYER_EFFECT_COMPONENT_H_
+#include <string.h>
+#include "effects/components/effects_macros.h"
 
 #if AUDIO_EFFECTS_TESTER
-#include <string.h>
 #include <stdlib.h>
 #endif
-struct EFFECT_COMPONENT;
-#define MAX_CHILD_EFFECT_COMPONENTS 10
-typedef enum {
-	Lfo, Mixer, VariableDelay, VariableBandpass,
-	FirstOrderAllPass, CircularBuffer, FeedBackCombFilter,
-	Echo, WahWah, Chorus, Flanger, Vibrato, ChorusElement
-} EFFECT_TYPE;
 
-typedef struct EFFECT_COMPONENT {
-	EFFECT_TYPE type;
-	void * effect;
-	void (*initialize) (void *type, EFFECT_PARAMS *parameters, float sampleRate);
-	float (*apply) (void *, float);
-	char *strParameters[10];
-	EFFECT_PARAMS *parameters;
-	uint8_t parameterCount;
-	struct EFFECT_COMPONENT *childComponents[MAX_CHILD_EFFECT_COMPONENTS];
-	uint8_t childrenCount;
-	uint8_t effect_bypass;
-} EFFECT_COMPONENT;
+typedef struct {
+	float sampleRate;
+	float sampleTime;  // 1/sampleRate: avoids division in process loop
+	float fcbfOut;
+	float delayMSec;
+	float g0;
+	float *buf;
+	uint32_t buf_size;
+	uint32_t index;
+} FBCF;
 
-void do_nothing0_Component(void * effect);
-void do_nothing1_Component(void * effect, EFFECT_PARAMS *parameters,float sampleRate);
-EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters);
-void freeComponent (EFFECT_COMPONENT *component);
-#endif /* EFFECTS_TESTER_AUDIO_PLAYER_EFFECT_COMPONENT_H_ */
+void initialize_FBCF (FBCF *filter, float *buf, uint32_t buf_size, float feedbackGain, float sampleRate);
+void setFeedback_FBCF(FBCF *filter, float feedback);
+float applyFilter_FBCF(FBCF *filter, float input);
+void unInitialize_FBCF (FBCF *filter);
+
+#endif /* EFFECTS_COMPONENTS_FEEDBACK_COMB_FILTER_H_ */

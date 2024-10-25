@@ -21,7 +21,9 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #ifndef EFFECTS_COMPONENTS_VARIABLE_DELAY_H_
 #define EFFECTS_COMPONENTS_VARIABLE_DELAY_H_
-
+#if AUDIO_EFFECTS_TESTER
+#include "effects_tester/audio_player/effect_component.h"
+#endif
 #include <components/circular_buffer.h>
 #include <stdint.h>
 typedef struct {
@@ -41,5 +43,11 @@ void setDelay_VARDELAY(VARDELAY *vDelay, float delaySec);
 void setReadPointer(VARDELAY *vDelay, int32_t value);
 float getFloatAtIndex_VARDELAY (VARDELAY *vDelay, int32_t index);
 float getFloatAtReadPtrWithIndex_VARDELAY(VARDELAY *vDelay, uint32_t index);
+#if AUDIO_EFFECTS_TESTER
+void uninitialize_componentVARDELAY(VARDELAY *vDelay);
+void initialize_componentVARDELAY(void *vvDelay, EFFECT_PARAMS * parameters, float sampleRate);
+void set_componentVARDELAY(void *vvDelay, EFFECT_PARAMS * parameters, float newValue);
+float get_componentVARDELAY(void *vvDelay, EFFECT_PARAMS * parameters);
+#endif
 
 #endif /* EFFECTS_COMPONENTS_VARIABLE_DELAY_H_ */

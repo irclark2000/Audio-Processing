@@ -1,7 +1,7 @@
 /*
- * effect_component.h
+ * effects_gui_interface.c
  *
- *  Created on: Oct 21, 2024
+ *  Created on: Oct 24, 2024
  *      Author: isaac
  */
 /*
@@ -18,39 +18,47 @@ OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO 
 BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-
-#include <stdint.h>
-#include "apply_effect.h"
-#ifndef EFFECTS_TESTER_AUDIO_PLAYER_EFFECT_COMPONENT_H_
-#define EFFECTS_TESTER_AUDIO_PLAYER_EFFECT_COMPONENT_H_
-
-#if AUDIO_EFFECTS_TESTER
+#include "effects_gui_interface.h"
+#include "effects/delay_based/echo.h"
 #include <string.h>
+#if AUDIO_EFFECTS_TESTER
 #include <stdlib.h>
 #endif
-struct EFFECT_COMPONENT;
-#define MAX_CHILD_EFFECT_COMPONENTS 10
-typedef enum {
-	Lfo, Mixer, VariableDelay, VariableBandpass,
-	FirstOrderAllPass, CircularBuffer, FeedBackCombFilter,
-	Echo, WahWah, Chorus, Flanger, Vibrato, ChorusElement
-} EFFECT_TYPE;
 
-typedef struct EFFECT_COMPONENT {
+float applyEffect_COMPONENT(void *type, EFFECT_COMPONENT *effect, float input) {
+	return 0;
+}
+
+void setParameter_COMPONENT(void *type, EFFECT_COMPONENT *effect, char *pName, float value) {
+	return;
+}
+
+float getParameter_COMPONENT(void *type, EFFECT_COMPONENT *effect, char *pName) {
+	return 0.0f;
+}
+/*
+ * typedef struct {
+	VARDELAY vDelay;
+	float feedBack_level;
+	float feedback_gain;
+	float out;
+	MIXER mixer;
+} ECHO;
+ *
+ */
+/*
+ * typedef struct {
 	EFFECT_TYPE type;
 	void * effect;
-	void (*initialize) (void *type, EFFECT_PARAMS *parameters, float sampleRate);
+	void (*initialize) (void *, EFFECT_PARAMS *parameters, float sampleRate);
 	float (*apply) (void *, float);
-	char *strParameters[10];
+	void (*uninitialize) (void *);
+	char component_parameters[5][80];
 	EFFECT_PARAMS *parameters;
 	uint8_t parameterCount;
-	struct EFFECT_COMPONENT *childComponents[MAX_CHILD_EFFECT_COMPONENTS];
+	EFFECT_COMPONENT *childComponents[MAX_CHILD_EFFECT_COMPONENTS];
 	uint8_t childrenCount;
 	uint8_t effect_bypass;
 } EFFECT_COMPONENT;
-
-void do_nothing0_Component(void * effect);
-void do_nothing1_Component(void * effect, EFFECT_PARAMS *parameters,float sampleRate);
-EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters);
-void freeComponent (EFFECT_COMPONENT *component);
-#endif /* EFFECTS_TESTER_AUDIO_PLAYER_EFFECT_COMPONENT_H_ */
+ *
+ */
