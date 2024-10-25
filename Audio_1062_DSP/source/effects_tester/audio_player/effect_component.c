@@ -37,7 +37,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "effects/components/mixer.h"
 
 EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters) {
-#if !AUDIO_EFFECTS_TESTER
+#if AUDIO_EFFECTS_TESTER
 	EFFECT_COMPONENT *component = (EFFECT_COMPONENT *)malloc(sizeof(EFFECT_COMPONENT));
 	if (strcmp(effectName, "Echo") == 0) {
 		component->type = Echo;

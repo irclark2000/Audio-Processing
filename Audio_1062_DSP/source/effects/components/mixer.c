@@ -29,17 +29,3 @@ float applyWetDry_MIXER (MIXER * mixer, float input_wet, float input_dry){
 void setWetDry_MIXER (MIXER *mixer, float wet_dry){
 	mixer->wet_dry = wet_dry < 0.0f ? 0.0f : (wet_dry > 1.0f ? 1.0f : wet_dry);
 }
-#if AUDIO_EFFECTS_TESTER
-
-EFFECT_COMPONENT * initializeComponent_MIXER (MIXER *mixer, EFFECT_COMPONENT *component) {
-	component->name = "Mixer";
-	component->effect = mixer;
-	component->initialize = do_nothing1_Component;
-	component->uninitialize = do_nothing0_Component;
-	component->apply = do_nothing0_Component;
-	component->parameterCount = 1;
-	component->childrenCount = 0;
-	component->bypass = 0;
-	return component;
-}
-#endif

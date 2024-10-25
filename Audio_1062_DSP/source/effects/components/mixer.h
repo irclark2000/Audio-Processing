@@ -30,8 +30,5 @@ typedef struct {
 void initialize_MIXER (MIXER * mixer, float wet_dry);
 float applyWetDry_MIXER (MIXER * mixer, float input_wet, float input_dry);
 void setWetDry_MIXER (MIXER *mixer, float wet_dry);
-#if AUDIO_EFFECTS_TESTER
-EFFECT_COMPONENT * initializeComponent_Freeverb (FREEVERB *fv, EFFECT_COMPONENT *component);
-#endif
 
 #endif /* EFFECTS_COMPONENTS_MIXER_H_ */
