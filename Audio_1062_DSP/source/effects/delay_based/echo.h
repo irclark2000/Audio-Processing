@@ -27,10 +27,4 @@ void setFeedback_gain_ECHO (ECHO *echo, float gain);
 void setWetDry_ECHO (ECHO *echo, float wet_dry);
 float update_Echo (void * vEcho, float input);
 float getMaxDelayMS_ECHO (ECHO *echo);
-#if AUDIO_EFFECTS_TESTER
-void uninitialize_componenECHO(void *vType);
-void initialize_componentECHO(void *vType, EFFECT_PARAMS * parameters, float sampleRate);
-void set_componentECHO(void *vType, EFFECT_PARAMS * parameters, float newValue);
-float get_componentECHO(void *vType, EFFECT_PARAMS * parameters);
-#endif
 #endif /* EFFECTS_DELAY_BASED_ECHO_H_ */

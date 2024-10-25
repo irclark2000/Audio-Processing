@@ -51,17 +51,6 @@ void initialize_FREEVERB(void *vfv, EFFECT_PARAMS *params) {
 	initFreeverb(vfv);
 }
 
-EFFECT_COMPONENT * initializeComponent_ECHO (ECHO *Echo, EFFECT_COMPONENT *component) {
-	component->name = "Echo";
-	component->effect = Echo;
-	component->initialize = initialize_FREEVERB;
-	component->uninitialize = uninitialize_ECHO;
-	component->apply = applyFreeverb;
-	component->parameterCount = 0;
-	component->childrenCount = 0;
-	component->bypass = 0;
-	return component;
-}
 #endif
 #if AUDIO_EFFECTS_TESTER
 void uninitialize_ECHO(void *vEcho) {
