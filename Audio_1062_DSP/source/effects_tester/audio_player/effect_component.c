@@ -60,7 +60,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters) {
 		component->effect_bypass = 0;
 	}
 
-	else if (strcmp(effectName, "MIXER") == 0) {
+	else if (strcmp(effectName, "Mixer") == 0) {
 		component->type = Mixer;
 		component->parameterCount = 1;
 		component->parameters = (EFFECT_PARAMS *) malloc (sizeof(EFFECT_PARAMS));
@@ -74,15 +74,20 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters) {
 		component->effect_bypass = 0;
 	}
 	else if (strcmp(effectName, "Variable Delay") == 0) {
-		char *ptr = strtok(strParameters, "-");
+		char temp[80];
+		char *ptr = strtok(temp, "-");
+		component->strParameters[0] = strdup(temp);
+
 		component->type = VariableDelay;
 		component->parameterCount = 1;
 		component->parameters = (EFFECT_PARAMS *) malloc (sizeof(EFFECT_PARAMS));
 		int index = 0;
-		component->strParameters[0] = "Wet/Dry:S3";
-		component->parameters->floatParameter[index++] = 0.0f;
-		component->parameters->floatParameter[index++] = 0.4f;
-		component->parameters->floatParameter[index++] = 1.0f;
+		ptr = strtok(NULL, ":");
+		component->parameters->floatParameter[index++] = atof(ptr);
+		ptr = strtok(NULL, ":");
+		component->parameters->floatParameter[index++] = atof(ptr);
+		ptr = strtok(NULL, ":");
+		component->parameters->floatParameter[index++] = atof(ptr);
 		component->childrenCount = 0;
 		component->apply = 0;
 		component->effect_bypass = 0;
