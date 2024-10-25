@@ -46,12 +46,7 @@ float update_Echo (void * vEcho, float input) {
 
 	return echo->out;
 }
-#if AUDIO_EFFECTS_TESTER
-void initialize_FREEVERB(void *vfv, EFFECT_PARAMS *params) {
-	initFreeverb(vfv);
-}
 
-#endif
 #if AUDIO_EFFECTS_TESTER
 void uninitialize_ECHO(void *vEcho) {
 	ECHO *echo = (ECHO*) vEcho;
