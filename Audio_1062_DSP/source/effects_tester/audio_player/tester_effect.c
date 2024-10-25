@@ -24,11 +24,8 @@
 #include "external_ma_node.h"
 #include "miniaudio.h"
 #include <stdio.h>
-#include "effects/reverbs/freeverb.h"
-
-
-#define DELAY_IN_SECONDS    0.2f
-#define DECAY               0.25f   /* Volume falloff for each echo. */
+#include "effects/delay_based/echo.h"
+#include "effect_component.h"
 
 static ma_engine g_engine;
 static ma_sound g_sound;            /* This example will play only a single sound at once, so we only need one `ma_sound` object. */
@@ -53,10 +50,10 @@ int apply_effect(int source) {
 
     }
     FREEVERB fv;
-    EFFECT_COMPONENT ec;
-	initializeComponent_Freeverb(&fv, &ec);
-	ec.initialize(&fv, 0);
-
+    EFFECT_COMPONENT *echo;
+    echo = createComponent("Echo", 0);
+	//ec.initialize(&fv, 0);
+    return 0;
     result = ma_engine_init(NULL, &g_engine);
     if (result != MA_SUCCESS) {
         printf("Failed to initialize audio engine.");
