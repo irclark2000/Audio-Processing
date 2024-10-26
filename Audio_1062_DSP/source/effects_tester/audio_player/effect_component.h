@@ -35,7 +35,10 @@ struct EFFECT_COMPONENT;
 typedef enum {
 	Lfo, Mixer, VariableDelay, VariableBandpass,
 	FirstOrderAllPass, CircularBuffer, FeedBackCombFilter,
-	Echo, WahWah, Chorus, Flanger, Vibrato, ChorusElement
+	Echo, WahWah, Chorus, Flanger, Vibrato, ChorusElement,
+	Freeverb, Schroeder, Compressor, Expander, Limiter, Noisegate,
+	Phaser, Overdrive, PitchShift, Tremolo,
+
 } EFFECT_TYPE;
 
 typedef struct EFFECT_COMPONENT {
@@ -50,7 +53,7 @@ typedef struct EFFECT_COMPONENT {
 	uint8_t childrenCount;
 	uint8_t effect_bypass;
 } EFFECT_COMPONENT;
-
+char * strSave (char * string);
 void do_nothing0_Component(void * effect);
 void do_nothing1_Component(void * effect, EFFECT_PARAMS *parameters,float sampleRate);
 EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters);

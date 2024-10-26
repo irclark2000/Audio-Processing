@@ -14,6 +14,10 @@
 #include "effects/delay_based/vibrato.h"
 #include "effects/delay_based/wah_wah.h"
 
+typedef struct {
+	char *name;
+	EFFECT_TYPE eType;
+} EFFECT_ITEM;
 
 void initializeEffect(void *type, EFFECT_COMPONENT *effect, float sampleRate);
 float applyEffect_COMPONENT(void *type, EFFECT_COMPONENT *effect, float input);
