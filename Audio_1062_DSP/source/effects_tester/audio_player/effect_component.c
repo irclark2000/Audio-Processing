@@ -120,8 +120,8 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 	}
 	else if (strcmp(effectName, "Mixer") == 0) {
 		component->type = Mixer;
-		component->parameterCount = 3;
-		component->parameters = (EFFECT_PARAMS*) malloc(3 * sizeof(EFFECT_PARAMS));
+		component->parameterCount = 1;
+		component->parameters = (EFFECT_PARAMS*) malloc(sizeof(EFFECT_PARAMS));
 		int index = 0;
 		component->strParameters[0] = "Wet/Dry:S3";
 		component->parameters->floatParameter[index++] = 0.0f;
@@ -146,8 +146,8 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		}
 		else {
 			component->type = VariableDelay;
-			component->parameterCount = 3;
-			component->parameters = (EFFECT_PARAMS*) malloc(3 * sizeof(EFFECT_PARAMS));
+			component->parameterCount = 1;
+			component->parameters = (EFFECT_PARAMS*) malloc(sizeof(EFFECT_PARAMS));
 			int index = 0;
 			ptr = strtok(NULL, ",");
 			component->parameters->floatParameter[index++] = atof(ptr);
