@@ -43,10 +43,10 @@ float fastLN(float x) {
 	return -1.49278 + (2.11263 + (-0.729104 + 0.10969 * x) * x) * x
 			+ 0.6931471806 * t;
 }
-union {
+static union {
 	float f;
 	uint32_t u;
-}static myun;
+} myun;
 
 uint8_t isINF(float x) {
 	myun.f = x;
