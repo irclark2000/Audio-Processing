@@ -151,9 +151,9 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 			int index = 0;
 			ptr = strtok(NULL, ",");
 			component->parameters->floatParameter[index++] = atof(ptr);
-			ptr = strtok(NULL, ":");
+			ptr = strtok(NULL, ",");
 			component->parameters->floatParameter[index++] = atof(ptr);
-			ptr = strtok(NULL, ":");
+			ptr = strtok(NULL, ",");
 			component->parameters->floatParameter[index++] = atof(ptr);
 		}
 		component->childrenCount = 0;
