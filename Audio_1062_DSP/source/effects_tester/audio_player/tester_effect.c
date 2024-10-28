@@ -49,8 +49,8 @@ int apply_effect(int source) {
     	 fileName = "sounds/alan-walker-type-guitar-loop-1-246365.wav";
 
     }
-    EFFECT_COMPONENT *flanger;
-    echo = createComponent("Flanger", 0);
+    EFFECT_COMPONENT *effect_under_test;
+    effect_under_test = createComponent("Chorus", 0);
 	//ec.initialize(&fv, 0);
     return 0;
     result = ma_engine_init(NULL, &g_engine);
@@ -67,7 +67,7 @@ int apply_effect(int source) {
         sampleRate = ma_engine_get_sample_rate(&g_engine);
 
 	// the third parameter should be of type EFFECT_COMPONENT *
-        effectsNodeConfig = ma_effects_node_config_init(channels, sampleRate, flanger);
+        effectsNodeConfig = ma_effects_node_config_init(channels, sampleRate, effect_under_test);
 
         result = ma_effects_node_init(ma_engine_get_node_graph(&g_engine), &effectsNodeConfig, NULL, &g_effects_node);
         if (result != MA_SUCCESS) {
