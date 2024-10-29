@@ -19,8 +19,8 @@
  OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef EFFECTS_DELAY_BASED_WAH_WAH_H_
-#define EFFECTS_DELAY_BASED_WAH_WAH_H_
+#ifndef EFFECTS_VARIABLE_FILTER_EFFECTS_WAH_WAH_H_
+#define EFFECTS_VARIABLE_FILTER_EFFECTS_WAH_WAH_H_
 
 #include "components/mixer.h"
 #include "components/components.h"
@@ -41,4 +41,4 @@ float apply_WAHWAH (WAHWAH * ww, float input);
 void setMInMAXCutoffFrequency (WAHWAH *ww, float minCutoffFreq, float maxCutoffFreq);
 void setWahFreq_Damping_WAHWAH(WAHWAH * ww, float wahFreq, float damp);
 
-#endif /* EFFECTS_DELAY_BASED_WAH_WAH_H_ */
+#endif /* EFFECTS_VARIABLE_FILTER_EFFECTS_WAH_WAH_H_ */
