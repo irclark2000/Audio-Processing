@@ -55,7 +55,7 @@ void freeComponent(EFFECT_COMPONENT * component) {
 }
 
 EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
-#if !AUDIO_EFFECTS_TESTER
+#if AUDIO_EFFECTS_TESTER
 	EFFECT_COMPONENT *component = (EFFECT_COMPONENT*) malloc(
 			sizeof(EFFECT_COMPONENT));
 	if (strcmp(effectName, "Chorus") == 0) {
@@ -63,7 +63,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		component->parameterCount = 1;
 		component->parameters = (EFFECT_PARAMS*) malloc(sizeof(EFFECT_PARAMS));
 		int componentCount = 0;
-		char temp[160];
+		char temp[480];
 		// forced order: base delay, then Lfo, then Lfo Driven Delay
 		if (strParameters == 0) {
 			char * elements = "BaseDelay1:S3*0,1,10//LFO1 Freq:S3*0.1,1,5\tLFO1 Depth(MSec):S3*0,1,10//Delay1 Max:X*30"
@@ -117,7 +117,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 	} else if (strcmp(effectName, "Flanger") == 0) {
 		component->type = Flanger;
 		component->parameterCount = 2;
-		component->parameters = (EFFECT_PARAMS*) malloc(sizeof(EFFECT_PARAMS));
+		component->parameters = (EFFECT_PARAMS*) malloc(2 * sizeof(EFFECT_PARAMS));
 		int index = 0;
 		component->strParameters[0] = "Base Delay MSec:S3";
 		component->parameters[0].floatParameter[index++] = 0.1f;
@@ -137,9 +137,10 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 				"LFO Freq:S3*0.1,1,5\tLFO Depth(MSec):S3*0,1,10");
 		component->apply = update_FLANGER;
 		component->effect_bypass = 0;
-	} else if (strcmp(effectName, "Vibrato") == 0) {
+	} else if (strcmp(effectName, "Vibrato") == 1) {
 		component->type = Vibrato;
 		component->parameterCount = 1;
+		component->parameters = (EFFECT_PARAMS*) malloc(sizeof(EFFECT_PARAMS));
 		/*
 		 * 	LOWFREQOSC lfo;
 	PARAMETER_LIMITS lfo_freq_limits;
@@ -207,7 +208,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		if (*ptr == ':' && *(ptr + 1) == 'S') {
 			uint8_t count = atoi(ptr + 2);
 			ptr = strtok(NULL, "*");
-			ptr = parseParameters(ptr, component->parameters, count);
+			ptr = parseParameters(ptr, component->parameters + 1, count);
 		} else {
 			freeComponent(component);
 		}
