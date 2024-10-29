@@ -37,8 +37,12 @@
 #include "effects/delay_based/flanger.h"
 #include "effects/delay_based/chorus.h"
 #include "effects/delay_based/vibrato.h"
+#include "effects/variable_filter_effects/wah_wah.h"
 #include "effects/components/mixer.h"
+#include "effects/components/low_frequency_oscillator.h"
+#include "effects/components/state_variable_filter.h"
 
+#if AUDIO_EFFECTS_TESTER
 static char* parseParameters(char *ptr, EFFECT_PARAMS *parameters,
 		uint8_t count) {
 	int index = 0;
@@ -53,7 +57,7 @@ static char* parseParameters(char *ptr, EFFECT_PARAMS *parameters,
 void freeComponent(EFFECT_COMPONENT * component) {
 
 }
-
+#endif
 EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 #if AUDIO_EFFECTS_TESTER
 	EFFECT_COMPONENT *component = (EFFECT_COMPONENT*) malloc(
@@ -137,7 +141,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 				"LFO Freq:S3*0.1,1,5\tLFO Depth(MSec):S3*0,1,10");
 		component->apply = update_FLANGER;
 		component->effect_bypass = 0;
-	} else if (strcmp(effectName, "Vibrato") == 1) {
+	} else if (strcmp(effectName, "Vibrato") == 0) {
 		component->type = Vibrato;
 		component->parameterCount = 1;
 		component->parameters = (EFFECT_PARAMS*) malloc(sizeof(EFFECT_PARAMS));
@@ -154,6 +158,29 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		component->apply = apply_VIBRATO;
 		component->effect_bypass = 0;
 
+	} else if (strcmp(effectName, "Wah Wah") == 0) {
+		component->type = WahWah;
+		char temp[160];
+		if (strParameters == 0) {
+			char * elements = "Q:X*6\tCenter Frequency:S3*500,2000,5000"
+					"//LFO Freq:S3*0.1,2000,3000\tLFO Depth(Hz):S3*0,250,1000";
+			strcpy(temp, elements);
+		}
+		else {
+			strcpy(temp, strParameters);
+		}
+		component->parameterCount = 1;
+		component->parameters = (EFFECT_PARAMS*) malloc(sizeof(EFFECT_PARAMS));
+		char *ptr = strtok (temp, "*");
+		component->strParameters[0] = ptr;
+		while(*ptr != ':' && *ptr != 0) ptr++;
+		if (*ptr == ':' && *(ptr + 1) == 'S') {
+			uint8_t count = atoi(ptr + 2);
+			ptr = strtok(NULL, "*");
+			ptr = parseParameters(ptr, component->parameters, count);
+		} else {
+			freeComponent(component);
+		}
 	} else if (strcmp(effectName, "Chorus Element") == 0) {
 		component->type = ChorusElement;
 		char temp[160];
@@ -228,12 +255,35 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		component->childrenCount = 0;
 		component->apply = 0;
 		component->effect_bypass = 0;
+	} else if (strcmp(effectName, "State Variable Filter") == 0) {
+		component->type = StateVariableFilter;
+		char temp[160];
+		if (strParameters == 0) {
+			char * elements = "Q:X*6\tCenter Frequency:S3*500,2000,5000"
+					"//LFO Freq:S3*0.1,2000,3000\tLFO Depth(Hz):S3*0,250,1000";
+			strcpy(temp, elements);
+		}
+		else {
+			strcpy(temp, strParameters);
+		}
+		char *ptr = strtok(temp, "*");
+		component->parameterCount = 2;
+		component->parameters = (EFFECT_PARAMS*) malloc(
+				2 * sizeof(EFFECT_PARAMS));
+		char *ptr1 = strtok(temp, "//");
+		char *ptr2 = strtok(NULL, "//");
+		char parameter1[80];
+		char parameter2[80];
+		strcpy(parameter1, ptr1);
+		strcpy(parameter2, ptr2);
+
+
 	} else if (strcmp(effectName, "Variable Delay") == 0) {
+		component->type = VariableDelay;
 		char temp[80];
 		strcpy(temp, strParameters);
 		char *ptr = strtok(temp, "*");
 		component->strParameters[0] = strSave(temp);
-		component->type = VariableDelay;
 		component->parameterCount = 1;
 		component->parameters = (EFFECT_PARAMS*) malloc(
 				sizeof(EFFECT_PARAMS));

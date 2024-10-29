@@ -36,7 +36,7 @@
 #include <delay_based/echo.h>
 #include <delay_based/flanger.h>
 #include <delay_based/vibrato.h>
-#include <delay_based/wah_wah.h>
+#include <variable_filter_effects/wah_wah.h>
 #include <dynamic_range_control/compressor.h>
 #include <dynamic_range_control/expander.h>
 #include <dynamic_range_control/limiter.h>

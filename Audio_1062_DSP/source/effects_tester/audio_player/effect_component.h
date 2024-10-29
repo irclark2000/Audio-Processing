@@ -34,7 +34,7 @@ struct EFFECT_COMPONENT;
 #define MAX_CHILD_EFFECT_COMPONENTS 10
 typedef enum {
 	Lfo, Mixer, VariableDelay, VariableBandpass,
-	FirstOrderAllPass, CircularBuffer, FeedBackCombFilter,
+	FirstOrderAllPass, CircularBuffer, FeedBackCombFilter, StateVariableFilter,
 	Echo, WahWah, Chorus, Flanger, Vibrato, ChorusElement,
 	Freeverb, Schroeder, Compressor, Expander, Limiter, Noisegate,
 	Phaser, Overdrive, PitchShift, Tremolo,

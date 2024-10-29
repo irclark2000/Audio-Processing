@@ -7,12 +7,12 @@
 
 #ifndef EFFECTS_TESTER_GUI_EFFECTS_GUI_INTERFACE_H_
 #define EFFECTS_TESTER_GUI_EFFECTS_GUI_INTERFACE_H_
+#include <variable_filter_effects/wah_wah.h>
 #include "effects_tester/audio_player/effect_component.h"
 #include "effects/delay_based/echo.h"
 #include "effects/delay_based/chorus.h"
 #include "effects/delay_based/flanger.h"
 #include "effects/delay_based/vibrato.h"
-#include "effects/delay_based/wah_wah.h"
 
 typedef struct {
 	char *name;
