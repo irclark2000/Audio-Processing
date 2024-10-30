@@ -366,7 +366,7 @@ button_demo(struct nk_context *ctx, struct media *media)
  *
  * ===============================================================*/
 static void
-basic_demo(struct nk_context *ctx, struct media *media)
+basic_demo(struct nk_context *ctx, struct media *media, EFFECT_ITEM *effects_list, uint8_t count)
 {
     static int image_active;
     static int check0 = 1;
@@ -377,7 +377,7 @@ basic_demo(struct nk_context *ctx, struct media *media)
     static int selected_item = 0;
     static int selected_image = 3;
     static int selected_icon = 0;
-    static const char *items[] = {"Item 0","item 1","item 2"};
+    //static const char *items[] = {"Item 0","item 1","item 2"};
     static int piemenu_active = 0;
     static struct nk_vec2 piemenu_pos;
 
@@ -424,8 +424,8 @@ basic_demo(struct nk_context *ctx, struct media *media)
     ui_widget(ctx, media, 40);
     if (nk_combo_begin_label(ctx, items[selected_item], nk_vec2(nk_widget_width(ctx), 200))) {
 	    nk_layout_row_dynamic(ctx, 35, 1);
-	    for (i = 0; i < 3; ++i)
-		    if (nk_combo_item_label(ctx, items[i], NK_TEXT_LEFT))
+	    for (i = 0; i < count; ++i)
+		    if (nk_combo_item_label(ctx, effects_list[i].name, NK_TEXT_LEFT))
 			    selected_item = i;
 	    nk_combo_end(ctx);
     }
@@ -893,7 +893,7 @@ void generate_gui(EFFECT_ITEM *effects_list, uint8_t count)
 			nk_input_end(&ctx);}
 
 		/* GUI */
-		basic_demo(&ctx, &media);
+		basic_demo(&ctx, &media, effects_list, count);
 		button_demo(&ctx, &media);
 		effect_controls(&ctx, &media);
 
