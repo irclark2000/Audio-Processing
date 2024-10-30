@@ -431,10 +431,10 @@ basic_demo(struct nk_context *ctx, struct media *media, EFFECT_ITEM *effects_lis
     }
 
     ui_widget(ctx, media, 40);
-    if (nk_combo_begin_image_label(ctx, items[selected_icon], media->images[selected_icon], nk_vec2(nk_widget_width(ctx), 200))) {
+    if (nk_combo_begin_image_label(ctx, effects_list[selected_icon].name, media->images[selected_icon], nk_vec2(nk_widget_width(ctx), 200))) {
 	    nk_layout_row_dynamic(ctx, 35, 1);
-	    for (i = 0; i < 3; ++i)
-		    if (nk_combo_item_image_label(ctx, media->images[i], items[i], NK_TEXT_RIGHT))
+	    for (i = 0; i < count; ++i)
+		    if (nk_combo_item_image_label(ctx, media->images[i], effects_list[i].name, NK_TEXT_RIGHT))
 			    selected_icon = i;
 	    nk_combo_end(ctx);
     }
