@@ -9,6 +9,7 @@
 #include <time.h>
 #include <limits.h>
 #if AUDIO_EFFECTS_TESTER
+#include "toolkit_gui.h"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -751,15 +752,15 @@ static void text_input(GLFWwindow *win, unsigned int codepoint)
 static void scroll_input(GLFWwindow *win, double _, double yoff)
 {UNUSED(_);nk_input_scroll((struct nk_context*)glfwGetWindowUserPointer(win), nk_vec2(0, (float)yoff));}
 
-void generate_gui();
 
+#if 0
 int main(int argc, char *argv[]) {
         generate_gui();
 	NK_UNUSED(argc);
 	NK_UNUSED(argv);
 	return 0;
 }
-
+#endif
 void generate_gui()
 {
 	/* Platform */
