@@ -422,7 +422,7 @@ basic_demo(struct nk_context *ctx, struct media *media, EFFECT_ITEM *effects_lis
      *------------------------------------------------*/
     ui_header(ctx, media, "Combo box");
     ui_widget(ctx, media, 40);
-    if (nk_combo_begin_label(ctx, items[selected_item], nk_vec2(nk_widget_width(ctx), 200))) {
+    if (nk_combo_begin_label(ctx, effects_list[i].name, nk_vec2(nk_widget_width(ctx), 200))) {
 	    nk_layout_row_dynamic(ctx, 35, 1);
 	    for (i = 0; i < count; ++i)
 		    if (nk_combo_item_label(ctx, effects_list[i].name, NK_TEXT_LEFT))
