@@ -27,7 +27,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 EFFECT_ITEM delay_based_effect[] = {
 		{"Echo", Echo}, {"Flanger", Flanger}, {"Vibrato", Vibrato},
-		{"Wah Wah", WahWah}, {"Chorus", Chorus}
+		{"Chorus", Chorus}
 };
 EFFECT_ITEM reverb_effect[] = {
 		{"Freeverb", Freeverb}, {"Schroeder Reverb", Schroeder}
@@ -38,9 +38,13 @@ EFFECT_ITEM dynamic_range_control_effect[] = {
 };
 EFFECT_ITEM misc_effect[] = {
 		{"Phaser", Phaser}, {"Overdrive", Overdrive},
-		{"Pitch Shifter", PitchShift}, {"Tremolo", Tremolo},
+		{"Pitch Shifter", PitchShift}, {"Tremolo", Tremolo},{"Wah Wah", WahWah},
 };
 
+EFFECT_ITEM effects_list[] = {
+	{"Echo", Echo}, {"Flanger", Flanger}, {"Vibrato", Vibrato},
+	{"Chorus", Chorus}
+};
 
 float applyEffect_COMPONENT(void *type, EFFECT_COMPONENT *effect, float input) {
 	return 0;

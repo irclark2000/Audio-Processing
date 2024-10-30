@@ -19,6 +19,7 @@ typedef struct {
 	EFFECT_TYPE eType;
 } EFFECT_ITEM;
 
+extern EFFECT_ITEM effects_list[];
 void initializeEffect(void *type, EFFECT_COMPONENT *effect, float sampleRate);
 float applyEffect_COMPONENT(void *type, EFFECT_COMPONENT *effect, float input);
 void setParameter_COMPONENT(void *type, EFFECT_COMPONENT *effect, char *pName, float value);

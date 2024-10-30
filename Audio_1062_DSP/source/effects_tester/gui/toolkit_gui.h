@@ -8,7 +8,7 @@
 #ifndef EFFECTS_TESTER_GUI_TOOLKIT_GUI_H_
 #define EFFECTS_TESTER_GUI_TOOLKIT_GUI_H_
 
-void generate_gui();
+void generate_gui(EFFECT_ITEM *effects_list, uint8_t count);
 
 
 #endif /* EFFECTS_TESTER_GUI_TOOLKIT_GUI_H_ */

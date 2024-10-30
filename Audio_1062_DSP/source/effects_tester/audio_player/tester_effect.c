@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include "effects/delay_based/echo.h"
 #include "effect_component.h"
+#include "effects_gui_interface.h"
 #include "toolkit_gui.h"
 
 static ma_engine g_engine;
@@ -50,9 +51,9 @@ int apply_effect(int source) {
     	 fileName = "sounds/alan-walker-type-guitar-loop-1-246365.wav";
 
     }
-    generate_gui();
-    EFFECT_COMPONENT *effect_under_test;
+     EFFECT_COMPONENT *effect_under_test;
     effect_under_test = createComponent("Chorus", 0);
+    generate_gui(effects_list, 4);
 	//ec.initialize(&fv, 0);
     return 0;
     result = ma_engine_init(NULL, &g_engine);

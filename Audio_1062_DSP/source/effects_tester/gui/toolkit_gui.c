@@ -761,7 +761,7 @@ int main(int argc, char *argv[]) {
 	return 0;
 }
 #endif
-void generate_gui()
+void generate_gui(EFFECT_ITEM *effects_list, uint8_t count)
 {
 	/* Platform */
 	static GLFWwindow *win;
