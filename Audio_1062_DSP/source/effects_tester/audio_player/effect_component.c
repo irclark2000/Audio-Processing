@@ -53,10 +53,28 @@ static char* parseParameters(char *ptr, EFFECT_PARAMS *parameters,
 	}
 	return ptr;
 }
+
+static void setName_Type (EFFECT_COMPONENT *component, uint8_t index, char *name_type) {
+   char *ptr = name_type;
+   char temp[80];
+   int len;
+   while (*ptr != 0 && *ptr != ':') {
+	   temp[len] = *ptr;
+	   len++;
+   }
+   temp[len] = 0;
+   component->strParameters[index] = strSave(temp);
+   if (*ptr != 0) {
+	   component->strTypes[index] = strSave(ptr + 1);
+   } else {
+	   component->strTypes[index] = strSave("");
+   }
+}
 void freeComponent(EFFECT_COMPONENT * component) {
 	free(component->effectName);
 	for (int i=0; i < component->parameterCount; i++) {
 		free(component->strParameters[i]);
+		free(component->strTypes[i]);
 		if (i == 0) {
 			free (component->parameters);
 		}
@@ -121,7 +139,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		component->childrenCount = componentCount;
 		component->apply = update_CHORUS;
 		component->effect_bypass = 0;
-		component->strParameters[0] = strSave("Chorus Element Count:I1");
+		setName_Type(component, 0, "Chorus Element Count:I1");
 		component->parameters[0].intParameter[0] = 2;
 
 	}
@@ -131,11 +149,12 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		component->parameters = (EFFECT_PARAMS*) malloc(
 				2 * sizeof(EFFECT_PARAMS));
 		int index = 0;
-		component->strParameters[0] = strSave("Feedback Gain:S3");
+		setName_Type(component, 0, "Feedback Gain:S3");
 		component->parameters[0].floatParameter[index++] = 0.0f;
 		component->parameters[0].floatParameter[index++] = 0.4f;
 		component->parameters[0].floatParameter[index++] = 1.0f;
-		component->strParameters[1] = strSave("Feedback Level:S3");
+		setName_Type(component, 1, "Feedback Level:S3");
+
 		index = 0;
 		component->parameters[1].floatParameter[index++] = 0.0f;
 		component->parameters[1].floatParameter[index++] = 0.35f;
@@ -152,11 +171,11 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		component->parameterCount = 2;
 		component->parameters = (EFFECT_PARAMS*) malloc(2 * sizeof(EFFECT_PARAMS));
 		int index = 0;
-		component->strParameters[0] = strSave("Base Delay MSec:S3");
+		setName_Type(component, 0, "Base Delay MSec:S3");
 		component->parameters[0].floatParameter[index++] = 0.1f;
 		component->parameters[0].floatParameter[index++] = 3.0f;
 		component->parameters[0].floatParameter[index++] = 10.0f;
-		component->strParameters[1] = strSave("Feedback Level:S3");
+		setName_Type(component, 1, "Feedback Level:S3");
 		index = 0;
 		component->parameters[1].floatParameter[index++] = 0.0f;
 		component->parameters[1].floatParameter[index++] = 0.35f;
@@ -201,7 +220,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		component->parameterCount = 1;
 		component->parameters = (EFFECT_PARAMS*) malloc(sizeof(EFFECT_PARAMS));
 		char *ptr = strtok (temp, "*");
-		component->strParameters[0] = strSave(ptr);
+		setName_Type(component, 0, ptr);
 		while(*ptr != ':' && *ptr != 0) ptr++;
 		if (*ptr == ':' && *(ptr + 1) == 'S') {
 			uint8_t count = atoi(ptr + 2);
@@ -221,7 +240,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		component->parameterCount = 1;
 		component->parameters = (EFFECT_PARAMS*) malloc(sizeof(EFFECT_PARAMS));
 		char *ptr = strtok (ptr1, "*");
-		component->strParameters[0] = strSave(ptr);
+		setName_Type(component, 0, ptr);
 		while(*ptr != ':' && *ptr != 0) ptr++;
 		if (*ptr == ':' && *(ptr + 1) == 'S') {
 			uint8_t count = atoi(ptr + 2);
@@ -248,7 +267,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		component->parameterCount = 2;
 		component->parameters = (EFFECT_PARAMS*) malloc(2 * sizeof(EFFECT_PARAMS));
 		char *ptr = strtok(parameter1, "*");
-		component->strParameters[0] = strSave(ptr);
+		setName_Type(component, 0, ptr);
 		while(*ptr != ':' && *ptr != 0) ptr++;
 		if (*ptr == ':' && *(ptr + 1) == 'S') {
 			uint8_t count = atoi(ptr + 2);
@@ -259,7 +278,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		}
 
 		ptr = strtok(parameter2, "*");
-		component->strParameters[1] = strSave(ptr);
+		setName_Type(component, 1, ptr);
 		while(*ptr != ':' && *ptr != 0) ptr++;
 		if (*ptr == ':' && *(ptr + 1) == 'S') {
 			uint8_t count = atoi(ptr + 2);
@@ -277,7 +296,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		component->parameterCount = 1;
 		component->parameters = (EFFECT_PARAMS*) malloc(sizeof(EFFECT_PARAMS));
 		int index = 0;
-		component->strParameters[0] = strSave("Wet/Dry:S3");
+		setName_Type(component, 0, "Wet/Dry:S3");
 		component->parameters->floatParameter[index++] = 0.0f;
 		component->parameters->floatParameter[index++] = 0.4f;
 		component->parameters->floatParameter[index++] = 1.0f;
@@ -312,7 +331,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		char temp[80];
 		strcpy(temp, strParameters);
 		char *ptr = strtok(temp, "*");
-		component->strParameters[0] = strSave(temp);
+		setName_Type(component, 0, temp);
 		component->parameterCount = 1;
 		component->parameters = (EFFECT_PARAMS*) malloc(
 				sizeof(EFFECT_PARAMS));
@@ -322,7 +341,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 			component->parameters->floatParameter[0] = atof(ptr);
 		}
 		else if (*ptr == ':' && *(ptr + 1) == 'S') {
-			uint8_t count = atoi (ptr + 1);
+			uint8_t count = atoi (ptr + 2);
 			ptr = strtok(NULL, "*");
 			ptr = parseParameters(ptr, component->parameters, count);
 		} else {

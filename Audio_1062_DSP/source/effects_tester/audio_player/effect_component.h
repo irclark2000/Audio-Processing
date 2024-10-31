@@ -48,6 +48,7 @@ typedef struct EFFECT_COMPONENT {
 	void (*initialize) (void *type, EFFECT_PARAMS *parameters, float sampleRate);
 	float (*apply) (void *, float);
 	char *strParameters[10];
+	char *strTypes[10];
 	EFFECT_PARAMS *parameters;
 	uint8_t parameterCount;
 	struct EFFECT_COMPONENT *childComponents[MAX_CHILD_EFFECT_COMPONENTS];

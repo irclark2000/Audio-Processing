@@ -189,7 +189,7 @@ ui_piemenu(struct nk_context *ctx, struct nk_vec2 pos, float radius,
  * ===============================================================*/
 
 static void
-effect_controls(struct nk_context *ctx, char *title, struct media *media, SLIDER_VALUES *sliders, uint8_t slider_count)
+effect_controls(struct nk_context *ctx, struct media *media, char *title, SLIDER_VALUES *sliders, uint8_t slider_count)
 {
     //static char text[3][64];
     //static int text_len[3];
@@ -202,7 +202,7 @@ effect_controls(struct nk_context *ctx, char *title, struct media *media, SLIDER
 
     //int i;
     nk_style_set_font(ctx, &media->font_20->handle);
-    if (nk_begin(ctx, title, nk_rect(400, 150, 575, 450),
+    if (nk_begin(ctx, title, nk_rect(650, 150, 575, 450),
         NK_WINDOW_TITLE|NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|
         NK_WINDOW_NO_SCROLLBAR))
     {
@@ -776,9 +776,7 @@ static void setupSlidersComponent(EFFECT_PARAMS *parameter, SLIDER_VALUES *slide
 static int setupSliders(EFFECT_COMPONENT *component, SLIDER_VALUES *slider_values, int slider_value_count) {
 	for(int i=0; i < component->parameterCount; i++) {
 		char *name = component->strParameters[i];
-		char *ptr = name;
-		while(*ptr != 0 && *ptr != ':') ptr++;
-		if (*ptr == ':' && *(ptr + 1) == 'S') {
+		if (component->strTypes[i][0] == 'S') {
 			EFFECT_PARAMS *parameter = component->parameters + i;
 			setupSlidersComponent(parameter, slider_values, slider_value_count);
 			slider_values[slider_value_count].name = name;
