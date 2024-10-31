@@ -70,10 +70,11 @@ struct media {
 };
 // effects slider parameters
 typedef struct {
-	float char *name;
+	char *name;
 	float slope;
 	float intercept;
 	float output;
+	float slider_value;  // 0.0->1.0;
 } SLIDER_VALUES;
 
 
@@ -192,12 +193,11 @@ effect_controls(struct nk_context *ctx, struct media *media, SLIDER_VALUES *slid
 {
     //static char text[3][64];
     //static int text_len[3];
-    static const char *items[] = {"Gain","Feedback","Wet/Dry", "Delay", "Frequency"};
+    //static const char *items[] = {"Gain","Feedback","Wet/Dry", "Delay", "Frequency"};
     //static int selected_item = 0;
     static int check = 1;
     static float volume = 0.5;
-    static float slider_value[10] = {0.5, 0.5, 0.5, 0.5, 0.5, 
-	    0.5, 0.5, 0.5, 0.5, 0.5};
+    //static float slider_value[10] = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
     static char value_text[64];
 
     //int i;
@@ -215,17 +215,11 @@ effect_controls(struct nk_context *ctx, struct media *media, SLIDER_VALUES *slid
 	nk_slider_float(ctx, 0, &volume, 1.0f, 0.01f);
 	sprintf(value_text, "%5.2f", volume);
 	nk_label(ctx, value_text, NK_TEXT_LEFT);
-	for (int j=0; j < 5; j++) {
-		nk_label(ctx, items[j], NK_TEXT_LEFT);
-		if ( nk_slider_float(ctx, 0, &slider_value[j], 1.0f, 0.01f)) {
+	for (int j=0; j < slider_count; j++) {
+		nk_label(ctx, sliders[j].name, NK_TEXT_LEFT);
+		if ( nk_slider_float(ctx, 0, &sliders[j].slider_value, 1.0f, 0.01f)) {
 		}
-		if (j!=4) {
-			sprintf(value_text, "%5.2f", slider_value[j]);
-		} 
-		else {
-			float x = 100.0f * powf(10.0f, 2.0f * slider_value[j]);
-			sprintf(value_text, "%5.2f", x);
-		}
+		sprintf(value_text, "%5.2f", sliders[j].slider_value * sliders[j].slope + sliders[j].intercept);
 		nk_label(ctx, value_text, NK_TEXT_LEFT);
 	}
     }
@@ -385,7 +379,7 @@ basic_demo(struct nk_context *ctx, struct media *media, EFFECT_ITEM *effects_lis
 	    0.5, 0.5, 0.5, 0.5, 0.5};
     static int selected_item = 0;
     static int selected_image = 3;
-    static int selected_icon = 0;
+    //static int selected_icon = 0;
     //static const char *items[] = {"Item 0","item 1","item 2"};
     static int piemenu_active = 0;
     static struct nk_vec2 piemenu_pos;
@@ -770,6 +764,35 @@ int main(int argc, char *argv[]) {
 	return 0;
 }
 #endif
+
+static void setupSlidersComponent(EFFECT_PARAMS *parameter, SLIDER_VALUES *slider_values, int count) {
+	slider_values[count].slope =
+		parameter->floatParameter[2] - parameter->floatParameter[0];
+		slider_values[count].intercept = parameter->floatParameter[0];
+		slider_values[count].slider_value =
+		(parameter->floatParameter[1] - parameter->floatParameter[0])/ slider_values[count].slope;
+		slider_values[count].output =  parameter->floatParameter[1];
+}
+static int setupSliders(EFFECT_COMPONENT *component, SLIDER_VALUES *slider_values, int slider_value_count) {
+	for(int i=0; i < component->parameterCount; i++) {
+		char *name = component->strParameters[i];
+		char *ptr = name;
+		while(*ptr != 0 && *ptr != ':') ptr++;
+		if (*ptr == ':' && *(ptr + 1) == 'S') {
+			EFFECT_PARAMS *parameter = component->parameters + i;
+			setupSlidersComponent(parameter, slider_values, slider_value_count);
+			slider_values[slider_value_count].name = name;
+			slider_value_count++;
+		}
+
+	}
+	for (int i=0; i < component->childrenCount; i++) {
+		EFFECT_COMPONENT *childComponent = component->childComponents[i];
+		slider_value_count =
+			setupSliders(childComponent, slider_values, slider_value_count);
+	}
+	return slider_value_count;
+}
 void generate_gui(EFFECT_COMPONENT *effect_component, EFFECT_ITEM *effects_list, uint8_t count)
 {
 	/* Platform */
@@ -854,8 +877,8 @@ void generate_gui(EFFECT_COMPONENT *effect_component, EFFECT_ITEM *effects_list,
 	media.menu[4] = icon_load("icon/settings.png");
 	media.menu[5] = icon_load("icon/volume.png");
 
-    SLIDER_VALUES slider_values[10];
-    int slider_values_count = 0;
+	SLIDER_VALUES slider_values[10];
+	int slider_values_count = setupSliders(effect_component, slider_values, 0);
 
 
 	{int i;

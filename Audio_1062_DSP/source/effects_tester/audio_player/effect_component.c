@@ -53,38 +53,64 @@ static char* parseParameters(char *ptr, EFFECT_PARAMS *parameters,
 	}
 	return ptr;
 }
-
 void freeComponent(EFFECT_COMPONENT * component) {
-
+	free(component->effectName);
+	for (int i=0; i < component->parameterCount; i++) {
+		free(component->strParameters[i]);
+		if (i == 0) {
+			free (component->parameters);
+		}
+	}
+	for (int i=0; i < component->childrenCount; i++) {
+		freeComponent(component->childComponents[i]);
+	}
 }
 #endif
 EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 #if AUDIO_EFFECTS_TESTER
 	EFFECT_COMPONENT *component = (EFFECT_COMPONENT*) malloc(
 			sizeof(EFFECT_COMPONENT));
-	if (strcmp(effectName, "Chorus") == 0) {
+	component->name = strSave(effectName);
+	if (strcmp(effectName, "Chorus") == 1) {
 		component->type = Chorus;
 		component->parameterCount = 1;
 		component->parameters = (EFFECT_PARAMS*) malloc(sizeof(EFFECT_PARAMS));
-		int componentCount = 0;
 		char temp[480];
 		// forced order: base delay, then Lfo, then Lfo Driven Delay
 		if (strParameters == 0) {
-			char * elements = "BaseDelay1:S3*0,1,10//LFO1 Freq:S3*0.1,1,5\tLFO1 Depth(MSec):S3*0,1,10//Delay1 Max:X*30"
-					"\nBaseDelay2:S3*0,1,10//LFO2 Freq:S3*0.1,1,5\tLFO2 Depth(MSec):S3*0,1,10//Delay2 Max:X*30";
+			char * elements = "BaseDelay 1:S3*0,1,10//LFO 1 Freq:S3*0.1,1,5\tLFO 1 Depth(MSec):S3*0,1,10//Delay 1 Max:X*30\nBaseDelay 2:S3*0,1,10//LFO 2 Freq:S3*0.1,1,5\tLFO 2 Depth(MSec):S3*0,1,10//Delay 2 Max:X*30";
 			strcpy(temp, elements);
 		}
 		else {
 			strcpy(temp, strParameters);
 		}
-		char *ptr = strtok(temp, "\n");
-		while (ptr) {
+		int componentCount = 0;
+		char *ptrStart = temp;
+		char *ptrEnd = temp;
+		while(*ptrEnd != 0 && *ptrEnd != '\n') ptrEnd++;
+		int more = 1;
+		if (*ptrEnd == 0) {
+			more = 0;
+		}
+		*ptrEnd = 0;
+		while (*ptrStart) {
+			char temp2[80];
 			EFFECT_COMPONENT * cmp =
-					createComponent("Chorus Element", ptr);
+					createComponent("Chorus Element", ptrStart);
 			if(cmp != NULL) {
 				component->childComponents[componentCount] = cmp;
 				componentCount++;
-				ptr = strtok(NULL, "\n");
+				if (more) {
+					ptrStart = ptrEnd + 1;
+					ptrEnd = ptrStart;
+					while(*ptrEnd != 0 && *ptrEnd != '\n') ptrEnd++;
+					if (*ptrEnd == 0) {
+						more = 0;
+					}
+					*ptrEnd = 0;
+				} else {
+					break;
+				}
 			}
 			else {
 				freeComponent(component);
@@ -95,6 +121,9 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		component->childrenCount = componentCount;
 		component->apply = update_CHORUS;
 		component->effect_bypass = 0;
+		component->strParameters[0] = strSave("Chorus Element Count:I1");
+		component->parameters[0].intParameter[0] = 2;
+
 	}
 	else if (strcmp(effectName, "Echo") == 0) {
 		component->type = Echo;
@@ -102,11 +131,11 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		component->parameters = (EFFECT_PARAMS*) malloc(
 				2 * sizeof(EFFECT_PARAMS));
 		int index = 0;
-		component->strParameters[0] = "Feedback Gain:S3";
+		component->strParameters[0] = strSave("Feedback Gain:S3");
 		component->parameters[0].floatParameter[index++] = 0.0f;
 		component->parameters[0].floatParameter[index++] = 0.4f;
 		component->parameters[0].floatParameter[index++] = 1.0f;
-		component->strParameters[1] = "Feedback Level:S3";
+		component->strParameters[1] = strSave("Feedback Level:S3");
 		index = 0;
 		component->parameters[1].floatParameter[index++] = 0.0f;
 		component->parameters[1].floatParameter[index++] = 0.35f;
@@ -123,11 +152,11 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		component->parameterCount = 2;
 		component->parameters = (EFFECT_PARAMS*) malloc(2 * sizeof(EFFECT_PARAMS));
 		int index = 0;
-		component->strParameters[0] = "Base Delay MSec:S3";
+		component->strParameters[0] = strSave("Base Delay MSec:S3");
 		component->parameters[0].floatParameter[index++] = 0.1f;
 		component->parameters[0].floatParameter[index++] = 3.0f;
 		component->parameters[0].floatParameter[index++] = 10.0f;
-		component->strParameters[1] = "Feedback Level:S3";
+		component->strParameters[1] = strSave("Feedback Level:S3");
 		index = 0;
 		component->parameters[1].floatParameter[index++] = 0.0f;
 		component->parameters[1].floatParameter[index++] = 0.35f;
@@ -172,7 +201,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		component->parameterCount = 1;
 		component->parameters = (EFFECT_PARAMS*) malloc(sizeof(EFFECT_PARAMS));
 		char *ptr = strtok (temp, "*");
-		component->strParameters[0] = ptr;
+		component->strParameters[0] = strSave(ptr);
 		while(*ptr != ':' && *ptr != 0) ptr++;
 		if (*ptr == ':' && *(ptr + 1) == 'S') {
 			uint8_t count = atoi(ptr + 2);
@@ -186,13 +215,13 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		char temp[160];
 		strcpy(temp, strParameters);
 		// forced order: base delay, then Lfo, then Lfo Driven Delay
-		char *ptr1 = strtok(NULL, "//");  // baseDelay
+		char *ptr1 = strtok(temp, "//");  // baseDelay
 		char *ptr2 = strtok(NULL, "//");  // LFO
 		char *ptr3 = strtok(NULL, "//");  // Driven VARDELAY
 		component->parameterCount = 1;
 		component->parameters = (EFFECT_PARAMS*) malloc(sizeof(EFFECT_PARAMS));
 		char *ptr = strtok (ptr1, "*");
-		component->strParameters[0] = ptr;
+		component->strParameters[0] = strSave(ptr);
 		while(*ptr != ':' && *ptr != 0) ptr++;
 		if (*ptr == ':' && *(ptr + 1) == 'S') {
 			uint8_t count = atoi(ptr + 2);
@@ -248,7 +277,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		component->parameterCount = 1;
 		component->parameters = (EFFECT_PARAMS*) malloc(sizeof(EFFECT_PARAMS));
 		int index = 0;
-		component->strParameters[0] = "Wet/Dry:S3";
+		component->strParameters[0] = strSave("Wet/Dry:S3");
 		component->parameters->floatParameter[index++] = 0.0f;
 		component->parameters->floatParameter[index++] = 0.4f;
 		component->parameters->floatParameter[index++] = 1.0f;
