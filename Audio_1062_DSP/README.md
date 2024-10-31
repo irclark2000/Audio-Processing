@@ -23,6 +23,7 @@ Effects include the following
     - Freeverb
 - Variable Filter Based Effects
     - Phaser (under development)
+    - Wah Wah (under development)
 - Miscellaneous
     - Pitch Shifting
     - Tremolo*
@@ -36,6 +37,8 @@ Effects include the following
     - State Variable Filter
     - Variable Band Pass/Stop Filter
     - First Order All Pass Filter
+    - Feedback Comb Filter
+    - Feedforward Comb Filter
     
 
 *The code for the Tremolo, Noise Gate, and Overdrive effects is based on code provided by 
