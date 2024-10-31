@@ -45,7 +45,6 @@
 #if AUDIO_EFFECTS_TESTER
 static char* parseParameters(char *ptr, EFFECT_PARAMS *parameters,
 		uint8_t count) {
-	int index = 0;
 	ptr = strtok(ptr, ",");
 	for (int i = 0; i < count; i++) {
 		parameters->floatParameter[i] = atof(ptr);
@@ -61,6 +60,7 @@ static void setName_Type (EFFECT_COMPONENT *component, uint8_t index, char *name
    while (*ptr != 0 && *ptr != ':') {
 	   temp[len] = *ptr;
 	   len++;
+	   ptr++;
    }
    temp[len] = 0;
    component->strParameters[index] = strSave(temp);
@@ -112,7 +112,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		}
 		*ptrEnd = 0;
 		while (*ptrStart) {
-			char temp2[80];
+//			char temp2[80];
 			EFFECT_COMPONENT * cmp =
 					createComponent("Chorus Element", ptrStart);
 			if(cmp != NULL) {
@@ -314,7 +314,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		else {
 			strcpy(temp, strParameters);
 		}
-		char *ptr = strtok(temp, "*");
+//		char *ptr = strtok(temp, "*");
 		component->parameterCount = 2;
 		component->parameters = (EFFECT_PARAMS*) malloc(
 				2 * sizeof(EFFECT_PARAMS));
