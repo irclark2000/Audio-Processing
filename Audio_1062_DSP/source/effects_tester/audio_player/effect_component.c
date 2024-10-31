@@ -70,8 +70,8 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 #if AUDIO_EFFECTS_TESTER
 	EFFECT_COMPONENT *component = (EFFECT_COMPONENT*) malloc(
 			sizeof(EFFECT_COMPONENT));
-	component->name = strSave(effectName);
-	if (strcmp(effectName, "Chorus") == 1) {
+	component->effectName = strSave(effectName);
+	if (strcmp(effectName, "Chorus") == 0) {
 		component->type = Chorus;
 		component->parameterCount = 1;
 		component->parameters = (EFFECT_PARAMS*) malloc(sizeof(EFFECT_PARAMS));

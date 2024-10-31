@@ -189,7 +189,7 @@ ui_piemenu(struct nk_context *ctx, struct nk_vec2 pos, float radius,
  * ===============================================================*/
 
 static void
-effect_controls(struct nk_context *ctx, struct media *media, SLIDER_VALUES *sliders, uint8_t slider_count)
+effect_controls(struct nk_context *ctx, char *title, struct media *media, SLIDER_VALUES *sliders, uint8_t slider_count)
 {
     //static char text[3][64];
     //static int text_len[3];
@@ -202,7 +202,7 @@ effect_controls(struct nk_context *ctx, struct media *media, SLIDER_VALUES *slid
 
     //int i;
     nk_style_set_font(ctx, &media->font_20->handle);
-    if (nk_begin(ctx, "Echo Effect", nk_rect(100, 150, 575, 450),
+    if (nk_begin(ctx, title, nk_rect(400, 150, 575, 450),
         NK_WINDOW_TITLE|NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|
         NK_WINDOW_NO_SCROLLBAR))
     {
@@ -369,7 +369,7 @@ button_demo(struct nk_context *ctx, struct media *media)
  *
  * ===============================================================*/
 static void
-basic_demo(struct nk_context *ctx, struct media *media, EFFECT_ITEM *effects_list, uint8_t count)
+effect_selector(struct nk_context *ctx, struct media *media, EFFECT_ITEM *effects_list, uint8_t count)
 {
     static int image_active;
     static int check0 = 1;
@@ -386,7 +386,7 @@ basic_demo(struct nk_context *ctx, struct media *media, EFFECT_ITEM *effects_lis
 
     int i = 0;
     nk_style_set_font(ctx, &media->font_20->handle);
-    nk_begin(ctx, "Basic Demo", nk_rect(320, 50, 275, 610),
+    nk_begin(ctx, "Effect Selector", nk_rect(320, 50, 275, 610),
 		    NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_TITLE);
 
     /*------------------------------------------------
@@ -929,9 +929,9 @@ void generate_gui(EFFECT_COMPONENT *effect_component, EFFECT_ITEM *effects_list,
 			nk_input_end(&ctx);}
 
 		/* GUI */
-		basic_demo(&ctx, &media, effects_list, count);
+		effect_selector(&ctx, &media, effects_list, count);
 		button_demo(&ctx, &media);
-		effect_controls(&ctx, &media, slider_values, slider_values_count);
+		effect_controls(&ctx, &media, effect_component->effectName, slider_values, slider_values_count);
 
 		/* Draw */
 		glViewport(0, 0, display_width, display_height);
