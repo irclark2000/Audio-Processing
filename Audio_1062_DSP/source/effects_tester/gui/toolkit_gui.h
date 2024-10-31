@@ -10,7 +10,7 @@
 #include "effect_component.h"
 #include "effects_gui_interface.h"
 
-void generate_gui(EFFECT_ITEM *effects_list, uint8_t count);
+void generate_gui(EFFECT_COMPONENT *effect_component,  EFFECT_ITEM *effects_list, uint8_t count);
 
 
 #endif /* EFFECTS_TESTER_GUI_TOOLKIT_GUI_H_ */

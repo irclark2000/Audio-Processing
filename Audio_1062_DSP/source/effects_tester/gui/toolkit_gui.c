@@ -68,6 +68,14 @@ struct media {
     struct nk_image images[9];
     struct nk_image menu[6];
 };
+// effects slider parameters
+typedef struct {
+	float char *name;
+	float slope;
+	float intercept;
+	float output;
+} SLIDER_VALUES;
+
 
 /* ===============================================================
  *
@@ -178,8 +186,9 @@ ui_piemenu(struct nk_context *ctx, struct nk_vec2 pos, float radius,
  *                          GRID
  *
  * ===============================================================*/
+
 static void
-effect_controls(struct nk_context *ctx, struct media *media)
+effect_controls(struct nk_context *ctx, struct media *media, SLIDER_VALUES *sliders, uint8_t slider_count)
 {
     //static char text[3][64];
     //static int text_len[3];
@@ -422,14 +431,14 @@ basic_demo(struct nk_context *ctx, struct media *media, EFFECT_ITEM *effects_lis
      *------------------------------------------------*/
     ui_header(ctx, media, "Combo box");
     ui_widget(ctx, media, 40);
-    if (nk_combo_begin_label(ctx, effects_list[i].name, nk_vec2(nk_widget_width(ctx), 200))) {
+    if (nk_combo_begin_label(ctx, effects_list[selected_item].name, nk_vec2(nk_widget_width(ctx), 200))) {
 	    nk_layout_row_dynamic(ctx, 35, 1);
 	    for (i = 0; i < count; ++i)
 		    if (nk_combo_item_label(ctx, effects_list[i].name, NK_TEXT_LEFT))
 			    selected_item = i;
 	    nk_combo_end(ctx);
     }
-
+#if 0
     ui_widget(ctx, media, 40);
     if (nk_combo_begin_image_label(ctx, effects_list[selected_icon].name, media->images[selected_icon], nk_vec2(nk_widget_width(ctx), 200))) {
 	    nk_layout_row_dynamic(ctx, 35, 1);
@@ -438,7 +447,7 @@ basic_demo(struct nk_context *ctx, struct media *media, EFFECT_ITEM *effects_lis
 			    selected_icon = i;
 	    nk_combo_end(ctx);
     }
-
+#endif
     /*------------------------------------------------
      *                  CHECKBOX
      *------------------------------------------------*/
@@ -761,7 +770,7 @@ int main(int argc, char *argv[]) {
 	return 0;
 }
 #endif
-void generate_gui(EFFECT_ITEM *effects_list, uint8_t count)
+void generate_gui(EFFECT_COMPONENT *effect_component, EFFECT_ITEM *effects_list, uint8_t count)
 {
 	/* Platform */
 	static GLFWwindow *win;
@@ -845,6 +854,10 @@ void generate_gui(EFFECT_ITEM *effects_list, uint8_t count)
 	media.menu[4] = icon_load("icon/settings.png");
 	media.menu[5] = icon_load("icon/volume.png");
 
+    SLIDER_VALUES slider_values[10];
+    int slider_values_count = 0;
+
+
 	{int i;
 		for (i = 0; i < 9; ++i) {
 			char buffer[256];
@@ -895,7 +908,7 @@ void generate_gui(EFFECT_ITEM *effects_list, uint8_t count)
 		/* GUI */
 		basic_demo(&ctx, &media, effects_list, count);
 		button_demo(&ctx, &media);
-		effect_controls(&ctx, &media);
+		effect_controls(&ctx, &media, slider_values, slider_values_count);
 
 		/* Draw */
 		glViewport(0, 0, display_width, display_height);
