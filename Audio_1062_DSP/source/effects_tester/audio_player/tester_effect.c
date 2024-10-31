@@ -52,7 +52,7 @@ int apply_effect(int source) {
 
     }
      EFFECT_COMPONENT *effect_under_test;
-    effect_under_test = createComponent("Chorus", 0);
+    effect_under_test = createComponent("Vibrato", 0);
     generate_gui(effect_under_test, effects_list, 4);
 	//ec.initialize(&fv, 0);
     return 0;

@@ -56,7 +56,7 @@ static char* parseParameters(char *ptr, EFFECT_PARAMS *parameters,
 static void setName_Type (EFFECT_COMPONENT *component, uint8_t index, char *name_type) {
    char *ptr = name_type;
    char temp[80];
-   int len;
+   int len = 0;
    while (*ptr != 0 && *ptr != ':') {
 	   temp[len] = *ptr;
 	   len++;
@@ -96,7 +96,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		char temp[480];
 		// forced order: base delay, then Lfo, then Lfo Driven Delay
 		if (strParameters == 0) {
-			char * elements = "BaseDelay 1:S3*0,1,10//LFO 1 Freq:S3*0.1,1,5\tLFO 1 Depth(MSec):S3*0,1,10//Delay 1 Max:X*30\nBaseDelay 2:S3*0,1,10//LFO 2 Freq:S3*0.1,1,5\tLFO 2 Depth(MSec):S3*0,1,10//Delay 2 Max:X*30";
+			char * elements = "BaseDelay 1:S3*0,1,10//LFO 1 Freq:S3*0.1,1,5\tLFO 1 Depth (mSec):S3*0,1,10//Delay 1 Max:X*30\nBaseDelay 2:S3*0,1,10//LFO 2 Freq:S3*0.1,1,5\tLFO 2 Depth (mSec):S3*0,1,10//Delay 2 Max:X*30";
 			strcpy(temp, elements);
 		}
 		else {
@@ -186,23 +186,39 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		component->childComponents[index++] = createComponent("Variable Delay",
 				"Delay MSec:X*30");
 		component->childComponents[index++] = createComponent("Lfo",
-				"LFO Freq:S3*0.1,1,5\tLFO Depth(MSec):S3*0,1,10");
-		component->apply = update_FLANGER;
+				"LFO Freq:S3*0.1,1,5\tLFO Depth (mSec):S3*0,1,10");
+		component->apply = update_FLANGER;Sec):S3*0,1,10//Delay 1 Max:X*30\nBaseDelay 2:S3*0,1,10//LFO 2 Freq:S3*0.1,1,5\tLFO 2  (mSec):S3*0,1,10//Delay 2 Max:X*30";
+					strcpy(temp, elements);
 		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Vibrato") == 0) {
 		component->type = Vibrato;
+		if (strParameters == 0) {
+			char * elements = "Base Delay (MS):S3*0.1,5,14//Max Delay:X*15//LFO Frequency:S3*0.5,15\tLFO Depth (mSec):S3*0,2.5,5";
+			strcpy(temp, elements);
+		}
+		else {
+			strcpy(temp, strParameters);
+		}
+		char ptrBaseDelay = strtok(temp, "//");
+		char ptrVarDelay = strtok(NULL, "//");
+		char ptrLFO = strtok(NULL, "//");
+
 		component->parameterCount = 1;
 		component->parameters = (EFFECT_PARAMS*) malloc(sizeof(EFFECT_PARAMS));
-		/*
-		 * 	LOWFREQOSC lfo;
-	PARAMETER_LIMITS lfo_freq_limits;
-	VARDELAY vDelay;
-	float baseDelayMSec;
-	PARAMETER_LIMITS delay_limitsMsec;
-	MIXER mixer;
-		 *
-		 */
+		char *ptr = strtok (temp, "*");
+		setName_Type(component, 0, ptr);
+		while(*ptr != ':' && *ptr != 0) ptr++;
+		if (*ptr == ':' && *(ptr + 1) == 'S') {
+			uint8_t count = atoi(ptr + 2);
+			ptr = strtok(NULL, "*");
+			ptr = parseParameters(ptr, component->parameters, count);
+		} else {
+			freeComponent(component);
+		}
 		component->childrenCount = 3;
+		component->childComponents[0] = createComponent("Lfo", ptrLFO);
+		component->childComponents[1] = createComponent("Variable Delay", ptrVarDelay);
+		component->childComponents[2] = createComponent("Mixer", 0);
 		component->apply = apply_VIBRATO;
 		component->effect_bypass = 0;
 
@@ -211,7 +227,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		char temp[160];
 		if (strParameters == 0) {
 			char * elements = "Q:X*6\tCenter Frequency:S3*500,2000,5000"
-					"//LFO Freq:S3*0.1,2000,3000\tLFO Depth(Hz):S3*0,250,1000";
+					"//LFO Freq:S3*0.1,2000,3000\tLFO Depth (Hz):S3*0,250,1000";
 			strcpy(temp, elements);
 		}
 		else {
@@ -298,7 +314,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		int index = 0;
 		setName_Type(component, 0, "Wet/Dry:S3");
 		component->parameters->floatParameter[index++] = 0.0f;
-		component->parameters->floatParameter[index++] = 0.4f;
+		component->parameters->floatParameter[index++] = 0.6f;
 		component->parameters->floatParameter[index++] = 1.0f;
 		component->childrenCount = 0;
 		component->apply = 0;
@@ -308,7 +324,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		char temp[160];
 		if (strParameters == 0) {
 			char * elements = "Q:X*6\tCenter Frequency:S3*500,2000,5000"
-					"//LFO Freq:S3*0.1,2000,3000\tLFO Depth(Hz):S3*0,250,1000";
+					"//LFO Freq:S3*0.1,2000,3000\tLFO Depth (Hz):S3*0,250,1000";
 			strcpy(temp, elements);
 		}
 		else {
