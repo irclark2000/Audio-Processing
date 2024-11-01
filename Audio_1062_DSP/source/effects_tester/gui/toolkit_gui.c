@@ -77,7 +77,11 @@ typedef struct {
 	float slider_value;  // 0.0->1.0;
 } SLIDER_VALUES;
 
+typedef struct {
+	int display_sliders;
+} DISPLAY_STATE;
 
+DISPLAY_STATE gGUI = {1};
 /* ===============================================================
  *
  *                          CUSTOM WIDGET
@@ -199,6 +203,7 @@ effect_controls(struct nk_context *ctx, struct media *media, char *title, SLIDER
     static float volume = 0.5;
     //static float slider_value[10] = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
     static char value_text[64];
+    static float row_widths[] = {0.30, 0.55, 0.15}
 
     //int i;
     nk_style_set_font(ctx, &media->font_20->handle);
@@ -211,6 +216,7 @@ effect_controls(struct nk_context *ctx, struct media *media, char *title, SLIDER
         //nk_label(ctx, "Bypass Effect:", NK_TEXT_LEFT);
         nk_checkbox_label(ctx, "Bypass Effect", &check);
         nk_layout_row_dynamic(ctx, 30, 3);
+        nk_layout_row(ctx, NK_STATIC, 30, 3, row_widths);
 	nk_label(ctx, "Volume", NK_TEXT_LEFT);
 	nk_slider_float(ctx, 0, &volume, 1.0f, 0.01f);
 	sprintf(value_text, "%5.2f", volume);
@@ -929,8 +935,9 @@ void generate_gui(EFFECT_COMPONENT *effect_component, EFFECT_ITEM *effects_list,
 		/* GUI */
 		effect_selector(&ctx, &media, effects_list, count);
 		button_demo(&ctx, &media);
-		effect_controls(&ctx, &media, effect_component->effectName, slider_values, slider_values_count);
-
+		if (gGUI.display_sliders) {
+			effect_controls(&ctx, &media, effect_component->effectName, slider_values, slider_values_count);
+		}
 		/* Draw */
 		glViewport(0, 0, display_width, display_height);
 		glClear(GL_COLOR_BUFFER_BIT);
