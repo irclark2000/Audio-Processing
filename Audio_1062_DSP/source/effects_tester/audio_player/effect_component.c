@@ -187,25 +187,25 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 				"Delay MSec:X*30");
 		component->childComponents[index++] = createComponent("Lfo",
 				"LFO Freq:S3*0.1,1,5\tLFO Depth (mSec):S3*0,1,10");
-		component->apply = update_FLANGER;Sec):S3*0,1,10//Delay 1 Max:X*30\nBaseDelay 2:S3*0,1,10//LFO 2 Freq:S3*0.1,1,5\tLFO 2  (mSec):S3*0,1,10//Delay 2 Max:X*30";
-					strcpy(temp, elements);
+		component->apply = update_FLANGER;Sec);
 		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Vibrato") == 0) {
 		component->type = Vibrato;
+		char temp[160];
 		if (strParameters == 0) {
-			char * elements = "Base Delay (MS):S3*0.1,5,14//Max Delay:X*15//LFO Frequency:S3*0.5,15\tLFO Depth (mSec):S3*0,2.5,5";
+			char * elements = "Base Delay (MS):S3*0.1,5,14//Max Delay:X*15//LFO Frequency:S3*0.1,5,15\tLFO Depth (mSec):S3*0,2.5,5";
 			strcpy(temp, elements);
 		}
 		else {
 			strcpy(temp, strParameters);
 		}
-		char ptrBaseDelay = strtok(temp, "//");
-		char ptrVarDelay = strtok(NULL, "//");
-		char ptrLFO = strtok(NULL, "//");
+		char *ptrBaseDelay = strtok(temp, "//");
+		char *ptrVarDelay = strtok(NULL, "//");
+		char *ptrLFO = strtok(NULL, "//");
 
 		component->parameterCount = 1;
 		component->parameters = (EFFECT_PARAMS*) malloc(sizeof(EFFECT_PARAMS));
-		char *ptr = strtok (temp, "*");
+		char *ptr = strtok (ptrBaseDelay, "*");
 		setName_Type(component, 0, ptr);
 		while(*ptr != ':' && *ptr != 0) ptr++;
 		if (*ptr == ':' && *(ptr + 1) == 'S') {
