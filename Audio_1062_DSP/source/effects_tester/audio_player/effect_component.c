@@ -18,19 +18,6 @@
  BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
  OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-/*
- * 	EFFECT_TYPE type;
- void * effect;
- void (*initialize) (void *, EFFECT_PARAMS *parameters, float sampleRate);
- float (*apply) (void *, float);
- void (*uninitialize) (void *);
- char component_parameters[5;
- EFFECT_PARAMS *parameters;
- uint8_t parameterCount;
- struct EFFECT_COMPONENT *childComponents[MAX_CHILD_EFFECT_COMPONENTS];
- uint8_t childrenCount;
- uint8_t effect_bypass;
- */
 
 #include "effect_component.h"
 #include "effects/delay_based/echo.h"
@@ -187,7 +174,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 				"Delay MSec:X*30");
 		component->childComponents[index++] = createComponent("Lfo",
 				"LFO Freq:S3*0.1,1,5\tLFO Depth (mSec):S3*0,1,10");
-		component->apply = update_FLANGER;Sec);
+		component->apply = update_FLANGER;
 		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Vibrato") == 0) {
 		component->type = Vibrato;
