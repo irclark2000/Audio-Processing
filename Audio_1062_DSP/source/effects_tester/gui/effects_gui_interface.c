@@ -39,10 +39,11 @@ EFFECT_ITEM dynamic_range_control_effect[] = {
 EFFECT_ITEM misc_effect[] = {
 		{"Phaser", Phaser}, {"Overdrive", Overdrive},
 		{"Pitch Shifter", PitchShift}, {"Tremolo", Tremolo},{"Wah Wah", WahWah},
+		{"Auto Wah", AutoWah}
 };
 
 EFFECT_ITEM effects_list[] = {
-	{"Echo", Echo}, {"Flanger", Flanger}, {"Vibrato", Vibrato},
+	{"Auto Wah", AutoWah}, {"Echo", Echo}, {"Flanger", Flanger}, {"Vibrato", Vibrato},
 	{"Chorus", Chorus}
 };
 
