@@ -55,7 +55,7 @@ float apply_AUTOWAH (AUTOWAH *aw, float input) {
 	aw->awOut = applyWetDry_MIXER (&(aw->mixer), aw->vbf.out * aw->fxGain, input);
 	return aw->awOut;
 }
-void setOutputGain_AUTOWAH (AUTOWAH *aw, float fxGain) {
+void setFxGain_AUTOWAH (AUTOWAH *aw, float fxGain) {
 	fxGain = MIN_MAX(fxGain, 0.0f, 2.0f);
 	aw->fxGain = fxGain;
 }

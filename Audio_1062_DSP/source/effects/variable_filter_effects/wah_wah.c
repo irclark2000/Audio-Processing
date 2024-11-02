@@ -20,7 +20,7 @@
  */
 
 
-#include <variable_filter_effects/wah_wah.h>
+#include "wah_wah.h"
 void initialize_WAHWAH(WAHWAH * ww, float wahFreq, float minCutoffFreq, float maxCutoffFreq, float damp, float wet_dry, float sampleRate) {
 	ww->cutoff_limits.maximum = maxCutoffFreq;
 	ww->cutoff_limits.minimum = minCutoffFreq;
