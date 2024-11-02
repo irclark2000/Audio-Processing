@@ -1,19 +1,11 @@
 /*
- * variable_bandpass_filter.h
+ * auto_wah.h
  *
- *  Created on: Oct 1, 2024
+ *  Created on: Nov 1, 2024
  *      Author: isaac
  */
-
-#ifndef EFFECTS_COMPONENTS_VARIABLE_BANDPASS_FILTER_H_
-#define EFFECTS_COMPONENTS_VARIABLE_BANDPASS_FILTER_H_
 /*
- *  Uses a 2nd order allpass filter to produce a bandpass filter with
- *  settable Q and center frequency.  You can easily produce a bandstop filter
- *  by setting the pass/stop parameter to 0 rather than 1
- */
-/*
-Copyright 2024 Isaac R. Clark, Jr.
+Copyright 2022 Isaac R. Clark, Jr.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
 files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy,
@@ -27,16 +19,30 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CON
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "filters/second_order_all_pass.h"
+#ifndef EFFECTS_VARIABLE_FILTER_EFFECTS_AUTO_WAH_H_
+#define EFFECTS_VARIABLE_FILTER_EFFECTS_AUTO_WAH_H_
+
+#include "effects/components/envelope_follower.h"
+#include "effects/components/variable_bandpass_filter.h"
+#include "effects/components/mixer.h"
+#include "effects/components/effects_macros.h"
 
 typedef struct {
-	SECONDALLPASSFILTER apf;
-	uint8_t pass_stop;   // 1 = pass, 0 = stop
-	float out;
-} VARBANDPASS;
+	float awOut;
+	float sampleRate;
+	ENVELOPE_FOLLOWER ef;
+	MIXER mixer;
+	VARBANDPASS vbf;
+	float inputGain;
+	float fxGain;
+	float minCoFreq;
+	float maxCoFreq;
+} AUTOWAH;
 
-void initialize_VARBANDPASS(VARBANDPASS *vbf, float centerFreq, float Q, float sampleRate, uint8_t bandPass);
-float update_VARBANDPASS(VARBANDPASS *vbf, float input);
-void setCenterFrequency_VARBANDPASS(VARBANDPASS *vbf, float centerFreq, float Q);
+void initialize_AUTOWAH (AUTOWAH *aw, float inputGain, float outputGain, float minCoFreq, float maxCoFreq, float sampleRate);
+float apply_AUTOWAH (AUTOWAH *aw, float input);
+void setFxGain_AUTOWAH (AUTOWAH *aw, float outputGain);
+void setInputGain_AUTOWAH (AUTOWAH *aw, float inputGain);
+void setWetDry_AUTOWAH (AUTOWAH *aw, float wet_dry);
 
-#endif /* EFFECTS_COMPONENTS_VARIABLE_BANDPASS_FILTER_H_ */
+#endif /* EFFECTS_VARIABLE_FILTER_EFFECTS_AUTO_WAH_H_ */

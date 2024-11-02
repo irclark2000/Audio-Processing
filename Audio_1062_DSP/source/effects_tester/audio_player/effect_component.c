@@ -27,7 +27,11 @@
 #include "effects/variable_filter_effects/wah_wah.h"
 #include "effects/components/mixer.h"
 #include "effects/components/low_frequency_oscillator.h"
-#include "effects/components/state_variable_filter.h"
+#include "effects/components/variable_bandpass_filter.h"
+
+#if !AUDIO_EFFECTS_TESTER
+
+#endif
 
 #if AUDIO_EFFECTS_TESTER
 static char* parseParameters(char *ptr, EFFECT_PARAMS *parameters,
@@ -38,6 +42,24 @@ static char* parseParameters(char *ptr, EFFECT_PARAMS *parameters,
 		ptr = strtok(NULL, ",");
 	}
 	return ptr;
+}
+
+static void setName_Type_Parse_Variables (EFFECT_COMPONENT *component, uint8_t index, char *name_type) {
+   char *ptr = name_type;
+   char temp[80];
+   int len = 0;
+   while (*ptr != 0 && *ptr != ':') {
+	   temp[len] = *ptr;
+	   len++;
+	   ptr++;
+   }
+   temp[len] = 0;
+   component->strParameters[index] = strSave(temp);
+   if (*ptr != 0) {
+	   component->strTypes[index] = strSave(ptr + 1);
+   } else {
+	   component->strTypes[index] = strSave("");
+   }
 }
 
 static void setName_Type (EFFECT_COMPONENT *component, uint8_t index, char *name_type) {
@@ -72,11 +94,45 @@ void freeComponent(EFFECT_COMPONENT * component) {
 }
 #endif
 EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
-#if AUDIO_EFFECTS_TESTER
+#if !AUDIO_EFFECTS_TESTER
 	EFFECT_COMPONENT *component = (EFFECT_COMPONENT*) malloc(
 			sizeof(EFFECT_COMPONENT));
 	component->effectName = strSave(effectName);
-	if (strcmp(effectName, "Chorus") == 0) {
+	/*
+	 * 	float awOut;
+	float sampleRate;
+	ENVELOPE_FOLLOWER ef;
+	MIXER mixer;
+	VARBANDPASS vbf;
+	float inputGain;
+	float fxGain;
+	float minCoFreq;
+	float maxCoFreq;
+	 *
+	 */
+	if (strcmp(effectName, "Auto Wah") == 0) {
+		component->type = AutoWah;
+		component->parameterCount = 4;
+		component->parameters = (EFFECT_PARAMS*) malloc(4 * sizeof(EFFECT_PARAMS));
+		char temp[480];
+		// forced order: base delay, then Lfo, then Lfo Driven Delay
+		if (strParameters == 0) {
+			char *elements= "InputGain:S3*0.01,1,10\tFxGain:S3*0.01,1,10\tMin Cutoff Freq:S3*10,267,500\tMax Cutoff Freq:S3*510,100,2000\tQ:S3*0.7,4,10//Q:X*8\tCutoff Freq:X*1000\tPass:I*1";
+			strcpy(temp, elements);
+		}
+		else {
+			strcpy(temp, strParameters);
+		}
+		char *ptrParameters = strtok(temp, "//");
+		char *ptrVarBandPass = strtok(temp, "//");
+
+		// children
+		component->childrenCount = 3;
+		component->childComponents[0] = createComponent("Variable BandPass", ptrVarBandPass);
+		component->childComponents[0] = createComponent("Envelope Follower", 0);
+		component->childComponents[0] = createComponent("Mixer", 0);
+	}
+	else if (strcmp(effectName, "Chorus") == 0) {
 		component->type = Chorus;
 		component->parameterCount = 1;
 		component->parameters = (EFFECT_PARAMS*) malloc(sizeof(EFFECT_PARAMS));
@@ -150,7 +206,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		index = 0;
 		component->childComponents[index++] = createComponent("Mixer", 0);
 		component->childComponents[index++] = createComponent("Variable Delay",
-				"Delay MSec:S3*0,250,500");
+				"Delay mSec:S3*0,250,500");
 		component->apply = update_Echo;
 		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Flanger") == 0) {
@@ -171,7 +227,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		index = 0;
 		component->childComponents[index++] = createComponent("Mixer", 0);
 		component->childComponents[index++] = createComponent("Variable Delay",
-				"Delay MSec:X*30");
+				"Delay mSec:X*30");
 		component->childComponents[index++] = createComponent("Lfo",
 				"LFO Freq:S3*0.1,1,5\tLFO Depth (mSec):S3*0,1,10");
 		component->apply = update_FLANGER;

@@ -25,17 +25,15 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <stdint.h>
 #include "apply_effect.h"
-
-#if AUDIO_EFFECTS_TESTER
 #include <string.h>
 #include <stdlib.h>
-#endif
+
 struct EFFECT_COMPONENT;
 #define MAX_CHILD_EFFECT_COMPONENTS 10
 typedef enum {
 	Lfo, Mixer, VariableDelay, VariableBandpass,
 	FirstOrderAllPass, CircularBuffer, FeedBackCombFilter, StateVariableFilter,
-	Echo, WahWah, Chorus, Flanger, Vibrato, ChorusElement,
+	AutoWah, Echo, WahWah, Chorus, Flanger, Vibrato, ChorusElement,
 	Freeverb, Schroeder, Compressor, Expander, Limiter, Noisegate,
 	Phaser, Overdrive, PitchShift, Tremolo,
 

@@ -30,7 +30,7 @@ void initialize_FBCF (FBCF *filter, float *buf, uint32_t buf_size, float feedbac
 	filter->sampleRate = sampleRate;
 	filter->sampleTime = 1.0/sampleRate;  // 1/sampleRate: avoids division in process loop
 	filter->fcbfOut = 0;
-	setFeedback_FCFB(filter, feedbackGain);
+	setFeedback_FBCF(filter, feedbackGain);
 	filter->buf = buf;
 	filter->buf_size = buf_size;
 	filter->index = 0;

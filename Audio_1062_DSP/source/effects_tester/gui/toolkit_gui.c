@@ -102,6 +102,7 @@ static void initializeDisplayState(DISPLAY_STATE *gui, uint8_t selection) {
 	clearDisplayState (gui);
 	gui->component = createComponent(g_effect_list[selection].name, 0);
 	if (gui->component != NULL) {
+		gui->component->effect_bypass = 0;
 		setupSliders(gui, gui->component);
 		gui->display_sliders = 1;
 	}
