@@ -56,20 +56,21 @@ static void setName_Type_Parse_Variables (EFFECT_COMPONENT *component, uint8_t i
    }
    temp[len] = 0;
    component->strParameters[index] = strSave(temp);
+   ptr = strtok(ptr, "*");
    if (*ptr != 0) {
 	   component->strTypes[index] = strSave(ptr + 1);
    } else {
 	   component->strTypes[index] = strSave("");
    }
    uint8_t count = 0;
-   char *ptr2 = strtok(ptr, "*");
-   ptr2 = strtok(NULL, ",");
+   char *ptr2 = strtok(NULL, "*");
    switch (*(ptr+1)) {
 	   case 'S':
 		   count = atoi(ptr + 2);
 		   for (int i=0; i < count; i++) {
+			   if (i == 0) ptr2 = strtok(ptr2, ",");
+			   else ptr2 = strtok(NULL, ",");
 			   component->parameters[index].floatParameter[i] = atof(ptr2);
-			   ptr2 = strtok(NULL, ",");
 		   }
 		   break;
 	   case 'I':
@@ -133,12 +134,12 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 	 */
 	if (strcmp(effectName, "Auto Wah") == 0) {
 		component->type = AutoWah;
-		component->parameterCount = 4;
-		component->parameters = (EFFECT_PARAMS*) malloc(4 * sizeof(EFFECT_PARAMS));
+		component->parameterCount = 5;
+		component->parameters = (EFFECT_PARAMS*) malloc(5 * sizeof(EFFECT_PARAMS));
 		char temp[480];
 		// forced order: base delay, then Lfo, then Lfo Driven Delay
 		if (strParameters == 0) {
-			char *elements= "InputGain:S3*0.01,1,10\tFxGain:S3*0.01,1,10\tMin Cutoff Freq:S3*10,267,500\tMax Cutoff Freq:S3*510,100,2000\tQ:S3*0.7,4,10//Q:X*8\tCutoff Freq:X*1000\tPass:I*1";
+			char *elements= "InputGain:S3*0.01,1,10\tFxGain:S3*0.01,1,10\tMin Cutoff Freq:S3*10,267,500\tMax Cutoff Freq:S3*510,600,2000\tQ:S3*0.7,4,10//Q:X*8\tCutoff Freq:X*1000\tPass:I*1";
 			strcpy(temp, elements);
 		}
 		else {
@@ -147,21 +148,21 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		char *ptrParameters = strtok(temp, "//");
 		char *ptrVarBandPass = strtok(NULL, "//");
 		// 4 parameters
-		char *params[4];
+		char *params[5];
 		char *ptr = strtok(ptrParameters, "\t");
-		for (int i=0; i < 4; i++) {
+		for (int i=0; i < 5; i++) {
 			params[i] = ptr;
 			ptr = strtok(NULL, "\t");
 		}
-		for (int i=0; i < 4; i++) {
-		   setName_Type_Parse_Variables (component, i, params[i]);
+		for (int i=0; i < 5; i++) {
+			setName_Type_Parse_Variables (component, i, params[i]);
 		}
 
 		// children
 		component->childrenCount = 3;
 		component->childComponents[0] = createComponent("Variable BandPass", ptrVarBandPass);
-		component->childComponents[0] = createComponent("Envelope Follower", 0);
-		component->childComponents[0] = createComponent("Mixer", 0);
+		component->childComponents[1] = createComponent("Envelope Follower", 0);
+		component->childComponents[2] = createComponent("Mixer", 0);
 		component->apply = apply_AUTOWAH;
 		component->effect_bypass = 0;
 	}
@@ -348,8 +349,6 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 	else if (strcmp(effectName, "Envelope Follower") == 0) {
 		component->type = EnvelopeFollower;
 		// has no parametersp and no children
-		char temp[80];
-		strcpy(temp, strParameters);
 		component->parameterCount = 0;
 		component->childrenCount = 0;
 		component->apply = 0;
@@ -433,13 +432,14 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		strcpy(temp, strParameters);
 		char *ptrQ = strtok(temp, "\t");
 		char *ptrCutoff = strtok(NULL, "\t");
-		setName_Type(component, 0, temp);
+		char *ptrPassBlock = strtok(NULL, "\t");
 		component->parameterCount = 2;
 		component->parameters = (EFFECT_PARAMS*) malloc(
-				2 * sizeof(EFFECT_PARAMS));
+				3 * sizeof(EFFECT_PARAMS));
 		// two parameters
 		setName_Type_Parse_Variables (component, 0, ptrQ);
 		setName_Type_Parse_Variables (component, 1, ptrCutoff);
+		setName_Type_Parse_Variables (component, 2, ptrPassBlock);
 		// no children
 		component->childrenCount = 0;
 		component->apply = 0;

@@ -74,6 +74,7 @@ typedef struct {
 	float slope;
 	float intercept;
 	float output;
+	float previousOutput;
 	float slider_value;  // 0.0->1.0;
 } SLIDER_VALUES;
 
@@ -798,7 +799,7 @@ int main(int argc, char *argv[]) {
 	return 0;
 }
 #endif
-
+#define INITIAL_FLOAT_VALUE -1888.8888f
 static void setupSlidersComponent(DISPLAY_STATE *gui, EFFECT_PARAMS *parameter) {
 	uint8_t count = gui->slider_count;
 	gui->sliders[count].slope =
@@ -807,6 +808,7 @@ static void setupSlidersComponent(DISPLAY_STATE *gui, EFFECT_PARAMS *parameter) 
 	gui->sliders[count].slider_value =
 		(parameter->floatParameter[1] - parameter->floatParameter[0])/ gui->sliders[count].slope;
 	gui->sliders[count].output =  parameter->floatParameter[1];
+	gui->sliders[count].previousOutput = INITIAL_FLOAT_VALUE;
 }
 static void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT * component) {
 	for(int i=0; i < component->parameterCount; i++) {

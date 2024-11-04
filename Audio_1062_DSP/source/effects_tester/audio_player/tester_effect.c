@@ -52,8 +52,9 @@ int apply_effect(int source) {
 
     }
      EFFECT_COMPONENT *effect_under_test;
-    effect_under_test = createComponent("Vibrato", 0);
-    generate_gui(effects_list, 4);
+    //effect_under_test = createComponent("Vibrato", 0);
+     generate_gui(effects_list, 5);
+
 	//ec.initialize(&fv, 0);
     return 0;
     result = ma_engine_init(NULL, &g_engine);

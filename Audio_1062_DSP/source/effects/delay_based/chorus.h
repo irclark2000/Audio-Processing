@@ -25,7 +25,7 @@
 #include <components/mixer.h>
 #include <delay_based/chorus_element.h>
 
-#define MAX_NUMBER_CHORUSELEMENTS 4
+#define MAX_NUMBER_CHORUSELEMENTS 6
 typedef struct {
 	CHORUSELEMENT cElement[MAX_NUMBER_CHORUSELEMENTS];
 	uint8_t chorus_count;
