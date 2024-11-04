@@ -23,6 +23,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <reverbs/freeverb.h>
 #include <stdint.h>
 
+
 #define COMB0 1557 * 48 / 44
 #define COMB1 1617 * 48 / 44
 #define COMB2 1491 * 48 / 44
@@ -51,7 +52,7 @@ AT_NONCACHEABLE_SECTION_ALIGN(static float ap1_buf[AP1], 4);
 AT_NONCACHEABLE_SECTION_ALIGN(static float ap2_buf[AP2], 4);
 AT_NONCACHEABLE_SECTION_ALIGN(static float ap3_buf[AP3], 4);
 #endif
-void initFreeverb(void * vfv) {
+void initFreeverb(void * vfv, float sampleRate) {
 	FREEVERB *fv = (FREEVERB *)vfv;
 	fv->allCount = sizeof(fv->allpass) / sizeof(fv->allpass[0]);
 	fv->lpfcCount = sizeof(fv->lpfc) / sizeof(fv->lpfc[0]);

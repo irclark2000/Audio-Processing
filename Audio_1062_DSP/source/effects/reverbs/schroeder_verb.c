@@ -41,7 +41,13 @@ __NOINIT(RAM3) static float ap1_buf[SAP1];
 __NOINIT(RAM3) static float ap2_buf[SAP2];
 #endif
 
-void initSchroederVerb(SCHROEDERVERB * fv) {
+#if 0
+float combDelaysMsec[] = {29.7f, 37.7f, 41.1f, 43.7};
+int combDelayN[] = {743, 943, 1027, 1093};
+float combDelays[] = {31.1f, 36.0, 40.4, 44.9};
+float allPass[] = {5.0, 1.68, 0.48};
+#endif
+void initSchroederVerb(SCHROEDERVERB * fv, float sampleRate) {
 	fv->allCount = sizeof(fv->allpass) / sizeof(fv->allpass[0]);
 	fv->lpfcCount = sizeof(fv->lpfc) / sizeof(fv->lpfc[0]);
 #if AUDIO_EFFECTS_TESTER

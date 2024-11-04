@@ -45,7 +45,7 @@ typedef struct {
 
 } SCHROEDERVERB;
 
-void initSchroederVerb(SCHROEDERVERB * fv);
+void initSchroederVerb(SCHROEDERVERB * fv, float sampleRate);
 float applyShroederVerb(SCHROEDERVERB*fv, float input);
 
 

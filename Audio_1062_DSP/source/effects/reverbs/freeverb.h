@@ -41,7 +41,7 @@ typedef struct {
 
 } FREEVERB;
 
-void initFreeverb(void* vfv);
+void initFreeverb(void* vfv, float sampleRate);
 float applyFreeverb(void *vfv, float input);
 void uninitialize_Freeverb(void *vfv);
 #if AUDIO_EFFECTS_TESTER

@@ -171,11 +171,11 @@ void initializeEffects(float sampleRate) {
 			CHORUS_BUF_SIZE, 20.0f, cData, sampleRate);
 #endif
 #if TESTING_FREEVERB
-	initFreeverb(&fvb);
+	initFreeverb(&fvb, sampleRate);
 #endif
 
 #if TESTING_SCHROEDER
-	initSchroederVerb(&svb);
+	initSchroederVerb(&svb, sampleRate);
 #endif
 #if TESTING_EQUALIZER
 	intitialize_random_number_generator();
