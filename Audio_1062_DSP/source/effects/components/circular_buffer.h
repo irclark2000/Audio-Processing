@@ -37,6 +37,8 @@ uint32_t cb_transferIn(CIRCBUFFER *cb, float * source, uint32_t size);
 float cb_transferOut(CIRCBUFFER *cb);
 uint16_t cb_blockTransferOut(CIRCBUFFER *cb, float * output, uint32_t count);
 void cb_initialize(CIRCBUFFER *cb, float * buf, uint32_t size);
+void gui_cb_initialize(CIRCBUFFER *cb, float maxDelaySec, float sampleRate);
+void cb_uninitialize(CIRCBUFFER *cb);
 //float cb_getFloatAtReadPtrWithIndex(CIRCBUFFER *cb, uint32_t index);
 //float cb_getFloatAtIndex(CIRCBUFFER *cb, int32_t index);
 //void cb_setFloatAtWritePointer(CIRCBUFFER *cb, float value);

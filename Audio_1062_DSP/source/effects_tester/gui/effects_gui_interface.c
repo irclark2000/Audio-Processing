@@ -58,29 +58,87 @@ void setParameter_COMPONENT(void *type, EFFECT_COMPONENT *effect, char *pName, f
 float getParameter_COMPONENT(void *type, EFFECT_COMPONENT *effect, char *pName) {
 	return 0.0f;
 }
+
+void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate) {
+	switch(component->type) {
+		case AutoWah:
+			{
+			}
+			break;
+		case Chorus:
+			{
+				CHORUS *chorus = component->effect;
+				uint8_t chorus_count = chorus_count;
+				gui_initialize(component, 0, sampleRate);
+				chorus->sampleRate = sampleRate;
+				chorus->inv_count = 1.0f / chorus_count;
+				for (int i = 0; i < chorus_count; i++) {
+					gui_initialize(&(component->childComponents[i]), 0, sampleRate); 
+				}
+				gui_initialize(&(chorus->mixer), 0, sampleRate);
+
+			}
+			break;
+		case ChorusElement:
+			{
+			}
+			break;
+		case EnvelopeFollower:
+			{
+				ENVELOPE_FOLLOWER *ef = component->effect;
+				ef->sampleRate = sampleRate;
+			}
+			break;
+		case Lfo:
+			{
+				LOWFREQOSC *osc = component->effect;
+				osc->sampleTime = 1.0f / sampleRate;
+				osc->sampleRate = sampleRate;
+				osc->direction = 1.0f;
+				osc->counter = 0.0f;
+			}
+			break;
+		case VariableDelay:
+			{
+				VARDELAY *vDelay = component->effect;
+				vDelay->sampleTime = 1.0f / sampleRate;
+				vDelay->sampleRate = sampleRate;
+				vDelay->delayInSamples = 0;
+				vDelay->max_delay = (size - 1) * vDelay->sampleTime;
+				vDelay->cBufPtr = &(vDelay->cBuf);
+				vDelay->size = size;
+				gui_cb_initialize(vDelay->cBufPtr, vDelay->max_delay, sampleRate);	
+			}
+			break;
+			// do nothing for some 
+		case VariableBandpass:
+		case Mixer:
+			break;   
+	}
+}
 /*
  * typedef struct {
-	VARDELAY vDelay;
-	float feedBack_level;
-	float feedback_gain;
-	float out;
-	MIXER mixer;
-} ECHO;
+ VARDELAY vDelay;
+ float feedBack_level;
+ float feedback_gain;
+ float out;
+ MIXER mixer;
+ } ECHO;
  *
  */
 /*
  * typedef struct {
-	EFFECT_TYPE type;
-	void * effect;
-	void (*initialize) (void *, EFFECT_PARAMS *parameters, float sampleRate);
-	float (*apply) (void *, float);
-	void (*uninitialize) (void *);
-	char component_parameters[5][80];
-	EFFECT_PARAMS *parameters;
-	uint8_t parameterCount;
-	EFFECT_COMPONENT *childComponents[MAX_CHILD_EFFECT_COMPONENTS];
-	uint8_t childrenCount;
-	uint8_t effect_bypass;
-} EFFECT_COMPONENT;
+ EFFECT_TYPE type;
+ void * effect;
+ void (*initialize) (void *, EFFECT_PARAMS *parameters, float sampleRate);
+ float (*apply) (void *, float);
+ void (*uninitialize) (void *);
+ char component_parameters[5][80];
+ EFFECT_PARAMS *parameters;
+ uint8_t parameterCount;
+ EFFECT_COMPONENT *childComponents[MAX_CHILD_EFFECT_COMPONENTS];
+ uint8_t childrenCount;
+ uint8_t effect_bypass;
+ } EFFECT_COMPONENT;
  *
  */

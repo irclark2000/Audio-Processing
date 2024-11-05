@@ -20,6 +20,7 @@ typedef struct {
 	float sampleTime;
 	float countLimit;
 	float wcT;
+	float oscFreq;
 	float amplitude;
 	PARAMETER_LIMITS amplitude_limits;
 	PARAMETER_LIMITS frequency_limits;

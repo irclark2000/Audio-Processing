@@ -103,8 +103,8 @@ float applyFreeverb(void *vfv, float input) {
 	return fv->out;
 }
 #if AUDIO_EFFECTS_TESTER
-void initialize_FREEVERB(void *vfv, EFFECT_PARAMS *params) {
-	initFreeverb(vfv);
+void initialize_FREEVERB(void *vfv, EFFECT_PARAMS *params, float sampleRate) {
+	initFreeverb(vfv, sampleRate);
 }
 #endif
 void uninitialize_Freeverb(void *vfv) {

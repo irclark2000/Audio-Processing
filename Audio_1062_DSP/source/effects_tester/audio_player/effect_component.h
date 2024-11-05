@@ -44,6 +44,7 @@ typedef struct EFFECT_COMPONENT {
 	EFFECT_TYPE type;
 	char *effectName;
 	void * effect;
+	uint8_t effect_count;
 	void (*initialize) (void *type, EFFECT_PARAMS *parameters, float sampleRate);
 	float (*apply) (void *, float);
 	char *strParameters[10];
@@ -57,6 +58,6 @@ typedef struct EFFECT_COMPONENT {
 char * strSave (char * string);
 void do_nothing0_Component(void * effect);
 void do_nothing1_Component(void * effect, EFFECT_PARAMS *parameters,float sampleRate);
-EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters);
+EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *effect);
 void freeComponent (EFFECT_COMPONENT *component);
 #endif /* EFFECTS_TESTER_AUDIO_PLAYER_EFFECT_COMPONENT_H_ */

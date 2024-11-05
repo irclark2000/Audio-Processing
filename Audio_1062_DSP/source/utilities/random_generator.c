@@ -25,7 +25,7 @@ void intitialize_random_number_generator(void) {
     	seed = data;
     }
     else {
-        seed = 0;
+        seed = 87;
     }
 }
 const static float INT32_TO_FLOAT = 1.0f / 1073741824.0f;

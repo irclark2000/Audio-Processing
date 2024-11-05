@@ -160,17 +160,26 @@ uint16_t cb_addOverlap(CIRCBUFFER *cb, float *buf, uint32_t hop_size,
 	return 1;
 }
 #endif
+void gui_cb_initialize(CIRCBUFFER *cb, float maxDelaySec, float sampleRate) {
+	uint32_t size = maxDelaySec * sampleRate;
+	cb_initialize(cb, 0, size);
+}
 void cb_initialize(CIRCBUFFER *cb, float *buf, uint32_t size) {
 #if AUDIO_EFFECTS_TESTER
 	if (buf == 0) {
 		buf = (float *) malloc(size * sizeof(float));
 	}
-#endif
 
+#endif
 	cb->storage = buf;
 	cb->rd_ptr = 0;
 	cb->wr_ptr = 0;
 	cb->size = size;
 	cb->count = 0;
 	memset(buf, 0, size * bytesPerFloat);
+}
+void cb_uninitialize(CIRCBUFFER *cb) {
+#if AUDIO_EFFECTS_TESTER
+	free (cb->storage);
+#endif
 }

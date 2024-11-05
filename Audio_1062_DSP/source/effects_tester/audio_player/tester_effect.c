@@ -94,7 +94,7 @@ int apply_effect(int source) {
         ma_node_attach_output_bus(&g_sound, 0, &g_effects_node, 0);
 
         /*
-        Start the sound after it's applied to the sound. Otherwise there could be a scenario where
+        Start the sound after the effect is applied to the sound. Otherwise there could be a scenario where
         the very first part of it is read before the attachment to the effect is made.
         */
         ma_sound_start(&g_sound);

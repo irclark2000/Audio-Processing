@@ -29,6 +29,7 @@
 #include "effects/components/mixer.h"
 #include "effects/components/low_frequency_oscillator.h"
 #include "effects/components/variable_bandpass_filter.h"
+#include "effects/components/variable_delay.h"
 
 #if !AUDIO_EFFECTS_TESTER
 
@@ -114,7 +115,7 @@ void freeComponent(EFFECT_COMPONENT * component) {
 	}
 }
 #endif
-EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
+EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *effect) {
 #if AUDIO_EFFECTS_TESTER
 	EFFECT_COMPONENT *component = (EFFECT_COMPONENT*) malloc(
 			sizeof(EFFECT_COMPONENT));
@@ -133,13 +134,14 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 	 *
 	 */
 	if (strcmp(effectName, "Auto Wah") == 0) {
+		AUTOWAH *aw = (AUTOWAH *) malloc(sizeof(AUTOWAH));
+		component->effect = aw;
 		component->type = AutoWah;
-		component->parameterCount = 5;
-		component->parameters = (EFFECT_PARAMS*) malloc(5 * sizeof(EFFECT_PARAMS));
+		component->parameters = (EFFECT_PARAMS*) malloc(4 * sizeof(EFFECT_PARAMS));
 		char temp[480];
 		// forced order: base delay, then Lfo, then Lfo Driven Delay
 		if (strParameters == 0) {
-			char *elements= "InputGain:S3*0.01,1,10\tFxGain:S3*0.01,1,10\tMin Cutoff Freq:S3*10,267,500\tMax Cutoff Freq:S3*510,600,2000\tQ:S3*0.7,4,10//Q:X*8\tCutoff Freq:X*1000\tPass:I*1";
+			char *elements= "InputGain:S3*0.01,1,10\tFxGain:S3*0.01,1,10\tMin Cutoff Freq:S3*10,267,500\tMax Cutoff Freq:S3*510,600,2000//Q:S3*0.7,4,10\tCutoff Freq:X*1000\tPass:I*1";
 			strcpy(temp, elements);
 		}
 		else {
@@ -148,80 +150,82 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		char *ptrParameters = strtok(temp, "//");
 		char *ptrVarBandPass = strtok(NULL, "//");
 		// 4 parameters
-		char *params[5];
+		component->parameterCount = 4;
+		char *params[4];
 		char *ptr = strtok(ptrParameters, "\t");
-		for (int i=0; i < 5; i++) {
+		for (int i=0; i < component->parameterCount; i++) {
 			params[i] = ptr;
 			ptr = strtok(NULL, "\t");
 		}
-		for (int i=0; i < 5; i++) {
+		for (int i=0; i < component->parameterCount; i++) {
 			setName_Type_Parse_Variables (component, i, params[i]);
 		}
+		component->parameters[0].currentValue = &(aw->inputGain);
+		component->parameters[1].currentValue = &(aw->fxGain);		
+		component->parameters[2].currentValue = &(aw->minCoFreq);
+		component->parameters[3].currentValue = &(aw->maxCoFreq);		
 
 		// children
 		component->childrenCount = 3;
-		component->childComponents[0] = createComponent("Variable BandPass", ptrVarBandPass);
-		component->childComponents[1] = createComponent("Envelope Follower", 0);
-		component->childComponents[2] = createComponent("Mixer", 0);
+		component->childComponents[0] = createComponent("Variable BandPass", ptrVarBandPass, &(aw->vbf));
+		component->childComponents[1] = createComponent("Envelope Follower", 0, &(aw->ef));
+		component->childComponents[2] = createComponent("Mixer", 0, &(aw->mixer));
 		component->apply = apply_AUTOWAH;
 		component->effect_bypass = 0;
 	}
 	else if (strcmp(effectName, "Chorus") == 0) {
+		CHORUS *chorus = (CHORUS *) malloc(sizeof(CHORUS));
+		component->effect = chorus;
 		component->type = Chorus;
 		component->parameterCount = 1;
 		component->parameters = (EFFECT_PARAMS*) malloc(sizeof(EFFECT_PARAMS));
+		component->childrenCount = 0;
 		char temp[480];
 		// forced order: base delay, then Lfo, then Lfo Driven Delay
 		if (strParameters == 0) {
-			char * elements = "BaseDelay 1:S3*0,1,10//LFO 1 Freq:S3*0.1,1,5\tLFO 1 Depth (mSec):S3*0,1,10//Delay 1 Max:X*30\nBaseDelay 2:S3*0,1,10//LFO 2 Freq:S3*0.1,1,5\tLFO 2 Depth (mSec):S3*0,1,10//Delay 2 Max:X*30";
+			char * elements = "Count:I*2\nBaseDelay 1:S3*0,1,10//LFO 1 Freq:S3*0.1,1,5\tLFO 1 Depth (mSec):S3*0,1,10//Delay 1 Max:X*30\nBaseDelay 2:S3*0,1,10//LFO 2 Freq:S3*0.1,1,5\tLFO 2 Depth (mSec):S3*0,1,10//Delay 2 Max:X*30";
 			strcpy(temp, elements);
 		}
 		else {
 			strcpy(temp, strParameters);
 		}
-		int componentCount = 0;
 		char *ptrStart = temp;
 		char *ptrEnd = temp;
-		while(*ptrEnd != 0 && *ptrEnd != '\n') ptrEnd++;
-		int more = 1;
-		if (*ptrEnd == 0) {
-			more = 0;
+		while(*ptrEnd == '\n' && *ptrEnd !=0) ptrEnd++;
+
+		if (*ptrEnd == '\n') {
+			*ptrEnd = 0;
+			char *ptr = strtok(ptrStart, "*");
+			ptr = strtok(NULL, "*");
+			chorus->chorus_count = atoi(ptr);
+			chorus->inv_count = 1.0f / chorus->chorus_count;
+		}	
+		else {
+			freeComponent(component);
+			return 0;
 		}
-		*ptrEnd = 0;
-		while (*ptrStart) {
-			//			char temp2[80];
+		ptrEnd++;
+		int componentCount = chorus->chorus_count;
+		char *child[12];
+		for (int i = 0; i < componentCount; ++i) {
+			if (i==0) child[0] = strtok(ptrEnd, "//");
+			else child[i] = strtok(NULL, "//");
+		}
+		for (int i = 0; i < componentCount; ++i) {
 			EFFECT_COMPONENT * cmp =
-				createComponent("Chorus Element", ptrStart);
-			if(cmp != NULL) {
-				component->childComponents[componentCount] = cmp;
-				componentCount++;
-				if (more) {
-					ptrStart = ptrEnd + 1;
-					ptrEnd = ptrStart;
-					while(*ptrEnd != 0 && *ptrEnd != '\n') ptrEnd++;
-					if (*ptrEnd == 0) {
-						more = 0;
-					}
-					*ptrEnd = 0;
-				} else {
-					break;
-				}
-			}
-			else {
-				freeComponent(component);
-				return 0;
-			}
+				createComponent("Chorus Element", ptrStart, chorus->cElement + i);
+			component->childComponents[i] = cmp;
 		}
-		component->childComponents[componentCount++] = createComponent("Mixer", 0);
+
+		component->childComponents[componentCount++] = createComponent("Mixer", 0, &(chorus->mixer));
 		component->childrenCount = componentCount;
 		component->apply = update_CHORUS;
 		component->effect_bypass = 0;
-		setName_Type(component, 0, "Chorus Element Count:I1");
-		component->parameters[0].intParameter[0] = 2;
-
 	}
 	else if (strcmp(effectName, "Echo") == 0) {
 		component->type = Echo;
+		ECHO *echo = (ECHO *) malloc(sizeof(ECHO));
+		component->effect = echo;
 		component->parameterCount = 2;
 		component->parameters = (EFFECT_PARAMS*) malloc(
 				2 * sizeof(EFFECT_PARAMS));
@@ -238,13 +242,15 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		component->parameters[1].floatParameter[index++] = 0.5f;
 		component->childrenCount = 2;
 		index = 0;
-		component->childComponents[index++] = createComponent("Mixer", 0);
+		component->childComponents[index++] = createComponent("Mixer", 0, &(echo->mixer));
 		component->childComponents[index++] = createComponent("Variable Delay",
-				"Delay mSec:S3*0,250,500");
+				"Delay mSec:S3*0,250,500", &(echo->vDelay));
 		component->apply = update_Echo;
 		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Flanger") == 0) {
 		component->type = Flanger;
+		FLANGER *flng = (FLANGER *) malloc(sizeof(FLANGER));
+		component->effect = flng;
 		component->parameterCount = 2;
 		component->parameters = (EFFECT_PARAMS*) malloc(2 * sizeof(EFFECT_PARAMS));
 		int index = 0;
@@ -259,15 +265,17 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		component->parameters[1].floatParameter[index++] = 0.98f;
 		component->childrenCount = 3;
 		index = 0;
-		component->childComponents[index++] = createComponent("Mixer", 0);
+		component->childComponents[index++] = createComponent("Mixer", 0, &(flng->mixer));
 		component->childComponents[index++] = createComponent("Variable Delay",
-				"Delay mSec:X*30");
+				"Delay mSec:X*30", &(flng->vDelay));
 		component->childComponents[index++] = createComponent("Lfo",
-				"LFO Freq:S3*0.1,1,5\tLFO Depth (mSec):S3*0,1,10");
+				"LFO Freq:S3*0.1,1,5\tLFO Depth (mSec):S3*0,1,10", 0);
 		component->apply = update_FLANGER;
 		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Vibrato") == 0) {
 		component->type = Vibrato;
+		VIBRATO *vib = (VIBRATO *) malloc(sizeof(VIBRATO));
+		component->effect = vib;
 		char temp[160];
 		if (strParameters == 0) {
 			char * elements = "Base Delay (MS):S3*0.1,5,14//Max Delay:X*15//LFO Frequency:S3*0.1,5,15\tLFO Depth (mSec):S3*0,2.5,5";
@@ -293,9 +301,9 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 			freeComponent(component);
 		}
 		component->childrenCount = 3;
-		component->childComponents[0] = createComponent("Lfo", ptrLFO);
-		component->childComponents[1] = createComponent("Variable Delay", ptrVarDelay);
-		component->childComponents[2] = createComponent("Mixer", 0);
+		component->childComponents[0] = createComponent("Lfo", ptrLFO, &(vib->lfo));
+		component->childComponents[1] = createComponent("Variable Delay", ptrVarDelay, &(vib->vDelay));
+		component->childComponents[2] = createComponent("Mixer", 0, &(vib->mixer));
 		component->apply = apply_VIBRATO;
 		component->effect_bypass = 0;
 
@@ -323,28 +331,32 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 			freeComponent(component);
 		}
 	} else if (strcmp(effectName, "Chorus Element") == 0) {
+		CHORUSELEMENT *cElement;
+		if (effect) {
+			cElement = (CHORUSELEMENT *) effect;
+		}
+		else {
+			cElement = (CHORUSELEMENT *) malloc(sizeof(CHORUSELEMENT));
+			component->effect = cElement;
+		}
+		/*
+		 * 
+		 */
 		component->type = ChorusElement;
 		char temp[160];
 		strcpy(temp, strParameters);
 		// forced order: base delay, then Lfo, then Lfo Driven Delay
-		char *ptr1 = strtok(temp, "//");  // baseDelay
-		char *ptr2 = strtok(NULL, "//");  // LFO
-		char *ptr3 = strtok(NULL, "//");  // Driven VARDELAY
+		char *ptrBaseDelay = strtok(temp, "//");  // baseDelay
+		char *ptrLfo = strtok(NULL, "//");  // LFO
+		char *ptrVarDelay = strtok(NULL, "//");  // Driven VARDELAY
 		component->parameterCount = 1;
 		component->parameters = (EFFECT_PARAMS*) malloc(sizeof(EFFECT_PARAMS));
-		char *ptr = strtok (ptr1, "*");
-		setName_Type(component, 0, ptr);
-		while(*ptr != ':' && *ptr != 0) ptr++;
-		if (*ptr == ':' && *(ptr + 1) == 'S') {
-			uint8_t count = atoi(ptr + 2);
-			ptr = strtok(NULL, "*");
-			ptr = parseParameters(ptr, component->parameters, count);
-		} else {
-			freeComponent(component);
-		}
+		char *ptr = strtok (ptrBaseDelay, "*");
+		setName_Type_Parse_Variables (component, 0, ptr);
+		component->parameters[0].currentValue = &(cElement->baseDelayMSec);
 		component->childrenCount = 2;
-		component->childComponents[0] = createComponent("Lfo", ptr2);
-		component->childComponents[1] = createComponent("Variable Delay", ptr3);
+		component->childComponents[0] = createComponent("Lfo", ptrLfo, &(cElement->lfo));
+		component->childComponents[1] = createComponent("Variable Delay", ptrVarDelay, &(cElement->vDelay));
 	}
 	else if (strcmp(effectName, "Envelope Follower") == 0) {
 		component->type = EnvelopeFollower;
@@ -355,30 +367,26 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 	}
 	else if (strcmp(effectName, "Lfo") == 0) {
 		component->type = Lfo;
+		LOWFREQOSC *lfo;
+		if (effect) {
+			lfo = (LOWFREQOSC *) effect;
+		}
+		else {
+			lfo = (LOWFREQOSC *) malloc(sizeof(LOWFREQOSC));
+			component->effect = lfo;
+		}
 		// must have 2 parameters frequency and Depth
 		char temp[80];
 		strcpy(temp, strParameters);
-		char *ptr1 = strtok(temp, "\t");
-		char *ptr2 = strtok(NULL, "\t");
-		char parameter1[80];
-		char parameter2[80];
-		strcpy(parameter1, ptr1);
-		strcpy(parameter2, ptr2);
-		component->parameterCount = 2;
+		char *ptrFreq = strtok(temp, "\t");
+		char *ptrDepth = strtok(NULL, "\t");
 		component->parameters = (EFFECT_PARAMS*) malloc(2 * sizeof(EFFECT_PARAMS));
-		char *ptr = strtok(parameter1, "*");
-		setName_Type(component, 0, ptr);
-		while(*ptr != ':' && *ptr != 0) ptr++;
-		if (*ptr == ':' && *(ptr + 1) == 'S') {
-			uint8_t count = atoi(ptr + 2);
-			ptr = strtok(NULL, "*");
-			ptr = parseParameters(ptr, component->parameters, count);
-		} else {
-			freeComponent(component);
-		}
-
-		ptr = strtok(parameter2, "*");
-		setName_Type(component, 1, ptr);
+		char *ptr = strtok(ptrFreq, "*");
+		setName_Type_Parse_Variables (component, 0, ptr);
+		component->parameters[0].currentValue = &(lfo->oscFreq);
+		ptr = strtok(ptrDepth, "*");
+		setName_Type_Parse_Variables (component, 1, ptr);
+		component->parameters[1].currentValue = &(lfo->amplitude);
 		while(*ptr != ':' && *ptr != 0) ptr++;
 		if (*ptr == ':' && *(ptr + 1) == 'S') {
 			uint8_t count = atoi(ptr + 2);
@@ -387,7 +395,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		} else {
 			freeComponent(component);
 		}
-
+		component->parameterCount = 2;
 		component->childrenCount = 0;
 		component->apply = 0;
 		component->effect_bypass = 0;
@@ -428,18 +436,23 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 
 	} else if (strcmp(effectName, "Variable BandPass") == 0) {
 		component->type = VariableDelay;
+		VARBANDPASS *vbp = (VARBANDPASS *) malloc(sizeof(VARBANDPASS));
+		component->effect = vbp;
 		char temp[80];
 		strcpy(temp, strParameters);
 		char *ptrQ = strtok(temp, "\t");
 		char *ptrCutoff = strtok(NULL, "\t");
 		char *ptrPassBlock = strtok(NULL, "\t");
-		component->parameterCount = 2;
+		component->parameterCount = 3;
 		component->parameters = (EFFECT_PARAMS*) malloc(
 				3 * sizeof(EFFECT_PARAMS));
-		// two parameters
+		// three parameters
 		setName_Type_Parse_Variables (component, 0, ptrQ);
+		component->parameters[0].currentValue = &(vbp->gui_Q);
 		setName_Type_Parse_Variables (component, 1, ptrCutoff);
-		setName_Type_Parse_Variables (component, 2, ptrPassBlock);
+		component->parameters[1].currentValue = &(vbp->gui_Freq);
+		setName_Type_Parse_Variables (component, 2, ptrCutoff);
+		vbp->pass_stop = component->parameters[2].intParameter[0];
 		// no children
 		component->childrenCount = 0;
 		component->apply = 0;
@@ -447,6 +460,14 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 
 	} else if (strcmp(effectName, "Variable Delay") == 0) {
 		component->type = VariableDelay;
+		VARDELAY *vDelay;
+		if (effect) {
+			vDelay = (VARDELAY *) effect;
+		}
+		else {
+			vDelay = (VARDELAY *) malloc(sizeof(VARDELAY));
+			component->effect = vDelay;
+		}
 		char temp[80];
 		strcpy(temp, strParameters);
 		char *ptr = strtok(temp, "*");
@@ -455,18 +476,21 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters) {
 		component->parameters = (EFFECT_PARAMS*) malloc(
 				sizeof(EFFECT_PARAMS));
 		while(*ptr != ':' && *ptr != 0) ptr++;
+		float maxDelay;
 		if (*ptr == ':' && *(ptr + 1) == 'X') {
 			ptr = strtok(NULL, "*");
-			component->parameters->floatParameter[0] = atof(ptr);
+			maxDelay = component->parameters->floatParameter[0] = atof(ptr);
 		}
 		else if (*ptr == ':' && *(ptr + 1) == 'S') {
 			uint8_t count = atoi (ptr + 2);
 			ptr = strtok(NULL, "*");
 			ptr = parseParameters(ptr, component->parameters, count);
+			maxDelay = component->parameters->floatParameter[2];
 		} else {
 			freeComponent(component);
 			return 0;
 		}
+		vDelay->max_delay = maxDelay/1000.0f;
 		component->childrenCount = 0;
 		component->apply = 0;
 		component->effect_bypass = 0;

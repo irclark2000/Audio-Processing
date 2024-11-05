@@ -32,6 +32,9 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 typedef struct {
 	SECONDALLPASSFILTER apf;
 	uint8_t pass_stop;   // 1 = pass, 0 = stop
+	float gui_Q;
+	float gui_Freq;
+
 	float out;
 } VARBANDPASS;
 

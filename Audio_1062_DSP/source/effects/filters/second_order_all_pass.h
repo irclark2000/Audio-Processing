@@ -34,6 +34,8 @@ typedef struct {
 	float apfWct;
 	float apfOut;
 	float tanF;
+	float gui_Q;
+	float gui_Freq;
 
 	float inv_Q;
 
