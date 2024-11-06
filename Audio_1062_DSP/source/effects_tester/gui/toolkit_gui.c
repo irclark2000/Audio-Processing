@@ -101,7 +101,7 @@ static void clearDisplayState (DISPLAY_STATE * gui) {
 }
 static void initializeDisplayState(DISPLAY_STATE *gui, uint8_t selection) {
 	clearDisplayState (gui);
-	gui->component = createComponent(g_effect_list[selection].name, 0, 0, 0);
+	gui->component = createComponent(g_effect_list[selection].name, 0, 0);
 	if (gui->component != NULL) {
 		gui->component->effect_bypass = 0;
 		setupSliders(gui, gui->component);
@@ -808,7 +808,9 @@ static void setupSlidersComponent(DISPLAY_STATE *gui, EFFECT_PARAMS *parameter) 
 	gui->sliders[count].slider_value =
 		(parameter->floatParameter[1] - parameter->floatParameter[0])/ gui->sliders[count].slope;
 	gui->sliders[count].output =  parameter->floatParameter[1];
-	*(parameter->currentValue) = gui->sliders[count].output;
+	if (parameter->currentValue) {
+		*(parameter->currentValue) = gui->sliders[count].output;
+	}
 	gui->sliders[count].previousOutput = INITIAL_FLOAT_VALUE;
 }
 static void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT * component) {

@@ -13,7 +13,7 @@
 
 typedef struct {
 	VARDELAY vDelay;
-	float feedBack_level;
+	float feedback_level;
 	float feedback_gain;
 	float out;
 	MIXER mixer;

@@ -43,8 +43,8 @@ EFFECT_ITEM misc_effect[] = {
 };
 
 EFFECT_ITEM effects_list[] = {
-	{"Auto Wah", AutoWah}, {"Echo", Echo}, {"Flanger", Flanger}, {"Vibrato", Vibrato},
-	{"Chorus", Chorus}
+	{"Auto Wah", AutoWah}, {"Chorus", Chorus}, {"Echo", Echo}, {"Flanger", Flanger}, {"Vibrato", Vibrato},
+	{"Freeverb", Freeverb}, {"Schroeder Reverb", Schroeder}
 };
 
 float applyEffect_COMPONENT(void *type, EFFECT_COMPONENT *effect, float input) {
