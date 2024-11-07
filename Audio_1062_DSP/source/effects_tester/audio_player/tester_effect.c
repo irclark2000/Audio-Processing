@@ -54,6 +54,7 @@ int apply_effect(int source) {
      EFFECT_COMPONENT *effect_under_test;
      effect_under_test = createComponent("Freeverb", 0, 0);
      //generate_gui(effects_list, 7);
+     play_music(fileName, effect_under_test)
 
     return 0;
 }
@@ -72,6 +73,7 @@ int play_music (char *fileName, EFFECT_COMPONENT *ec) {
 
 		channels   = ma_engine_get_channels(&g_engine);
 		sampleRate = ma_engine_get_sample_rate(&g_engine);
+		gui_initialize(ec, 0, sampleRate);
 
 		// the third parameter should be of type EFFECT_COMPONENT *
 		effectsNodeConfig = ma_effects_node_config_init(channels, sampleRate, ec);
