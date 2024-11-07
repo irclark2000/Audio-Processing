@@ -109,10 +109,10 @@ MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFram
     for (iFrame = 0; iFrame < frameCount; iFrame += 1) {
         for (iChannel = 0; iChannel < pEffects->config.channels; iChannel += 1) {
 
-		float out = component->apply(component->effect, pFramesInF32[iChannel]);
-                // Just copying for now
+		//float out = component->apply(component->effect, pFramesInF32[iChannel]);
+		// Just copying for now
                 pFramesOutF32[iChannel] = pFramesInF32[iChannel];
-                pFramesOutF32[iChannel] = out;
+                //pFramesOutF32[iChannel] = out;
         }
 
         pFramesOutF32 += pEffects->config.channels;

@@ -52,60 +52,63 @@ int apply_effect(int source) {
 
     }
      EFFECT_COMPONENT *effect_under_test;
-    //effect_under_test = createComponent("Vibrato", 0);
-     generate_gui(effects_list, 5);
+     effect_under_test = createComponent("Freeverb", 0, 0);
+     //generate_gui(effects_list, 7);
 
-	//ec.initialize(&fv, 0);
     return 0;
-    result = ma_engine_init(NULL, &g_engine);
-    if (result != MA_SUCCESS) {
-        printf("Failed to initialize audio engine.");
-        return -1;
-    }
-    {
-        ma_effects_node_config effectsNodeConfig;
-        ma_uint32 channels;
-        ma_uint32 sampleRate;
+}
 
-        channels   = ma_engine_get_channels(&g_engine);
-        sampleRate = ma_engine_get_sample_rate(&g_engine);
+int play_music (char *fileName, EFFECT_COMPONENT *ec) {
+	ma_result result;
+	result = ma_engine_init(NULL, &g_engine);
+	if (result != MA_SUCCESS) {
+		printf("Failed to initialize audio engine.");
+		return -1;
+	}
+	{
+		ma_effects_node_config effectsNodeConfig;
+		ma_uint32 channels;
+		ma_uint32 sampleRate;
 
-	// the third parameter should be of type EFFECT_COMPONENT *
-        effectsNodeConfig = ma_effects_node_config_init(channels, sampleRate, effect_under_test);
+		channels   = ma_engine_get_channels(&g_engine);
+		sampleRate = ma_engine_get_sample_rate(&g_engine);
 
-        result = ma_effects_node_init(ma_engine_get_node_graph(&g_engine), &effectsNodeConfig, NULL, &g_effects_node);
-        if (result != MA_SUCCESS) {
-            printf("Failed to initialize effects node.");
-            return -1;
-        }
+		// the third parameter should be of type EFFECT_COMPONENT *
+		effectsNodeConfig = ma_effects_node_config_init(channels, sampleRate, ec);
 
-        /* Connect the output of the delay node to the input of the endpoint. */
-        ma_node_attach_output_bus(&g_effects_node, 0, ma_engine_get_endpoint(&g_engine), 0);
-    }
-    /* Now we can load the sound and connect it to the delay node. */
-    {
-        result = ma_sound_init_from_file(&g_engine, fileName, 0, NULL, NULL, &g_sound);
-        if (result != MA_SUCCESS) {
-            printf("Failed to initialize sound \"%s\".", fileName);
-            return -1;
-        }
+		result = ma_effects_node_init(ma_engine_get_node_graph(&g_engine), &effectsNodeConfig, NULL, &g_effects_node);
+		if (result != MA_SUCCESS) {
+			printf("Failed to initialize effects node.");
+			return -1;
+		}
 
-        /* Connect the output of the sound to the input of the effect. */
-        ma_node_attach_output_bus(&g_sound, 0, &g_effects_node, 0);
+		/* Connect the output of the delay node to the input of the endpoint. */
+		ma_node_attach_output_bus(&g_effects_node, 0, ma_engine_get_endpoint(&g_engine), 0);
+	}
+	/* Now we can load the sound and connect it to the delay node. */
+	{
+		result = ma_sound_init_from_file(&g_engine, fileName, 0, NULL, NULL, &g_sound);
+		if (result != MA_SUCCESS) {
+			printf("Failed to initialize sound \"%s\".", fileName);
+			return -1;
+		}
 
-        /*
-        Start the sound after the effect is applied to the sound. Otherwise there could be a scenario where
-        the very first part of it is read before the attachment to the effect is made.
-        */
-        ma_sound_start(&g_sound);
-    }
+		/* Connect the output of the sound to the input of the effect. */
+		ma_node_attach_output_bus(&g_sound, 0, &g_effects_node, 0);
 
-    printf("Press Enter to quit...");
-    getchar();
+		/*
+		   Start the sound after the effect is applied to the sound. Otherwise there could be a scenario where
+		   the very first part of it is read before the attachment to the effect is made.
+		   */
+		ma_sound_start(&g_sound);
+	}
 
-    ma_sound_uninit(&g_sound);
-    ma_effects_node_uninit(&g_effects_node, NULL);
-    ma_engine_uninit(&g_engine);
-    return 0;
+	printf("Press Enter to quit...");
+	getchar();
+
+	ma_sound_uninit(&g_sound);
+	ma_effects_node_uninit(&g_effects_node, NULL);
+	ma_engine_uninit(&g_engine);
+	return 0;
 }
 #endif

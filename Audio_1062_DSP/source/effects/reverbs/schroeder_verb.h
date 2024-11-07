@@ -32,10 +32,12 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include <filters/all_pass1.h>
 #include <filters/comb_filter1.h>
+#include "effects/components/mixer.h"
 
 typedef struct {
 	ALLPASS1 allpass[3];
 	COMB_FILTER lpfc[4];
+	MIXER mixer;
 	int lpfcCount;
 	int allCount;
 	double out;

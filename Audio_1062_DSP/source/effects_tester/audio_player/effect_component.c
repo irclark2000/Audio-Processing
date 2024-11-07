@@ -24,6 +24,8 @@
 #include "effects/delay_based/flanger.h"
 #include "effects/delay_based/chorus.h"
 #include "effects/delay_based/vibrato.h"
+#include "effects/reverbs/freeverb.h"
+#include "effects/reverbs/schroeder_verb.h"
 #include "effects/variable_filter_effects/wah_wah.h"
 #include "effects/variable_filter_effects/auto_wah.h"
 #include "effects/components/mixer.h"
@@ -307,6 +309,25 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->apply = apply_VIBRATO;
 		component->effect_bypass = 0;
 
+	} else if (strcmp(effectName, "Freeverb") == 0) {
+		FREEVERB *fv = (FREEVERB *) malloc(sizeof(FREEVERB));
+		component->effect = fv;
+		component->type = Freeverb;
+		component->parameterCount = 0;
+		component->childComponents[0] = createComponent("Mixer", 0, &(fv->mixer));
+		component->childrenCount = 1;
+		component->apply = applyFreeverb;
+		component->effect_bypass = 0;
+
+	} else if (strcmp(effectName, "Schroeder Reverb") == 0) {
+		SCHROEDERVERB *fv = (SCHROEDERVERB *) malloc(sizeof(SCHROEDERVERB));
+		component->effect = fv;
+		component->type = Schroeder;
+		component->parameterCount = 0;
+		component->childComponents[0] = createComponent("Mixer", 0, &(fv->mixer));
+		component->childrenCount = 1;
+		component->apply = applyShroederVerb;
+		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Wah Wah") == 0) {
 		component->type = WahWah;
 		char temp[160];

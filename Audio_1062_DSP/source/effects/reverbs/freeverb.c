@@ -54,6 +54,7 @@ AT_NONCACHEABLE_SECTION_ALIGN(static float ap3_buf[AP3], 4);
 #endif
 void initFreeverb(void * vfv, float sampleRate) {
 	FREEVERB *fv = (FREEVERB *)vfv;
+	initialize_MIXER (&(fv->mixer), 0.5);
 	fv->allCount = sizeof(fv->allpass) / sizeof(fv->allpass[0]);
 	fv->lpfcCount = sizeof(fv->lpfc) / sizeof(fv->lpfc[0]);
 #if AUDIO_EFFECTS_TESTER
@@ -99,6 +100,7 @@ float applyFreeverb(void *vfv, float input) {
 	for (fv->i = 0; fv->i < fv->allCount; fv->i++) {
 		fv->out = applyAllpassFilter(&(fv->allpass[fv->i]), fv->out);
 	}
+	fv->out = applyWetDry_MIXER (&(fv->mixer), fv->out, input);
 
 	return fv->out;
 }

@@ -20,6 +20,8 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 #include "effects_gui_interface.h"
 #include "effects/delay_based/echo.h"
+#include "effects/reverbs/freeverb.h"
+#include "effects/reverbs/schroeder_verb.h"
 #include <string.h>
 #if AUDIO_EFFECTS_TESTER
 #include <stdlib.h>
@@ -73,9 +75,9 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 				chorus->sampleRate = sampleRate;
 				chorus->inv_count = 1.0f / chorus_count;
 				for (int i = 0; i < chorus_count; i++) {
-					gui_initialize(&(component->childComponents[i]), 0, sampleRate); 
+					gui_initialize((component->childComponents[i]), 0, sampleRate); 
 				}
-				gui_initialize(&(chorus->mixer), 0, sampleRate);
+				gui_initialize(component->childComponents[chorus_count], 0, sampleRate);
 
 			}
 			break;
@@ -87,6 +89,12 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 			{
 				ENVELOPE_FOLLOWER *ef = component->effect;
 				ef->sampleRate = sampleRate;
+			}
+			break;
+		case Freeverb:
+			{
+				FREEVERB *fv = component->effect;
+				initFreeverb(fv, sampleRate);
 			}
 			break;
 		case Lfo:

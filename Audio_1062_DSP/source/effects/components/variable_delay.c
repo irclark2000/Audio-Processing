@@ -99,6 +99,6 @@ float getFloatAtReadPtrWithIndex_VARDELAY(VARDELAY *vDelay, uint32_t index) {
 }
 #if AUDIO_EFFECTS_TESTER
 void uninitialize_VARDELAY(VARDELAY *vDelay) {
-	free(&(vDelay->cBuf));
+	cb_uninitialize(vDelay->cBufPtr);
 }
 #endif

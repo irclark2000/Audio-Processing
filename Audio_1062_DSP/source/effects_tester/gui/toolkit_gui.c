@@ -455,7 +455,7 @@ effect_selector(struct nk_context *ctx, struct media *media)
 	/*------------------------------------------------
 	 *                  COMBOBOX
 	 *------------------------------------------------*/
-	ui_header(ctx, media, "Combo box");
+	ui_header(ctx, media, "Select Effect");
 	ui_widget(ctx, media, 40);
 	if (nk_combo_begin_label(ctx, effects_list[selected_item].name, nk_vec2(nk_widget_width(ctx), 200))) {
 		nk_layout_row_dynamic(ctx, 35, 1);

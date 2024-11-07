@@ -50,6 +50,7 @@ float allPass[] = {5.0, 1.68, 0.48};
 void initSchroederVerb(SCHROEDERVERB * fv, float sampleRate) {
 	fv->allCount = sizeof(fv->allpass) / sizeof(fv->allpass[0]);
 	fv->lpfcCount = sizeof(fv->lpfc) / sizeof(fv->lpfc[0]);
+	initialize_MIXER (&(fv->mixer), sampleRate);
 #if AUDIO_EFFECTS_TESTER
 	initAllpassFilter1(&(fv->allpass[0]), 0, SAP0, 0.7f);
 	initAllpassFilter1(&(fv->allpass[1]), 0, SAP1, 0.7f);
@@ -80,6 +81,7 @@ float applyShroederVerb(SCHROEDERVERB*fv, float input) {
 	for (fv->i = 0; fv->i < fv->allCount; fv->i++) {
 		fv->out = applyAllpassFilter1(&(fv->allpass[fv->i]), fv->out);
 	}
+	fv->out = applyWetDry_MIXER (&(fv->mixer), fv->out,  input);
 
 	return fv->out;
 

@@ -29,13 +29,15 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endif
 #include <filters/all_pass.h>
 #include <filters/comb_filter.h>
+#include "effects/components/mixer.h"
 
 typedef struct {
 	ALLPASS allpass[4];
 	LPFCOMB_FILTER lpfc[8];
+	MIXER mixer;
 	int lpfcCount;
 	int allCount;
-	double out;
+	float out;
 	double lpTotal;
 	int i;
 
@@ -46,6 +48,5 @@ float applyFreeverb(void *vfv, float input);
 void uninitialize_Freeverb(void *vfv);
 #if AUDIO_EFFECTS_TESTER
 void initialize_FREEVERB(void *vfv, EFFECT_PARAMS *params, float sampleRate);
-EFFECT_COMPONENT * initializeComponent_Freeverb (FREEVERB *fv, EFFECT_COMPONENT *component);
 #endif
 #endif /* FREEVERB_H_ */
