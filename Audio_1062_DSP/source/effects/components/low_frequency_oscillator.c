@@ -47,6 +47,9 @@ void initialize_LOWFREQOSC(LOWFREQOSC *osc, float amplitude, float minAmp,
 	setAmplitude_LOWFREQOSC(osc, amplitude);
 }
 
+void gui_setFrequency(LOWFREQOSC *osc) {
+	setFreq_LOWFREQOSC(osc, osc->oscFreq);
+}
 void setFreq_LOWFREQOSC(LOWFREQOSC *osc, float osc_freq) {
 	if (osc_freq <= osc->frequency_limits.minimum) {
 		osc_freq = osc->frequency_limits.minimum;

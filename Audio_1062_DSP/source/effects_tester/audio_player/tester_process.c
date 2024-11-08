@@ -56,7 +56,7 @@ void processHalf(const void *bufferIn, void *bufferOut,
 	bufIn =  (int16_t*) bufferIn;
 	bufOut = (int16_t*) bufferOut;
 
-	for (int i = 0; i < loopCount; i += channelCount) {
+	for (uint32_t i = 0; i < loopCount; i += channelCount) {
 		leftIn = bufIn[i] * S16_TO_FLOAT;
 		// convert S16 data to float and deal with MONO/STEREO
 		if (audioFmt == MONO) {

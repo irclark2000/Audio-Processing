@@ -67,4 +67,7 @@ void setCenterFrequency_FIRSTORDERALLPASSFILTER(FIRSTORDERALLPASSFILTER *apf, fl
 	apf->a1 = (apf->tanF - 1.0f) / (apf->tanF + 1.0f);
 }
 
+void gui_setCenterFrequency_FIRSTORDERALLPASSFILTER(FIRSTORDERALLPASSFILTER *apf) {
+	setCenterFrequency_FIRSTORDERALLPASSFILTER(apf, apf->gui_centerFreq);
+}
 

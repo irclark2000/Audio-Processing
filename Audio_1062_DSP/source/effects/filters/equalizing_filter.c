@@ -83,3 +83,6 @@ void EQFILTER_setCenterFrequency(EQFILTER *eqf, float centerFreq, float bandwidt
 	calculateCoefficients(eqf);
 }
 
+void gui_EQFILTER_setCenterFrequency(EQFILTER *eqf) {
+	EQFILTER_setCenterFrequency(eqf, eqf->gui_freq, eqf->gui_freq/eqf->Q);
+}

@@ -33,6 +33,9 @@ float update_VARBANDPASS(VARBANDPASS *vbf, float input) {
 	vbf->out = (input + ((vbf->pass_stop != 0) ? -vbf->out : vbf->out)) * 0.5f;
 	return vbf->out;
 }
+void gui_setCenterFrequency_VARBANDPASS(VARBANDPASS *vbf) {
+	setCenterFrequency_SECONDALLPASSFILTER(&(vbf->apf), vbf->gui_Freq, vbf->gui_Q);
+}
 void setCenterFrequency_VARBANDPASS(VARBANDPASS *vbf, float centerFreq, float Q) {
 	setCenterFrequency_SECONDALLPASSFILTER(&(vbf->apf), centerFreq, Q);
 }

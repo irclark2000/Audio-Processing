@@ -27,7 +27,7 @@
 
 uint16_t cb_transferInFloat(CIRCBUFFER *cb, float input) {
 		cb->storage[cb->wr_ptr++] = input;
-		if (cb->wr_ptr == cb->size)
+		if ((uint32_t)cb->wr_ptr == cb->size)
 			cb->wr_ptr = 0;
 		if (cb->count < cb->size) {
 			cb->count++;
@@ -38,7 +38,7 @@ float cb_transferOut(CIRCBUFFER *cb) {
 	if (cb->count > 0) {
 		float value = cb->storage[cb->rd_ptr];
 		cb->rd_ptr++;
-		if (cb->rd_ptr == cb->size)
+		if ((uint32_t)cb->rd_ptr == cb->size)
 			cb->rd_ptr = 0;
 		cb->count--;
 		return value;

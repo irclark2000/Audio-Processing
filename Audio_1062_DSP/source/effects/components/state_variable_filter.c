@@ -29,10 +29,13 @@ void intialize_SVFILTER (SVFILTER *svf, float centerFreq, float damping, float s
 	svf->yh[0] = svf->yh[1] = 0.0f;
 	svf->yb[0] = svf->yb[1] = 0.0f;
 	svf->yl[0] = svf->yl[1] = 0.0f;
-	set_frequency_damping_SVFILER(svf, centerFreq, damping);
+	set_frequency_damping_SVFILTER(svf, centerFreq, damping);
 }
 // if damping or frequency parameter is negative, then the old value will be retained.
-void set_frequency_damping_SVFILER(SVFILTER *svf, float centerFreq, float damping) {
+void gui_set_frequency_damping_SVFILTER(SVFILTER *svf) {
+	set_frequency_damping_SVFILTER(svf, svf->centerFreq, svf->damping);
+}
+void set_frequency_damping_SVFILTER(SVFILTER *svf, float centerFreq, float damping) {
 	svf->centerFreq = (centerFreq > 0) ? centerFreq : svf->centerFreq;
 	svf->damping = (damping > 0) ? damping : svf->damping;
 	svf->F1 = 2.0f * sinf(PI * svf->centerFreq * svf->sampleTime);

@@ -37,6 +37,7 @@ void initialize_LOWFREQOSC (LOWFREQOSC *osc, float amplitude, float minAmp,
 		float maxAmp, float osc_freq, float minFreq, float maxFreq,
 		float phaseAngle, uint8_t outputSine, float sampleFreq);
 void setFreq_LOWFREQOSC(LOWFREQOSC *osc, float osc_freq);
+void gui_setFrequency(LOWFREQOSC *osc);
 void setAmplitude_LOWFREQOSC(LOWFREQOSC *osc, float amplitude);
 void update_LOWFREQOSC(LOWFREQOSC *osc);
 #endif /* EFFECTS_COMPONENTS_LOW_FREQUENCY_OSCILLATOR_H_ */

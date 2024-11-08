@@ -35,6 +35,7 @@ typedef struct {
 
 	float gain;
 	float Q;
+	float gui_freq;
 
 	FILTER_COEF coefficients;
 
@@ -44,4 +45,5 @@ void EQFILTER_initialize(EQFILTER *eqf, float centerFreq, float sampleRate, floa
 float EQFILTER_update(EQFILTER *eqf, float input);
 void EQFILTER_setGain(EQFILTER *eqf, float gain);
 void EQFILTER_setCenterFrequency(EQFILTER *eqf, float centerFreq, float bandwidth);
+void gui_EQFILTER_setCenterFrequency(EQFILTER *eqf);
 #endif /* EQUALIZING_FILTER_H_ */

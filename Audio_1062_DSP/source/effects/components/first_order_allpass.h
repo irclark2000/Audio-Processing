@@ -30,6 +30,7 @@ typedef struct {
 	float apfOut;
 	float tanF;        // avoid creating local variable
 	float delay_n_1;
+	float gui_centerFreq;
 
 	float a1;
 
@@ -38,5 +39,6 @@ typedef struct {
 void initialize_FIRSTORDERALLPASSFILTER(FIRSTORDERALLPASSFILTER *apf, float centerFreq, float sampleRate);
 float update_FIRSTORDERALLPASSFILTER(FIRSTORDERALLPASSFILTER *apf, float input);
 void setCenterFrequency_FIRSTORDERALLPASSFILTER(FIRSTORDERALLPASSFILTER *apf, float centerFreq);
+void gui_setCenterFrequency_FIRSTORDERALLPASSFILTER(FIRSTORDERALLPASSFILTER *apf);
 
 #endif /* EFFECTS_COMPONENTS_FIRST_ORDER_ALLPASS_H_ */

@@ -70,10 +70,11 @@ struct media {
 };
 // effects slider parameters
 typedef struct {
+	EFFECT_PARAMS *myParameter;
 	char *name;
 	float slope;
 	float intercept;
-	float output;
+	float *slOutput;
 	float previousOutput;
 	float slider_value;  // 0.0->1.0;
 } SLIDER_VALUES;
@@ -252,7 +253,8 @@ effect_controls(struct nk_context *ctx, struct media *media)
 			nk_label(ctx, gGUI.sliders[j].name, NK_TEXT_LEFT);
 			if ( nk_slider_float(ctx, 0, &gGUI.sliders[j].slider_value, 1.0f, 0.01f)) {
 			}
-			sprintf(value_text, "%5.2f", gGUI.sliders[j].slider_value * gGUI.sliders[j].slope + gGUI.sliders[j].intercept);
+                        *(gGUI.sliders[j].slOutput) = gGUI.sliders[j].slider_value * gGUI.sliders[j].slope + gGUI.sliders[j].intercept;
+			sprintf(value_text, "%5.2f", *(gGUI.sliders[j].slOutput));
 			nk_label(ctx, value_text, NK_TEXT_LEFT);
 		}
 	}
@@ -802,15 +804,15 @@ int main(int argc, char *argv[]) {
 #define INITIAL_FLOAT_VALUE -1888.8888f
 static void setupSlidersComponent(DISPLAY_STATE *gui, EFFECT_PARAMS *parameter) {
 	uint8_t count = gui->slider_count;
+	assert (parameter->currentValue != 0);
+	gui->sliders[count].myParameter = parameter;
 	gui->sliders[count].slope =
 		parameter->floatParameter[2] - parameter->floatParameter[0];
 	gui->sliders[count].intercept = parameter->floatParameter[0];
 	gui->sliders[count].slider_value =
 		(parameter->floatParameter[1] - parameter->floatParameter[0])/ gui->sliders[count].slope;
-	gui->sliders[count].output =  parameter->floatParameter[1];
-	if (parameter->currentValue) {
-		*(parameter->currentValue) = gui->sliders[count].output;
-	}
+	gui->sliders[count].slOutput = parameter->currentValue;
+	*(parameter->currentValue) =  parameter->floatParameter[1];
 	gui->sliders[count].previousOutput = INITIAL_FLOAT_VALUE;
 }
 static void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT * component) {

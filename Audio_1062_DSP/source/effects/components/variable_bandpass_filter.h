@@ -41,5 +41,6 @@ typedef struct {
 void initialize_VARBANDPASS(VARBANDPASS *vbf, float centerFreq, float Q, float sampleRate, uint8_t bandPass);
 float update_VARBANDPASS(VARBANDPASS *vbf, float input);
 void setCenterFrequency_VARBANDPASS(VARBANDPASS *vbf, float centerFreq, float Q);
+void gui_setCenterFrequency_VARBANDPASS(VARBANDPASS *vbf);
 
 #endif /* EFFECTS_COMPONENTS_VARIABLE_BANDPASS_FILTER_H_ */

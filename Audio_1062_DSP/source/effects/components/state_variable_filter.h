@@ -45,7 +45,8 @@ typedef struct {
 }SVFILTER;
 
 void intialize_SVFILTER (SVFILTER *svf, float centerFreq, float damping, float sampleRate);
-void set_frequency_damping_SVFILER(SVFILTER *svf, float centerFreq, float damping);
+void set_frequency_damping_SVFILTER(SVFILTER *svf, float centerFreq, float damping);
+void gui_set_frequency_damping_SVFILTER(SVFILTER *svf);
 void apply_SVFILTER (SVFILTER *svf, float input);
 
 #endif /* EFFECTS_COMPONENTS_STATE_VARIABLE_FILTER_H_ */

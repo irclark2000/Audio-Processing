@@ -33,9 +33,11 @@ static ma_engine g_engine;
 static ma_sound g_sound;            /* This example will play only a single sound at once, so we only need one `ma_sound` object. */
 static ma_effects_node g_effects_node;   /* The echo effect is achieved using a delay node. */
 
+int play_music (char *fileName, EFFECT_COMPONENT *ec);
+
 int apply_effect(int source) {
     /* The engine needs to be initialized first. */
-	ma_result result;
+#if 0
     char * fileName = 0;
     switch (source) {
     case 0:
@@ -53,9 +55,10 @@ int apply_effect(int source) {
     }
      EFFECT_COMPONENT *effect_under_test;
      effect_under_test = createComponent("Freeverb", 0, 0);
-     //generate_gui(effects_list, 7);
-     play_music(fileName, effect_under_test)
-
+     play_music(fileName, effect_under_test);
+#else
+     generate_gui(effects_list, 7);
+#endif
     return 0;
 }
 

@@ -9,11 +9,14 @@
 #ifndef EFFECTS_TESTER_AUDIO_PLAYER_APPLY_EFFECT_H_
 #define EFFECTS_TESTER_AUDIO_PLAYER_APPLY_EFFECT_H_
 #define MAX_FLOAT_PARAMETERS 4
-typedef struct {
+typedef struct EFFECT_PARAMS {
+	void *myEffect;
         uint32_t intParameter[10];
         float floatParameter[MAX_FLOAT_PARAMETERS];
 	float *currentValue;
-        void *buffer;
+	float *previousValue;
+	struct EFFECT_PARAMS *partnerParameter;
+	void (*recalculate) (void * effect);
 } EFFECT_PARAMS;
 void  initializeExternalEffect(int index, float sampleRate);
 float applyExternalEffectCode (int index, float input);

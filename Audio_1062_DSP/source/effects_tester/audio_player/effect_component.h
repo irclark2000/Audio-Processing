@@ -40,6 +40,9 @@ typedef enum {
 
 } EFFECT_TYPE;
 
+typedef float (*APPLY) (void *type, float);
+typedef void (*RECALCULATE) (void *effect);
+
 typedef struct EFFECT_COMPONENT {
 	EFFECT_TYPE type;
 	char *effectName;
