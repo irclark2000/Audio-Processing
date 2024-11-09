@@ -31,7 +31,11 @@ void initialize_VIBRATO (VIBRATO * vb, float *buf, float buf_size,
 	vb->baseDelayMSec = delayMSec;
   initialize_LOWFREQOSC (&(vb->lfo), variation_delayMSec, 0.1, 100, base_vibrato_frequency, 0.01f, 100.0f, 0.0f, 0, sampleRate);
   initialize_MIXER (&(vb->mixer), 0.5);
-  initialize_variable_delay (&(vb->vDelay), buf, buf_size, sampleRate);
+#if AUDIO_EFFECTS_TESTER
+	initialize_variable_delay (&(vb->vDelay), 0, buf_size, sampleRate);
+#else
+	initialize_variable_delay (&(vb->vDelay), buf, buf_size, sampleRate);
+#endif
 }
 
 float apply_VIBRATO (VIBRATO * vb, float input) {
@@ -59,6 +63,6 @@ void setFreq_VIBRATO(VIBRATO * vb, float osc_freq) {
 void setAmplitude_VIBRATO(VIBRATO * vb, float amplitude) {
 	setAmplitude_LOWFREQOSC(&(vb->lfo), amplitude);
 }
-void unintialize_VIBRATO (VIBRATO *vb) {
+void uninitialize_VIBRATO (VIBRATO *vb) {
 	uninitialize_VARDELAY(&(vb->vDelay));
 }

@@ -206,7 +206,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->type = Chorus;
 		component->parameterCount = 0;
 		component->childrenCount = 0;
-		component->uninitialize = uninitialize_CHORUS;
+		component->uninitialize = (UNINITIALIZE) uninitialize_CHORUS;
 		char temp[480];
 		// forced order: base delay, then Lfo, then Lfo Driven Delay
 		if (strParameters == 0) {
@@ -250,7 +250,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->type = Echo;
 		ECHO *echo = (ECHO *) malloc(sizeof(ECHO));
 		component->effect = echo;
-		component->uninitialize = uninitialize_ECHO;
+		component->uninitialize = (UNINITIALIZE) uninitialize_ECHO;
 		component->parameterCount = 2;
 		component->parameters = makeBlankParameters(2, component->effect);
 		int index = 0;
@@ -277,7 +277,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->type = Flanger;
 		FLANGER *flng = (FLANGER *) malloc(sizeof(FLANGER));
 		component->effect = flng;
-		component->uninitialize = uninitialize_FLANGER;
+		//component->uninitialize = (UNINITIALIZE) uninitialize_FLANGER;
 		component->parameterCount = 2;
 		component->parameters = makeBlankParameters(2, component->effect);
 		int index = 0;
@@ -305,7 +305,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->type = Vibrato;
 		VIBRATO *vib = (VIBRATO *) malloc(sizeof(VIBRATO));
 		component->effect = vib;
-		component->uninitialize = uninitialize_VIBRATO;
+		component->uninitialize = (UNINITIALIZE) uninitialize_VIBRATO;
 		char temp[160];
 		if (strParameters == 0) {
 			char * elements = "Base Delay (MS):S3*0.1,5,14//Max Delay:X*15//LFO Frequency:S3*0.1,5,15\tLFO Depth (mSec):S3*0,2.5,5";

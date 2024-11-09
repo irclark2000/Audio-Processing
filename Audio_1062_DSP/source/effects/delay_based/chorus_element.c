@@ -27,7 +27,11 @@ void setdelayMS_CHORUSELEMENT(CHORUSELEMENT * cEl, float delayMSec);
 
 void initialize_CHORUSELEMENT(CHORUSELEMENT * cEl, float * buf, uint32_t buf_size, float delayMSec,
 		CELEMENTDATA cData, float sampleRate) {
+#if AUDIO_EFFECTS_TESTER
+	initialize_variable_delay (&(cEl->vDelay), 0, buf_size, sampleRate);
+#else
 	initialize_variable_delay (&(cEl->vDelay), buf, buf_size, sampleRate);
+#endif
 	setBaseDelayMSec_CHORUSELEMENT(cEl, delayMSec);
 	initialize_LOWFREQOSC (&(cEl->lfo), cData.depth, 0.0f, 30.0f, cData.freq, 0.01f, -1.0f, 0.0f, 0, sampleRate);
 }

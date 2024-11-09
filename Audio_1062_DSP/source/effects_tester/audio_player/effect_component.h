@@ -42,7 +42,7 @@ typedef enum {
 
 typedef float (*APPLY) (void *type, float);
 typedef void (*RECALCULATE) (void *effect);
-typedef void (*UNITIALIZE) (void *effect);
+typedef void (*UNINITIALIZE) (void *effect);
 
 typedef struct EFFECT_COMPONENT {
 	EFFECT_TYPE type;

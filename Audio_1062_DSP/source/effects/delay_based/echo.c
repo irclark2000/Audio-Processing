@@ -12,9 +12,10 @@
 void intialize_ECHO (ECHO *echo, float *buf, uint32_t buf_size, float delayMSec,
 		float feedback_level, float feedback_gain, float wet_dry, float sampleRate) {
 #if AUDIO_EFFECTS_TESTER
-	buf = (float *)malloc (buf_size * sizeof(float));
-#endif
+	initialize_variable_delay (&(echo->vDelay), 0, buf_size, sampleRate);
+#else
 	initialize_variable_delay (&(echo->vDelay), buf, buf_size, sampleRate);
+#endif
 	setDelayMSec_ECHO (echo, delayMSec);
 	setFeedback_level_ECHO (echo, feedback_level);
 	setFeedback_gain_ECHO (echo, feedback_gain);
@@ -48,8 +49,7 @@ float update_Echo (void * vEcho, float input) {
 }
 
 #if AUDIO_EFFECTS_TESTER
-void uninitialize_ECHO(void *vEcho) {
-	ECHO *echo = (ECHO*) vEcho;
+void uninitialize_ECHO(ECHO *echo) {
 	uninitialize_VARDELAY(&(echo->vDelay));
 }
 #endif

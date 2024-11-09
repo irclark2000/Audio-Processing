@@ -65,6 +65,11 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 	switch(component->type) {
 		case AutoWah:
 			{
+				AUTOWAH *aw = component->effect;
+				aw->sampleRate = sampleRate;
+				for(int i=0; i < component->childrenCount; ++i) {
+					gui_initialize(component->childComponents[i], 0, sampleRate);
+				}
 			}
 			break;
 		case Chorus:
@@ -82,6 +87,22 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 			{
 				CHORUSELEMENT *cElement = component->effect;
 				float value = cElement->baseDelayMSec;
+				for(int i=0; i < component->childrenCount; ++i) {
+					gui_initialize(component->childComponents[i], 0, sampleRate);
+				}
+			}
+			break;
+		case Echo:
+			{
+				//ECHO *echo = component->effect;
+				for(int i=0; i < component->childrenCount; ++i) {
+					gui_initialize(component->childComponents[i], 0, sampleRate);
+				}
+			}
+			break;
+		case Flanger:
+			{
+				//FLANGER *flanger = component->effect;
 				for(int i=0; i < component->childrenCount; ++i) {
 					gui_initialize(component->childComponents[i], 0, sampleRate);
 				}
