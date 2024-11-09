@@ -27,4 +27,5 @@ void setFeedback_gain_ECHO (ECHO *echo, float gain);
 void setWetDry_ECHO (ECHO *echo, float wet_dry);
 float update_Echo (void * vEcho, float input);
 float getMaxDelayMS_ECHO (ECHO *echo);
+void unintialize_ECHO (ECHO *echo);
 #endif /* EFFECTS_DELAY_BASED_ECHO_H_ */

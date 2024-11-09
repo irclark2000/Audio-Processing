@@ -73,4 +73,7 @@ float update_FLANGER (FLANGER *flanger, float input) {
 	return flanger->out;
 }
 
+void unintialize_FLANGER (FLANGER *flanger) {
+	uninitialize_VARDELAY(&(flanger->vDelay));
+}
 

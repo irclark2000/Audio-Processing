@@ -58,5 +58,7 @@ void setFreq_VIBRATO(VIBRATO * vb, float osc_freq) {
 }
 void setAmplitude_VIBRATO(VIBRATO * vb, float amplitude) {
 	setAmplitude_LOWFREQOSC(&(vb->lfo), amplitude);
-
+}
+void unintialize_VIBRATO (VIBRATO *vb) {
+	uninitialize_VARDELAY(&(vb->vDelay));
 }

@@ -46,4 +46,9 @@ float update_CHORUS (CHORUS *chorus, float input) {
 	chorus->output = applyWetDry_MIXER (&(chorus->mixer), chorus->output * chorus->inv_count, input);
 	return chorus->output;
 }
+void uninitialize_CHORUS (CHORUS *chorus) {
+	for (int i = 0; i < chorus->chorus_count; i++) {
+		uninitialize_CHORUSELEMENT(&(chorus->cElement[i]));
+	}
+}
 

@@ -45,6 +45,7 @@ void setLFO_Frequency_FLANGER (FLANGER *flanger, float lfo_freq);
 void setLFO_Depth_FLANGER (FLANGER *flanger, float lfo_freq);
 void setWetDry_FLANGER (FLANGER *flanger, float wet_dry);
 float update_FLANGER (FLANGER *flanger, float input);
+void unintialize_FLANGER (FLANGER *flanger);
 
 
 #endif /* EFFECTS_DELAY_BASED_FLANGER_H_ */

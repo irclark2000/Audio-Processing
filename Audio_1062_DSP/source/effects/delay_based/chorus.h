@@ -42,6 +42,7 @@ void setBaseDelayMSec_CHORUS (CHORUS *chorus, float delayMS);
 void setDepth_CHORUS(CHORUS *chorus, float depth, uint8_t element);
 void setFrequency_CHORUS(CHORUS *chorus, float freq, uint8_t element);
 float update_CHORUS (CHORUS *chorus, float input);
+void uninitialize_CHORUS (CHORUS *chorus);
 
 
 #endif /* EFFECTS_DELAY_BASED_CHORUS_H_ */

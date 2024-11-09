@@ -45,4 +45,5 @@ void setFreq_VIBRATO(VIBRATO * vb, float osc_freq);
 void setBaseDelayMSec_VIBRATO (VIBRATO * vb, float delayMSec);
 void setAmplitude_VIBRATO(VIBRATO * vb, float amplitude);
 float apply_VIBRATO (VIBRATO * vb, float input);
+void unintialize_VIBRATO (VIBRATO *vb);
 #endif /* EFFECTS_DELAY_BASED_VIBRATO_H_ */

@@ -111,3 +111,9 @@ static int roundOff (float value) {
 	}
 	else return (int)(value + 0.5);
 }
+void uninitializePITCHSHIFT(PITCHSHIFT *ps) {
+#if AUDIO_EFFECTS_TESTER
+	free(buffer);
+#endif
+}
+

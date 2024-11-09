@@ -107,60 +107,58 @@ MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFram
     EFFECT_COMPONENT *component = pEffects->config.component;
 
     for (iFrame = 0; iFrame < frameCount; iFrame += 1) {
-        for (iChannel = 0; iChannel < pEffects->config.channels; iChannel += 1) {
+	    for (iChannel = 0; iChannel < pEffects->config.channels; iChannel += 1) {
 
-		//float out = component->apply(component->effect, pFramesInF32[iChannel]);
-		// Just copying for now
-                pFramesOutF32[iChannel] = pFramesInF32[iChannel];
-                //pFramesOutF32[iChannel] = out;
-        }
-
-        pFramesOutF32 += pEffects->config.channels;
-        pFramesInF32  += pEffects->config.channels;
+		    //float out = component->apply(component->effect, pFramesInF32[iChannel]);
+		    // Just copying for now
+		    pFramesOutF32[iChannel] = pFramesInF32[iChannel];
+		    //pFramesOutF32[iChannel] = out;
+	    }
+	    pFramesOutF32 += pEffects->config.channels;
+	    pFramesInF32  += pEffects->config.channels;
     }
-
     return MA_SUCCESS;
 }
 
 MA_API ma_result ma_effects_node_init(ma_node_graph* pNodeGraph, const ma_effects_node_config* pConfig, const ma_allocation_callbacks* pAllocationCallbacks, ma_effects_node* pEffectsNode)
 {
-    ma_result result;
-    ma_node_config baseConfig;
+	ma_result result;
+	ma_node_config baseConfig;
 
-    if (pEffectsNode == NULL) {
-        return MA_INVALID_ARGS;
-    }
+	if (pEffectsNode == NULL) {
+		return MA_INVALID_ARGS;
+	}
 
-    MA_ZERO_OBJECT(pEffectsNode);
+	MA_ZERO_OBJECT(pEffectsNode);
 
-    result = ma_effects_init(&pConfig->effect, pAllocationCallbacks, &pEffectsNode->effects);
-    if (result != MA_SUCCESS) {
-        return result;
-    }
+	result = ma_effects_init(&pConfig->effect, pAllocationCallbacks, &pEffectsNode->effects);
+	if (result != MA_SUCCESS) {
+		return result;
+	}
 
-    baseConfig = pConfig->nodeConfig;
-    baseConfig.vtable          = &g_ma_effects_node_vtable;
-    baseConfig.pInputChannels  = &pConfig->effect.channels;
-    baseConfig.pOutputChannels = &pConfig->effect.channels;
+	baseConfig = pConfig->nodeConfig;
+	baseConfig.vtable          = &g_ma_effects_node_vtable;
+	baseConfig.pInputChannels  = &pConfig->effect.channels;
+	baseConfig.pOutputChannels = &pConfig->effect.channels;
 
-    result = ma_node_init(pNodeGraph, &baseConfig, pAllocationCallbacks, &pEffectsNode->baseNode);
-    if (result != MA_SUCCESS) {
-        ma_effects_uninit(&pEffectsNode->effects, pAllocationCallbacks);
-        return result;
-    }
+	result = ma_node_init(pNodeGraph, &baseConfig, pAllocationCallbacks, &pEffectsNode->baseNode);
+	if (result != MA_SUCCESS) {
+		ma_effects_uninit(&pEffectsNode->effects, pAllocationCallbacks);
+		return result;
+	}
 
-    return result;
+	return result;
 }
 
 MA_API void ma_effects_node_uninit(ma_effects_node* pEffectsNode, const ma_allocation_callbacks* pAllocationCallbacks)
 {
-    if (pEffectsNode == NULL) {
-        return;
-    }
+	if (pEffectsNode == NULL) {
+		return;
+	}
 
-    /* The base node is always uninitialized first. */
-    ma_node_uninit(pEffectsNode, pAllocationCallbacks);
-    ma_effects_uninit(&pEffectsNode->effects, pAllocationCallbacks);
+	/* The base node is always uninitialized first. */
+	ma_node_uninit(pEffectsNode, pAllocationCallbacks);
+	ma_effects_uninit(&pEffectsNode->effects, pAllocationCallbacks);
 }
 
 #endif

@@ -59,3 +59,6 @@ float update_CHORUSELEMENT (CHORUSELEMENT * cEl, float input) {
 
 	return cEl->output;
 }
+void uninitialize_CHORUSELEMENT(CHORUSELEMENT * cEl) {
+	uninitialize_VARDELAY(&(cEl->vDelay));
+}

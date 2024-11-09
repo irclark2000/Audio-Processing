@@ -68,19 +68,9 @@ struct media {
     struct nk_image images[9];
     struct nk_image menu[6];
 };
-// effects slider parameters
-typedef struct {
-	EFFECT_PARAMS *myParameter;
-	char *name;
-	float slope;
-	float intercept;
-	float *slOutput;
-	float previousOutput;
-	float slider_value;  // 0.0->1.0;
-} SLIDER_VALUES;
-
 typedef struct {
 	int display_sliders;
+	int music_is_playing;
 	EFFECT_COMPONENT *component;
 	uint8_t slider_count;
 	SLIDER_VALUES sliders[15];
@@ -90,9 +80,49 @@ DISPLAY_STATE gGUI;
 EFFECT_ITEM *g_effect_list = NULL;
 uint8_t g_effects_count = 0;
 
+void update_effect_state_for_slider(SLIDER_VALUES *sliders, uint8_t index) {
+	EFFECT_PARAMS *parameter = sliders[index].myParameter;
+	void *effect = parameter->myEffect;
+	if (parameter->recalculate) {
+		if (parameter->previousValue != 0 && 
+				(*(parameter->currentValue) != *(parameter->previousValue))) 
+		{
+			parameter->recalculate(effect);
+			*(parameter->previousValue) = *(parameter->currentValue);
+			EFFECT_PARAMS *pParameter = parameter->partnerParameter;
+			if (pParameter) {
+				if (pParameter->previousValue != 0 && 
+						(*(pParameter->currentValue) != *(pParameter->previousValue)))
+				{
+					*(pParameter->previousValue) = *(pParameter->currentValue);
+				}	
+
+			}
+		}
+	}
+}
+void update_effect_state(SLIDER_VALUES *sliders, uint8_t slider_count) {
+	for (uint8_t index=0; index < slider_count; ++index) {
+		update_effect_state_for_slider(sliders, index);
+	}
+}
+
+void update_state_by_counter (uint16_t counter, uint16_t max_counter) {
+	uint8_t slider_count = gGUI.slider_count;
+	float tolerance = 1.0f / max_counter;
+	float interval = max_counter / slider_count;
+
+	float f_index = counter / interval; 
+	int index = (int) f_index;
+	if (fabs(f_index - index) < tolerance) {
+		update_effect_state_for_slider(gGUI.sliders, index);
+	}
+}
+
 static void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT * component);
 
 static void clearDisplayState (DISPLAY_STATE * gui) {
+	gui->music_is_playing = 0;
 	gui->display_sliders = 0;
 	gui->slider_count = 0;
 	if (gui->component) {
@@ -253,7 +283,7 @@ effect_controls(struct nk_context *ctx, struct media *media)
 			nk_label(ctx, gGUI.sliders[j].name, NK_TEXT_LEFT);
 			if ( nk_slider_float(ctx, 0, &gGUI.sliders[j].slider_value, 1.0f, 0.01f)) {
 			}
-                        *(gGUI.sliders[j].slOutput) = gGUI.sliders[j].slider_value * gGUI.sliders[j].slope + gGUI.sliders[j].intercept;
+			*(gGUI.sliders[j].slOutput) = gGUI.sliders[j].slider_value * gGUI.sliders[j].slope + gGUI.sliders[j].intercept;
 			sprintf(value_text, "%5.2f", *(gGUI.sliders[j].slOutput));
 			nk_label(ctx, value_text, NK_TEXT_LEFT);
 		}
@@ -407,10 +437,10 @@ button_demo(struct nk_context *ctx, struct media *media)
 effect_selector(struct nk_context *ctx, struct media *media)
 {
 	static int image_active;
-	static int check0 = 1;
-	static int check1 = 0;
-	static size_t prog = 80;
-	static float slider_value[10] = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
+	//static int check0 = 1;
+	//static int check1 = 0;
+	//static size_t prog = 80;
+	//static float slider_value[10] = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
 	static int selected_item = 0;
 	static int selected_image = 3;
 	//static int selected_icon = 0;
@@ -465,6 +495,8 @@ effect_selector(struct nk_context *ctx, struct media *media)
 			if (nk_combo_item_label(ctx, g_effect_list[i].name, NK_TEXT_LEFT)) {
 				selected_item = i;
 				initializeDisplayState(&gGUI, selected_item);
+				gui_initialize(gGUI.component, 0, 44100.0f);
+				update_effect_state(gGUI.sliders, gGUI.slider_count);
 			}
 		}
 		nk_combo_end(ctx);
@@ -478,7 +510,6 @@ effect_selector(struct nk_context *ctx, struct media *media)
 				selected_icon = i;
 		nk_combo_end(ctx);
 	}
-#endif
 	/*------------------------------------------------
 	 *                  CHECKBOX
 	 *------------------------------------------------*/
@@ -501,6 +532,7 @@ effect_selector(struct nk_context *ctx, struct media *media)
 	ui_widget(ctx, media, 35);
 	nk_slider_float(ctx, 0, &slider_value[0], 1.0f, 0.01f);
 
+#endif
 	/*------------------------------------------------
 	 *                  PIEMENU
 	 *------------------------------------------------*/
@@ -814,6 +846,7 @@ static void setupSlidersComponent(DISPLAY_STATE *gui, EFFECT_PARAMS *parameter) 
 	gui->sliders[count].slOutput = parameter->currentValue;
 	*(parameter->currentValue) =  parameter->floatParameter[1];
 	gui->sliders[count].previousOutput = INITIAL_FLOAT_VALUE;
+	parameter->previousValue = &(gui->sliders[count].previousOutput);
 }
 static void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT * component) {
 	for(int i=0; i < component->parameterCount; i++) {

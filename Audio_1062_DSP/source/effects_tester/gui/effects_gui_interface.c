@@ -70,19 +70,21 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 		case Chorus:
 			{
 				CHORUS *chorus = component->effect;
-				uint8_t chorus_count = chorus_count;
-				gui_initialize(component, 0, sampleRate);
+				uint8_t chorus_count = chorus->chorus_count;
 				chorus->sampleRate = sampleRate;
 				chorus->inv_count = 1.0f / chorus_count;
-				for (int i = 0; i < chorus_count; i++) {
-					gui_initialize((component->childComponents[i]), 0, sampleRate); 
+				for(int i=0; i < component->childrenCount; ++i) {
+					gui_initialize(component->childComponents[i], 0, sampleRate);
 				}
-				gui_initialize(component->childComponents[chorus_count], 0, sampleRate);
-
 			}
 			break;
 		case ChorusElement:
 			{
+				CHORUSELEMENT *cElement = component->effect;
+				float value = cElement->baseDelayMSec;
+				for(int i=0; i < component->childrenCount; ++i) {
+					gui_initialize(component->childComponents[i], 0, sampleRate);
+				}
 			}
 			break;
 		case EnvelopeFollower:
@@ -104,6 +106,8 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 				osc->sampleRate = sampleRate;
 				osc->direction = 1.0f;
 				osc->counter = 0.0f;
+				osc->frequency_limits.minimum = 0.01;
+				osc->frequency_limits.maximum = 0.25 * sampleRate;
 			}
 			break;
 		case VariableDelay:
@@ -111,17 +115,19 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 				VARDELAY *vDelay = component->effect;
 				vDelay->sampleTime = 1.0f / sampleRate;
 				vDelay->sampleRate = sampleRate;
-				vDelay->delayInSamples = 0;
-				vDelay->max_delay = (size - 1) * vDelay->sampleTime;
+				uint32_t max_size = sampleRate * vDelay->max_delay;
+				vDelay->delayInSamples = max_size;
 				vDelay->cBufPtr = &(vDelay->cBuf);
-				vDelay->size = size;
-				gui_cb_initialize(vDelay->cBufPtr, vDelay->max_delay, sampleRate);	
+				vDelay->size = max_size + 1;
+				cb_initialize(vDelay->cBufPtr, 0, max_size + 1);	
 			}
 			break;
 			// do nothing for some 
 		case VariableBandpass:
 		case Mixer:
 			break;   
+		default:
+			break;
 	}
 }
 /*

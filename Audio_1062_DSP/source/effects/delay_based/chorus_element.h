@@ -43,4 +43,5 @@ void setBaseDelayMSec_CHORUSELEMENT(CHORUSELEMENT * cEl, float delayMSec);
 void setDepth_CHORUSELEMENT(CHORUSELEMENT * cEl, float depth);
 void setFrequency_CHORUSELEMENT(CHORUSELEMENT * cEl, float freq);
 float update_CHORUSELEMENT (CHORUSELEMENT * cEl, float input);
+void uninitialize_CHORUSELEMENT(CHORUSELEMENT * cEl);
 #endif /* EFFECTS_DELAY_BASED_CHORUS_ELEMENT_H_ */

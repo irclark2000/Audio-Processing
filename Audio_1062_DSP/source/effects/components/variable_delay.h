@@ -43,6 +43,7 @@ void setDelay_VARDELAY(VARDELAY *vDelay, float delaySec);
 void setReadPointer(VARDELAY *vDelay, int32_t value);
 float getFloatAtIndex_VARDELAY (VARDELAY *vDelay, int32_t index);
 float getFloatAtReadPtrWithIndex_VARDELAY(VARDELAY *vDelay, uint32_t index);
+void uninitialize_VARDELAY(VARDELAY *vDelay);
 #if AUDIO_EFFECTS_TESTER
 void uninitialize_VARDELAY(VARDELAY *vDelay);
 void initialize_componentVARDELAY(void *vvDelay, EFFECT_PARAMS * parameters, float sampleRate);

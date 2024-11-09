@@ -42,13 +42,15 @@ typedef enum {
 
 typedef float (*APPLY) (void *type, float);
 typedef void (*RECALCULATE) (void *effect);
+typedef void (*UNITIALIZE) (void *effect);
 
 typedef struct EFFECT_COMPONENT {
 	EFFECT_TYPE type;
 	char *effectName;
 	void * effect;
 	uint8_t effect_count;
-	void (*initialize) (void *type, EFFECT_PARAMS *parameters, float sampleRate);
+	void (*uninitialize) (void *type);
+	//void (*initialize) (void *type, EFFECT_PARAMS *parameters, float sampleRate);
 	float (*apply) (void *, float);
 	char *strParameters[10];
 	char *strTypes[10];
