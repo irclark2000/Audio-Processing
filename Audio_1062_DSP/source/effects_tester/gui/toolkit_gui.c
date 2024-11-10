@@ -10,6 +10,7 @@
 #include <limits.h>
 #if AUDIO_EFFECTS_TESTER
 #include "toolkit_gui.h"
+#include "tester_effect.h"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -332,7 +333,7 @@ ui_widget_centered(struct nk_context *ctx, struct media *media, float height)
 	nk_layout_row(ctx, NK_DYNAMIC, height, 3, ratio);
 	nk_spacing(ctx, 1);
 }
-
+#if 0
 	static void
 button_demo(struct nk_context *ctx, struct media *media)
 {
@@ -437,7 +438,7 @@ button_demo(struct nk_context *ctx, struct media *media)
 	nk_style_set_font(ctx, &media->font_14->handle);
 	nk_end(ctx);
 }
-
+#endif
 /* ===============================================================
  *
  *                          BASIC DEMO
@@ -529,8 +530,8 @@ effect_selector(struct nk_context *ctx, struct media *media)
 			if (nk_combo_item_label(ctx, g_effect_list[i].name, NK_TEXT_LEFT)) {
 				selected_item = i;
 				initializeDisplayState(&gGUI, selected_item);
-				gui_initialize(gGUI.component, 0, 44100.0f);
-				update_effect_state(gGUI.sliders, gGUI.slider_count);
+				//gui_initialize(gGUI.component, 0, 44100.0f);
+				//update_effect_state(gGUI.sliders, gGUI.slider_count);
 			}
 		}
 		nk_combo_end(ctx);
@@ -905,6 +906,7 @@ void generate_gui(EFFECT_ITEM *eList, uint8_t eCount)
 	static GLFWwindow *win;
 	int width = 0, height = 0;
 	int display_width=0, display_height=0;
+    	char *fileName = "sounds/rampb-acoustic-guitar-loop-1-70bpm-143363.wav";
 
 	/* GUI */
 	struct device device;

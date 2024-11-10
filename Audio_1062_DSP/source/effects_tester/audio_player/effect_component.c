@@ -8,7 +8,7 @@
  Copyright 2024 Isaac R. Clark, Jr.
 
  Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
- files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy,
+ fiiles (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy,
  modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
  is furnished to do so, subject to the following conditions:
 
@@ -32,6 +32,7 @@
 #include "effects/components/low_frequency_oscillator.h"
 #include "effects/components/variable_bandpass_filter.h"
 #include "effects/components/variable_delay.h"
+#include "effects/components/memory_debug.h"
 #include <ctype.h>
 #if !AUDIO_EFFECTS_TESTER
 
@@ -110,13 +111,13 @@ static void setName_Type (EFFECT_COMPONENT *component, uint8_t index, char *name
 }
 void freeComponent(EFFECT_COMPONENT * component) {
 	if (component == NULL) return;
-	free(component->effectName);
+	FREE(component->effectName);
 	for (int i=0; i < component->parameterCount; i++) {
-		free(component->strParameters[i]);
-		free(component->strTypes[i]);
-		if (i == 0) {
-			free (component->parameters);
-		}
+		FREE(component->strParameters[i]);
+		FREE(component->strTypes[i]);
+	}
+	if (component->parameterCount) {
+		FREE(component->parameters);
 	}
 	for (int i=0; i < component->childrenCount; i++) {
 		freeComponent(component->childComponents[i]);
@@ -124,12 +125,12 @@ void freeComponent(EFFECT_COMPONENT * component) {
 	if (component->uninitialize != 0) {
 		component->uninitialize(component->effect);
 	}
-	free (component);
+	FREE(component);
 }
 
 #endif
 EFFECT_PARAMS *makeBlankParameters (uint8_t count, void *effect) {
-	EFFECT_PARAMS * parameters = (EFFECT_PARAMS*) malloc(count * sizeof(EFFECT_PARAMS));
+	EFFECT_PARAMS * parameters = (EFFECT_PARAMS*) MALLOC(count * sizeof(EFFECT_PARAMS));
 	for (uint8_t i=0; i < count; ++i) {
 	   parameters[i].currentValue = 0;
 	   parameters[i].previousValue = 0;
@@ -141,7 +142,7 @@ EFFECT_PARAMS *makeBlankParameters (uint8_t count, void *effect) {
 }
 EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *effect) {
 #if AUDIO_EFFECTS_TESTER
-	EFFECT_COMPONENT *component = (EFFECT_COMPONENT*) malloc(
+	EFFECT_COMPONENT *component = (EFFECT_COMPONENT*) MALLOC(
 			sizeof(EFFECT_COMPONENT));
 	component->effectName = strSave(effectName);
 	component->apply = 0;
@@ -159,7 +160,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 	 *
 	 */
 	if (strcmp(effectName, "Auto Wah") == 0) {
-		AUTOWAH *aw = (AUTOWAH *) malloc(sizeof(AUTOWAH));
+		AUTOWAH *aw = (AUTOWAH *) MALLOC(sizeof(AUTOWAH));
 		component->effect = aw;
 		component->type = AutoWah;
 		component->parameters = makeBlankParameters(4, component->effect);
@@ -203,7 +204,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->effect_bypass = 0;
 	}
 	else if (strcmp(effectName, "Chorus") == 0) {
-		CHORUS *chorus = (CHORUS *) malloc(sizeof(CHORUS));
+		CHORUS *chorus = (CHORUS *) MALLOC(sizeof(CHORUS));
 		component->effect = chorus;
 		component->type = Chorus;
 		component->parameterCount = 0;
@@ -250,7 +251,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 	}
 	else if (strcmp(effectName, "Echo") == 0) {
 		component->type = Echo;
-		ECHO *echo = (ECHO *) malloc(sizeof(ECHO));
+		ECHO *echo = (ECHO *) MALLOC(sizeof(ECHO));
 		component->effect = echo;
 		component->uninitialize = (UNINITIALIZE) uninitialize_ECHO;
 		component->parameterCount = 2;
@@ -277,7 +278,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Flanger") == 0) {
 		component->type = Flanger;
-		FLANGER *flng = (FLANGER *) malloc(sizeof(FLANGER));
+		FLANGER *flng = (FLANGER *) MALLOC(sizeof(FLANGER));
 		component->effect = flng;
 		//component->uninitialize = (UNINITIALIZE) uninitialize_FLANGER;
 		component->parameterCount = 2;
@@ -305,7 +306,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Vibrato") == 0) {
 		component->type = Vibrato;
-		VIBRATO *vib = (VIBRATO *) malloc(sizeof(VIBRATO));
+		VIBRATO *vib = (VIBRATO *) MALLOC(sizeof(VIBRATO));
 		component->effect = vib;
 		component->uninitialize = (UNINITIALIZE) uninitialize_VIBRATO;
 		char temp[160];
@@ -333,7 +334,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->effect_bypass = 0;
 
 	} else if (strcmp(effectName, "Freeverb") == 0) {
-		FREEVERB *fv = (FREEVERB *) malloc(sizeof(FREEVERB));
+		FREEVERB *fv = (FREEVERB *) MALLOC(sizeof(FREEVERB));
 		component->effect = fv;
 		component->type = Freeverb;
 		component->parameterCount = 0;
@@ -343,7 +344,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->effect_bypass = 0;
 
 	} else if (strcmp(effectName, "Schroeder Reverb") == 0) {
-		SCHROEDERVERB *fv = (SCHROEDERVERB *) malloc(sizeof(SCHROEDERVERB));
+		SCHROEDERVERB *fv = (SCHROEDERVERB *) MALLOC(sizeof(SCHROEDERVERB));
 		component->effect = fv;
 		component->type = Schroeder;
 		component->parameterCount = 0;
@@ -380,7 +381,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 			cElement = (CHORUSELEMENT *) effect;
 		}
 		else {
-			cElement = (CHORUSELEMENT *) malloc(sizeof(CHORUSELEMENT));
+			cElement = (CHORUSELEMENT *) MALLOC(sizeof(CHORUSELEMENT));
 		}
 		component->effect = cElement;
 		component->type = ChorusElement;
@@ -414,7 +415,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 			component->effect = effect;
 		}
 		else {
-			lfo = (LOWFREQOSC *) malloc(sizeof(LOWFREQOSC));
+			lfo = (LOWFREQOSC *) MALLOC(sizeof(LOWFREQOSC));
 			component->effect = lfo;
 		}
 		// must have 2 parameters frequency and Depth
@@ -448,7 +449,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Mixer") == 0) {
 		component->type = Mixer;
-		MIXER *mixer = (MIXER *) malloc(sizeof(MIXER));
+		MIXER *mixer = (MIXER *) MALLOC(sizeof(MIXER));
 		component->effect = mixer;
 		component->type = Mixer;
 		component->parameterCount = 1;
@@ -465,7 +466,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "State Variable Filter") == 0) {
 		component->type = StateVariableFilter;
-		SVFILTER *svf = (SVFILTER *) malloc(sizeof(SVFILTER));
+		SVFILTER *svf = (SVFILTER *) MALLOC(sizeof(SVFILTER));
 		component->effect = svf;
 		char temp[160];
 		if (strParameters == 0) {
@@ -496,7 +497,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 
 	} else if (strcmp(effectName, "Variable BandPass") == 0) {
 		component->type = VariableDelay;
-		VARBANDPASS *vbp = (VARBANDPASS *) malloc(sizeof(VARBANDPASS));
+		VARBANDPASS *vbp = (VARBANDPASS *) MALLOC(sizeof(VARBANDPASS));
 		component->effect = vbp;
 		char temp[80];
 		strcpy(temp, strParameters);
@@ -530,7 +531,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 			vDelay = (VARDELAY *) effect;
 		}
 		else {
-			vDelay = (VARDELAY *) malloc(sizeof(VARDELAY));
+			vDelay = (VARDELAY *) MALLOC(sizeof(VARDELAY));
 		}
 		component->effect = vDelay;
 		char temp[80];
@@ -554,7 +555,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 }
 #if AUDIO_EFFECTS_TESTER
 char* strSave(char *string) {
-	char *cpy = (char*) malloc(strlen(string) + 1);
+	char *cpy = (char*) MALLOC(strlen(string) + 1);
 	strcpy(cpy, string);
 	return cpy;
 }

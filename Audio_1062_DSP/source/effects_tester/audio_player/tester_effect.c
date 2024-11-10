@@ -24,10 +24,6 @@
 #include "external_ma_node.h"
 #include "miniaudio.h"
 #include <stdio.h>
-#include "effects/delay_based/echo.h"
-#include "effect_component.h"
-#include "effects_gui_interface.h"
-#include "toolkit_gui.h"
 
 static ma_engine g_engine;
 static ma_sound g_sound;            /* This example will play only a single sound at once, so we only need one `ma_sound` object. */

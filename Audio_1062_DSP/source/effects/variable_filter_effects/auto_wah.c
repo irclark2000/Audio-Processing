@@ -20,7 +20,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "auto_wah.h"
-
+#include "components/memory_debug.h"
 void initialize_MIXER (MIXER * mixer, float wet_dry);
 float applyWetDry_MIXER (MIXER * mixer, float input_wet, float input_dry);
 void setWetDry_MIXER (MIXER *mixer, float wet_dry);

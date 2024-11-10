@@ -25,4 +25,5 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define MIN_MAX(x,min,max) ((x) < (min) ? (min) : (x) > (max) ? (max) : (x))
 #define SQUARED(x) ((x) * (x))
 
+
 #endif /* EFFECTS_COMPONENTS_EFFECTS_MACROS_H_ */

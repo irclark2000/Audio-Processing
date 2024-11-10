@@ -23,7 +23,7 @@
 #if AUDIO_EFFECTS_TESTER
 #include <stdlib.h>
 #endif
-
+#include "memory_debug.h"
 
 uint16_t cb_transferInFloat(CIRCBUFFER *cb, float input) {
 		cb->storage[cb->wr_ptr++] = input;
@@ -167,7 +167,7 @@ void gui_cb_initialize(CIRCBUFFER *cb, float maxDelaySec, float sampleRate) {
 void cb_initialize(CIRCBUFFER *cb, float *buf, uint32_t size) {
 #if AUDIO_EFFECTS_TESTER
 	if (buf == 0) {
-		buf = (float *) malloc(size * sizeof(float));
+		buf = (float *) MALLOC(size * sizeof(float));
 	}
 
 #endif
@@ -180,6 +180,6 @@ void cb_initialize(CIRCBUFFER *cb, float *buf, uint32_t size) {
 }
 void cb_uninitialize(CIRCBUFFER *cb) {
 #if AUDIO_EFFECTS_TESTER
-	free (cb->storage);
+	FREE(cb->storage);
 #endif
 }
