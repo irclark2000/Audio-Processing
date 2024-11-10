@@ -140,25 +140,26 @@ EFFECT_PARAMS *makeBlankParameters (uint8_t count, void *effect) {
 	}
 	return parameters;
 }
-EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *effect) {
-#if AUDIO_EFFECTS_TESTER
-	EFFECT_COMPONENT *component = (EFFECT_COMPONENT*) MALLOC(
-			sizeof(EFFECT_COMPONENT));
-	component->effectName = strSave(effectName);
+EFFECT_COMPONENT *makeBlankComponent (char *effectName) {
+	EFFECT_COMPONENT * component = (EFFECT_COMPONENT*) MALLOC(sizeof(EFFECT_COMPONENT));
 	component->apply = 0;
 	component->uninitialize = 0;
-	/*
-	 * 	float awOut;
-	 float sampleRate;
-	 ENVELOPE_FOLLOWER ef;
-	 MIXER mixer;
-	 VARBANDPASS vbf;
-	 float inputGain;
-	 float fxGain;
-	 float minCoFreq;
-	 float maxCoFreq;
-	 *
-	 */
+	component->parameters = 0;
+	component->parameterCount = 0;
+	component->childrenCount = 0;
+	component->effect = 0;
+	if(effectName) {
+		component->effectName = strSave(effectName);
+	} else {
+		component->effectName = 0;
+	}
+
+	return component;
+}
+
+EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *effect) {
+#if AUDIO_EFFECTS_TESTER
+	EFFECT_COMPONENT *component = makeBlankComponent (effectName);
 	if (strcmp(effectName, "Auto Wah") == 0) {
 		AUTOWAH *aw = (AUTOWAH *) MALLOC(sizeof(AUTOWAH));
 		component->effect = aw;

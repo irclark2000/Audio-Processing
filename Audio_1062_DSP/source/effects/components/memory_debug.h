@@ -16,7 +16,7 @@
 #define FREE(x) debug_free(x)
 #else
 #define MALLOC(x) malloc(x)
-#define FREE(x) free()
+#define FREE(x) free(x)
 #endif
 
 void * debug_malloc(uint32_t count);

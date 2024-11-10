@@ -10,12 +10,12 @@
 
 void * debug_malloc(uint32_t count) {
 	void * vptr = malloc(count);
-	fprintf(stderr, "allocating %d at: %x\n", count, vptr);
+	fprintf(stderr, "allocating %d at: %p\n", count, vptr);
 
 	return vptr;
 }
 void * debug_free(void * vptr) {
-	fprintf(stderr, "freeing: %x\n", vptr);
+	fprintf(stderr, "freeing: %p\n", vptr);
 	if (vptr) free (vptr);
 	return vptr;
 }
