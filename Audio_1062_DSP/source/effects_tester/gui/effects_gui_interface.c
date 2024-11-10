@@ -49,17 +49,6 @@ EFFECT_ITEM effects_list[] = {
 	{"Freeverb", Freeverb}, {"Schroeder Reverb", Schroeder}
 };
 
-float applyEffect_COMPONENT(void *type, EFFECT_COMPONENT *effect, float input) {
-	return 0;
-}
-
-void setParameter_COMPONENT(void *type, EFFECT_COMPONENT *effect, char *pName, float value) {
-	return;
-}
-
-float getParameter_COMPONENT(void *type, EFFECT_COMPONENT *effect, char *pName) {
-	return 0.0f;
-}
 
 void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate) {
 	switch(component->type) {
@@ -129,6 +118,8 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 				osc->counter = 0.0f;
 				osc->frequency_limits.minimum = 0.01;
 				osc->frequency_limits.maximum = 0.25 * sampleRate;
+				osc->amplitude_limits.minimum = 0.0;
+				osc->amplitude_limits.maximum = 1E9; 
 			}
 			break;
 		case VariableDelay:
@@ -141,6 +132,14 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 				vDelay->cBufPtr = &(vDelay->cBuf);
 				vDelay->size = max_size + 1;
 				cb_initialize(vDelay->cBufPtr, 0, max_size + 1);	
+			}
+			break;
+		case Vibrato:
+			{
+				VIBRATO *vb = component->effect;
+				for(int i=0; i < component->childrenCount; ++i) {
+					gui_initialize(component->childComponents[i], 0, sampleRate);
+				}
 			}
 			break;
 			// do nothing for some 

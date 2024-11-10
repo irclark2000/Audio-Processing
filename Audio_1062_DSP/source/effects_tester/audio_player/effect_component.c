@@ -109,6 +109,7 @@ static void setName_Type (EFFECT_COMPONENT *component, uint8_t index, char *name
 	}
 }
 void freeComponent(EFFECT_COMPONENT * component) {
+	if (component == NULL) return;
 	free(component->effectName);
 	for (int i=0; i < component->parameterCount; i++) {
 		free(component->strParameters[i]);
@@ -125,6 +126,7 @@ void freeComponent(EFFECT_COMPONENT * component) {
 	}
 	free (component);
 }
+
 #endif
 EFFECT_PARAMS *makeBlankParameters (uint8_t count, void *effect) {
 	EFFECT_PARAMS * parameters = (EFFECT_PARAMS*) malloc(count * sizeof(EFFECT_PARAMS));

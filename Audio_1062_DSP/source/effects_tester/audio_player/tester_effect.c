@@ -97,6 +97,8 @@ int play_music (char *fileName, EFFECT_COMPONENT *ec) {
 			printf("Failed to initialize sound \"%s\".", fileName);
 			return -1;
 		}
+		/* Loop the sound so we can continuously hear it. */
+		ma_sound_set_looping(&g_sound, MA_TRUE);
 
 		/* Connect the output of the sound to the input of the effect. */
 		ma_node_attach_output_bus(&g_sound, 0, &g_effects_node, 0);
@@ -115,5 +117,11 @@ int play_music (char *fileName, EFFECT_COMPONENT *ec) {
 	ma_effects_node_uninit(&g_effects_node, NULL);
 	ma_engine_uninit(&g_engine);
 	return 0;
+}
+
+void stop_music_playing () {
+	ma_sound_uninit(&g_sound);
+	ma_effects_node_uninit(&g_effects_node, NULL);
+	ma_engine_uninit(&g_engine);
 }
 #endif

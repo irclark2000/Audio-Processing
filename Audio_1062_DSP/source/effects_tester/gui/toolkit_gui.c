@@ -70,16 +70,27 @@ struct media {
 };
 typedef struct {
 	int display_sliders;
-	int music_is_playing;
 	EFFECT_COMPONENT *component;
 	uint8_t slider_count;
 	SLIDER_VALUES sliders[15];
 } DISPLAY_STATE;
 
+typedef struct MUSIC_STATE {
+	int music_is_playing;
+	int start_music;
+	int stop_music;
+} MUSIC_STATE;
+
+MUSIC_STATE gMUSIC;
 DISPLAY_STATE gGUI;
 EFFECT_ITEM *g_effect_list = NULL;
 uint8_t g_effects_count = 0;
 
+static void initializeMusicState(MUSIC_STATE *music) {
+	music->music_is_playing = 0;
+	music->start_music = 0;
+	music->stop_music = 0;
+}
 void update_effect_state_for_slider(SLIDER_VALUES *sliders, uint8_t index) {
 	EFFECT_PARAMS *parameter = sliders[index].myParameter;
 	void *effect = parameter->myEffect;
@@ -122,7 +133,6 @@ void update_state_by_counter (uint16_t counter, uint16_t max_counter) {
 static void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT * component);
 
 static void clearDisplayState (DISPLAY_STATE * gui) {
-	gui->music_is_playing = 0;
 	gui->display_sliders = 0;
 	gui->slider_count = 0;
 	if (gui->component) {
@@ -452,6 +462,30 @@ effect_selector(struct nk_context *ctx, struct media *media)
 	nk_style_set_font(ctx, &media->font_20->handle);
 	nk_begin(ctx, "Effect Selector", nk_rect(320, 50, 275, 610),
 			NK_WINDOW_BORDER|NK_WINDOW_MOVABLE|NK_WINDOW_TITLE);
+
+	/*------------------------------------------------
+	 *                  MENU
+	 *------------------------------------------------*/
+	nk_menubar_begin(ctx);
+	{
+		/* toolbar */
+		nk_layout_row_static(ctx, 40, 40, 4);
+		if (nk_menu_begin_image(ctx, "Music", media->play, nk_vec2(110,120)))
+		{
+			/* settings */
+			nk_layout_row_dynamic(ctx, 25, 1);
+			nk_menu_item_image_label(ctx, media->play, "Play", NK_TEXT_RIGHT);
+			nk_menu_item_image_label(ctx, media->stop, "Stop", NK_TEXT_RIGHT);
+			nk_menu_item_image_label(ctx, media->pause, "Pause", NK_TEXT_RIGHT);
+			nk_menu_item_image_label(ctx, media->next, "Next", NK_TEXT_RIGHT);
+			nk_menu_item_image_label(ctx, media->prev, "Prev", NK_TEXT_RIGHT);
+			nk_menu_end(ctx);
+		}
+		nk_button_image(ctx, media->tools);
+		nk_button_image(ctx, media->cloud);
+		nk_button_image(ctx, media->pen);
+	}
+	nk_menubar_end(ctx);
 
 	/*------------------------------------------------
 	 *                  POPUP BUTTON
@@ -963,6 +997,7 @@ void generate_gui(EFFECT_ITEM *eList, uint8_t eCount)
 			sprintf(buffer, "images/image%d.png", (i+1));
 			media.images[i] = icon_load(buffer);
 		}}
+	initializeMusicState(&gMUSIC);
 	while (!glfwWindowShouldClose(win))
 	{
 		/* High DPI displays */
@@ -1004,11 +1039,29 @@ void generate_gui(EFFECT_ITEM *eList, uint8_t eCount)
 			nk_input_button(&ctx, NK_BUTTON_RIGHT, (int)x, (int)y, glfwGetMouseButton(win, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS);
 			nk_input_end(&ctx);}
 
-		/* GUI */
+
+			/* GUI */
 		effect_selector(&ctx, &media);
-		button_demo(&ctx, &media);
+		//button_demo(&ctx, &media);
 		if (gGUI.display_sliders) {
 			effect_controls(&ctx, &media);
+		}
+		// check for stopping first
+		if (gMUSIC.stop_music) {
+			if (gMUSIC.music_is_playing) {
+				stop_music_playing ();
+			}
+			gMUSIC.music_is_playing = 0;
+			gMUSIC.stop_music = 0;
+		}
+
+		// can we start the music here?
+		if (gMUSIC.start_music  && !gMUSIC.music_is_playing && gGUI.component != 0) {
+			int success = play_music (fileName, gGUI.component);
+			if (success == 0) {
+				gMUSIC.music_is_playing = 1;
+			}
+			gMUSIC.start_music = 0;
 		}
 		/* Draw */
 		glViewport(0, 0, display_width, display_height);
@@ -1017,6 +1070,13 @@ void generate_gui(EFFECT_ITEM *eList, uint8_t eCount)
 		device_draw(&device, &ctx, width, height, scale, NK_ANTI_ALIASING_ON);
 		glfwSwapBuffers(win);
 	}
+	// cleanup if needed
+	if (gMUSIC.music_is_playing) {
+		stop_music_playing ();
+	}
+	clearDisplayState (&gGUI);
+
+
 	glDeleteTextures(1,(const GLuint*)&media.unchecked.handle.id);
 	glDeleteTextures(1,(const GLuint*)&media.checked.handle.id);
 	glDeleteTextures(1,(const GLuint*)&media.rocket.handle.id);

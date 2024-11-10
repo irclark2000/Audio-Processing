@@ -33,7 +33,7 @@ void initialize_WAHWAH(WAHWAH * ww, float wahFreq, float minCutoffFreq, float ma
 float apply_WAHWAH (WAHWAH * ww, float input) {
 	update_LOWFREQOSC(&(ww->lfo));
 	// first step should be to set the cutoff frequency for the filter
-	set_frequency_damping_SVFILER(&(ww->svf), ww->cutoff_limits.minimum + fabs(ww->lfo.out), -1);
+	set_frequency_damping_SVFILTER(&(ww->svf), ww->cutoff_limits.minimum + fabs(ww->lfo.out), -1);
 	apply_SVFILTER (&(ww->svf), input);
 	applyWetDry_MIXER (&(ww->mixer), ww->svf.ybOut, input);
  	ww->out =  ww->mixer.out;
@@ -45,13 +45,13 @@ void setMInMAXCutoffFrequency (WAHWAH *ww, float minCutoffFreq, float maxCutoffF
 	maxCutoffFreq = (maxCutoffFreq < 0.0f) ? ww->cutoff_limits.maximum : maxCutoffFreq;
 	ww->cutoff_limits.minimum = minCutoffFreq;
 	ww->cutoff_limits.maximum = maxCutoffFreq;
-	set_frequency_damping_SVFILER(&(ww->svf), ww->cutoff_limits.minimum, -1);
+	set_frequency_damping_SVFILTER(&(ww->svf), ww->cutoff_limits.minimum, -1);
 	setAmplitude_LOWFREQOSC(&(ww->lfo), ww->cutoff_limits.maximum - ww->cutoff_limits.minimum);
 }
 
 void setWahFreq_Damping_WAHWAH(WAHWAH * ww, float wahFreq, float damp) {
 	// when we take the absolute value that doubles the lfo frequency
 	setFreq_LOWFREQOSC(&(ww->lfo), wahFreq / 2.0f);
-	set_frequency_damping_SVFILER(&(ww->svf), -1.0f, damp);
+	set_frequency_damping_SVFILTER(&(ww->svf), -1.0f, damp);
 }
 

@@ -22,9 +22,6 @@ typedef struct {
 
 extern EFFECT_ITEM effects_list[];
 void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate);
-float applyEffect_COMPONENT(void *type, EFFECT_COMPONENT *effect, float input);
-void setParameter_COMPONENT(void *type, EFFECT_COMPONENT *effect, char *pName, float value);
-float getParameter_COMPONENT(void *type, EFFECT_COMPONENT *effect, char *pName);
 void unintializeEffect(void * type);
 
 #endif /* EFFECTS_TESTER_GUI_EFFECTS_GUI_INTERFACE_H_ */

@@ -30,7 +30,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 typedef struct {
 	LOWFREQOSC lfo;
-	PARAMETER_LIMITS lfo_freq_limits;
+	//PARAMETER_LIMITS lfo_freq_limits;
 	VARDELAY vDelay;
 	float baseDelayMSec;
 	PARAMETER_LIMITS delay_limitsMsec;
