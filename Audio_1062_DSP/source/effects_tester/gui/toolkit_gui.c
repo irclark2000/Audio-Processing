@@ -45,6 +45,7 @@
   #define NK_SHADER_VERSION "#version 300 es\n"
 #endif
 
+#define MAX_SLIDER_COUNT 15
 struct media {
     struct nk_font *font_14;
     struct nk_font *font_18;
@@ -73,10 +74,11 @@ typedef struct {
 	int display_sliders;
 	EFFECT_COMPONENT *component;
 	uint8_t slider_count;
-	SLIDER_VALUES sliders[15];
+	SLIDER_VALUES sliders[MAX_SLIDER_COUNT];
 } DISPLAY_STATE;
 
 typedef struct MUSIC_STATE {
+	char *fileName;
 	int music_is_playing;
 	int start_music;
 	int stop_music;
@@ -91,6 +93,7 @@ static void initializeMusicState(MUSIC_STATE *music) {
 	music->music_is_playing = 0;
 	music->start_music = 0;
 	music->stop_music = 0;
+	music->fileName = 0;
 }
 void update_effect_state_for_slider(SLIDER_VALUES *sliders, uint8_t index) {
 	EFFECT_PARAMS *parameter = sliders[index].myParameter;
@@ -530,8 +533,8 @@ effect_selector(struct nk_context *ctx, struct media *media)
 			if (nk_combo_item_label(ctx, g_effect_list[i].name, NK_TEXT_LEFT)) {
 				selected_item = i;
 				initializeDisplayState(&gGUI, selected_item);
-				//gui_initialize(gGUI.component, 0, 44100.0f);
-				//update_effect_state(gGUI.sliders, gGUI.slider_count);
+				gui_initialize(gGUI.component, 0, 44100.0f);
+				update_effect_state(gGUI.sliders, gGUI.slider_count);
 			}
 		}
 		nk_combo_end(ctx);
@@ -1000,6 +1003,7 @@ void generate_gui(EFFECT_ITEM *eList, uint8_t eCount)
 			media.images[i] = icon_load(buffer);
 		}}
 	initializeMusicState(&gMUSIC);
+	gMUSIC.fileName = fileName;
 	while (!glfwWindowShouldClose(win))
 	{
 		/* High DPI displays */

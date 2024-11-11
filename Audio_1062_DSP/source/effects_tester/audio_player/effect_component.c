@@ -122,8 +122,11 @@ void freeComponent(EFFECT_COMPONENT * component) {
 	for (int i=0; i < component->childrenCount; i++) {
 		freeComponent(component->childComponents[i]);
 	}
-	if (component->uninitialize != 0) {
-		component->uninitialize(component->effect);
+	if (component->effect && component->main_effect) {
+		if (component->uninitialize != 0) {
+			component->uninitialize(component->effect);
+		}
+		free(component->effect);
 	}
 	FREE(component);
 }
@@ -132,11 +135,11 @@ void freeComponent(EFFECT_COMPONENT * component) {
 EFFECT_PARAMS *makeBlankParameters (uint8_t count, void *effect) {
 	EFFECT_PARAMS * parameters = (EFFECT_PARAMS*) MALLOC(count * sizeof(EFFECT_PARAMS));
 	for (uint8_t i=0; i < count; ++i) {
-	   parameters[i].currentValue = 0;
-	   parameters[i].previousValue = 0;
-	   parameters[i].recalculate = 0;
-	   parameters[i].partnerParameter = 0;
-	   parameters[i].myEffect = effect;
+		parameters[i].currentValue = 0;
+		parameters[i].previousValue = 0;
+		parameters[i].recalculate = 0;
+		parameters[i].partnerParameter = 0;
+		parameters[i].myEffect = effect;
 	}
 	return parameters;
 }
@@ -148,6 +151,7 @@ EFFECT_COMPONENT *makeBlankComponent (char *effectName) {
 	component->parameterCount = 0;
 	component->childrenCount = 0;
 	component->effect = 0;
+	component->main_effect = 0;
 	if(effectName) {
 		component->effectName = strSave(effectName);
 	} else {
@@ -164,6 +168,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		AUTOWAH *aw = (AUTOWAH *) MALLOC(sizeof(AUTOWAH));
 		component->effect = aw;
 		component->type = AutoWah;
+		component->main_effect = 1;
 		component->parameters = makeBlankParameters(4, component->effect);
 		char temp[480];
 		if (strParameters == 0) {
@@ -220,23 +225,30 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		else {
 			strcpy(temp, strParameters);
 		}
-		char * ptrCount = strtok(temp, "//");
-		while(*ptrCount != ':' && *ptrCount !=0) ptrCount++;
-		if (*ptrCount == 0 || *(ptrCount + 1) != 'I') {
+		char *ptr = temp;
+		while(*ptr != '/' && *ptr !=0) ptr++;
+		if (*(ptr + 1) != '/') {
+			component->effect = 0;
 			freeComponent(component);
 			return 0;
 		}
-		while(*ptrCount != '*' && *ptrCount !=0) ptrCount++;
-		if (*ptrCount == 0 || !isdigit(*(ptrCount + 1))) {
+		*ptr = 0;
+		char *ptrChorusElements = ptr + 2;
+		// time to get our count
+		ptr = temp;
+		while (*ptr != '*' && *ptr != 0) ptr++;
+		if (*ptr == 0 || !isdigit(*(ptr + 1))) {
+			component->effect = 0;
 			freeComponent(component);
 			return 0;
 		}
-		int count = atoi(ptrCount + 1);
-			chorus->chorus_count =  count;
-			chorus->inv_count = 1.0f / count;
+		int count = atoi(ptr + 1);
+		chorus->chorus_count =  count;
+		chorus->inv_count = 1.0f / count;
 		int componentCount = chorus->chorus_count;
 		char *child[12];  // max allowed childen;
-		for (int i = 0; i < componentCount; ++i) {
+		child[0] = strtok(ptrChorusElements, "//");
+		for (int i = 1; i < componentCount; ++i) {
 			child[i] = strtok(NULL, "//");
 		}
 		for (int i = 0; i < componentCount; ++i) {
@@ -256,6 +268,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->effect = echo;
 		component->uninitialize = (UNINITIALIZE) uninitialize_ECHO;
 		component->parameterCount = 2;
+		component->main_effect = 1;
 		component->parameters = makeBlankParameters(2, component->effect);
 		int index = 0;
 		setName_Type(component, 0, "Feedback Gain:S3");
@@ -281,6 +294,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->type = Flanger;
 		FLANGER *flng = (FLANGER *) MALLOC(sizeof(FLANGER));
 		component->effect = flng;
+		component->main_effect = 1;
 		//component->uninitialize = (UNINITIALIZE) uninitialize_FLANGER;
 		component->parameterCount = 2;
 		component->parameters = makeBlankParameters(2, component->effect);
@@ -309,6 +323,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->type = Vibrato;
 		VIBRATO *vib = (VIBRATO *) MALLOC(sizeof(VIBRATO));
 		component->effect = vib;
+		component->main_effect = 1;
 		component->uninitialize = (UNINITIALIZE) uninitialize_VIBRATO;
 		char temp[160];
 		if (strParameters == 0) {
@@ -338,6 +353,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		FREEVERB *fv = (FREEVERB *) MALLOC(sizeof(FREEVERB));
 		component->effect = fv;
 		component->type = Freeverb;
+		component->main_effect = 1;
 		component->parameterCount = 0;
 		component->childComponents[0] = createComponent("Mixer", 0, &(fv->mixer));
 		component->childrenCount = 1;
@@ -348,6 +364,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		SCHROEDERVERB *fv = (SCHROEDERVERB *) MALLOC(sizeof(SCHROEDERVERB));
 		component->effect = fv;
 		component->type = Schroeder;
+		component->main_effect = 1;
 		component->parameterCount = 0;
 		component->childComponents[0] = createComponent("Mixer", 0, &(fv->mixer));
 		component->childrenCount = 1;
@@ -355,6 +372,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Wah Wah") == 0) {
 		component->type = WahWah;
+		component->main_effect = 1;
 		char temp[160];
 		if (strParameters == 0) {
 			char * elements = "Q:X*6\tCenter Frequency:S3*500,2000,5000"
@@ -403,6 +421,15 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 	}
 	else if (strcmp(effectName, "Envelope Follower") == 0) {
 		component->type = EnvelopeFollower;
+		ENVELOPE_FOLLOWER *ef;
+		if (effect) {
+			ef = (ENVELOPE_FOLLOWER *) effect;
+			component->effect = effect;
+		}
+		else {
+			ef = (ENVELOPE_FOLLOWER *) MALLOC(sizeof(ENVELOPE_FOLLOWER));
+			component->effect = ef;
+		}
 		// has no parametersp and no children
 		component->parameterCount = 0;
 		component->childrenCount = 0;

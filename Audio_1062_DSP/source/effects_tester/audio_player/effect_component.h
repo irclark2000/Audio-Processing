@@ -55,10 +55,13 @@ typedef struct EFFECT_COMPONENT {
 	char *strParameters[10];
 	char *strTypes[10];
 	EFFECT_PARAMS *parameters;
+	// identify primary effect 
+	// to avoid calling free on children effects
+	uint8_t main_effect;  
 	uint8_t parameterCount;
 	struct EFFECT_COMPONENT *childComponents[MAX_CHILD_EFFECT_COMPONENTS];
 	uint8_t childrenCount;
-	uint8_t effect_bypass;
+	uint8_t effect_bypass;   // disable effect during playback
 } EFFECT_COMPONENT;
 char * strSave (char * string);
 void do_nothing0_Component(void * effect);
