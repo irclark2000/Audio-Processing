@@ -46,6 +46,7 @@
 #endif
 
 #define MAX_SLIDER_COUNT 15
+
 struct media {
     struct nk_font *font_14;
     struct nk_font *font_18;
@@ -93,7 +94,7 @@ static void initializeMusicState(MUSIC_STATE *music) {
 	music->music_is_playing = 0;
 	music->start_music = 0;
 	music->stop_music = 0;
-	music->fileName = 0;
+	//music->fileName = 0;
 }
 void update_effect_state_for_slider(SLIDER_VALUES *sliders, uint8_t index) {
 	EFFECT_PARAMS *parameter = sliders[index].myParameter;
@@ -490,7 +491,7 @@ effect_selector(struct nk_context *ctx, struct media *media)
 		nk_button_image(ctx, media->pen);
 	}
 	nk_menubar_end(ctx);
-
+#if 0
 	/*------------------------------------------------
 	 *                  POPUP BUTTON
 	 *------------------------------------------------*/
@@ -522,6 +523,7 @@ effect_selector(struct nk_context *ctx, struct media *media)
 			nk_popup_end(ctx);
 		}
 	}
+#endif
 	/*------------------------------------------------
 	 *                  COMBOBOX
 	 *------------------------------------------------*/
@@ -535,6 +537,9 @@ effect_selector(struct nk_context *ctx, struct media *media)
 				initializeDisplayState(&gGUI, selected_item);
 				gui_initialize(gGUI.component, 0, 44100.0f);
 				update_effect_state(gGUI.sliders, gGUI.slider_count);
+				gGUI.music_is_playing = 1;
+				gGUI.start_music = 1;
+				gGUI.stop_music = 1;
 			}
 		}
 		nk_combo_end(ctx);
@@ -1062,7 +1067,7 @@ void generate_gui(EFFECT_ITEM *eList, uint8_t eCount)
 		}
 
 		// can we start the music here?
-		if (gMUSIC.start_music  && !gMUSIC.music_is_playing && gGUI.component != 0) {
+		if (gMUSIC.start_music && !gMUSIC.stop_music && !gMUSIC.music_is_playing && gGUI.component != 0) {
 			int success = play_music (fileName, gGUI.component);
 			if (success == 0) {
 				gMUSIC.music_is_playing = 1;
