@@ -127,8 +127,8 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 				VARDELAY *vDelay = component->effect;
 				vDelay->sampleTime = 1.0f / sampleRate;
 				vDelay->sampleRate = sampleRate;
-				uint32_t max_size = sampleRate * vDelay->max_delay * 0.001f;
-				vDelay->delayInSamples = max_size;
+				uint32_t max_size = sampleRate * vDelay->max_delay;
+				vDelay->delayInSamples = sampleRate * vDelay->gui_delayMSec * 0.001f; 
 				vDelay->cBufPtr = &(vDelay->cBuf);
 				vDelay->size = max_size + 1;
 				cb_initialize(vDelay->cBufPtr, 0, max_size + 1);	

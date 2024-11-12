@@ -566,9 +566,18 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		strcpy(temp, strParameters);
 		component->parameterCount = 1;
 		component->parameters = makeBlankParameters(1, component->effect);
-		float maxDelay = setName_Type_Parse_Variables (component, 0, temp);
-		component->parameters[0].currentValue = &(vDelay->max_delay);
-		*(component->parameters[0].currentValue) = maxDelay / 1000.0f; 
+		float maxDelay = 10.0;
+		float current_delay = setName_Type_Parse_Variables (component, 0, temp);
+		if (component->strTypes[0][0] == 'S') {
+			maxDelay = component->parameters[0].floatParameter[2];
+		}
+		else {
+			maxDelay = component->parameters[0].floatParameter[0];
+		}
+		component->parameters[0].currentValue = &(vDelay->gui_delayMSec);
+		component->parameters[0].recalculate = (RECALCULATE)gui_setDelay_VARDELAY;
+		*(component->parameters[0].currentValue) = current_delay; 
+		vDelay->max_delay = maxDelay / 1000.0f;
 		component->childrenCount = 0;
 		component->apply = 0;
 		component->effect_bypass = 0;

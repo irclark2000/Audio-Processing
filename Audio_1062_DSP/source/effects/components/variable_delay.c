@@ -76,6 +76,9 @@ float getDelayedSample_VARDELAY(VARDELAY *vDelay, float input, float fb_level) {
 	vDelay->cBuf.rd_ptr = (vDelay->cBuf.rd_ptr + 1) % vDelay->size;
 	return vDelay->out;
 }
+void gui_setDelay_VARDELAY(VARDELAY *vDelay) {
+	setDelay_VARDELAY(vDelay, vDelay->gui_delayMSec / 1000.0f);
+}
 void setDelay_VARDELAY(VARDELAY *vDelay, float delaySec) {
 	float seconds = (delaySec <= vDelay->max_delay) ? (delaySec >= vDelay->sampleTime ? delaySec : vDelay->sampleTime) : vDelay->max_delay;
 	vDelay->delayInSamples = vDelay->sampleRate * seconds;

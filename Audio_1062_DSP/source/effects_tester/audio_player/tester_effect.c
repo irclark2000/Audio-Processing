@@ -106,12 +106,12 @@ int play_music (char *fileName, EFFECT_COMPONENT *ec) {
 		ma_sound_start(&g_sound);
 	}
 
-	printf("Press Enter to quit...");
-	getchar();
+	//printf("Press Enter to quit...");
+	//getchar();
 
-	ma_sound_uninit(&g_sound);
-	ma_effects_node_uninit(&g_effects_node, NULL);
-	ma_engine_uninit(&g_engine);
+	//ma_sound_uninit(&g_sound);
+	//ma_effects_node_uninit(&g_effects_node, NULL);
+	//ma_engine_uninit(&g_engine);
 	return 0;
 }
 

@@ -303,6 +303,12 @@ effect_controls(struct nk_context *ctx, struct media *media)
 			nk_label(ctx, value_text, NK_TEXT_LEFT);
 		}
 	}
+	if (check) {
+		//printf("Bypass on.\n");
+	}
+	else {
+		//printf("Bypass off.\n");
+	}
 	nk_end(ctx);
 	nk_style_set_font(ctx, &media->font_14->handle);
 }
@@ -537,9 +543,9 @@ effect_selector(struct nk_context *ctx, struct media *media)
 				initializeDisplayState(&gGUI, selected_item);
 				gui_initialize(gGUI.component, 0, 44100.0f);
 				update_effect_state(gGUI.sliders, gGUI.slider_count);
-				gGUI.music_is_playing = 1;
-				gGUI.start_music = 1;
-				gGUI.stop_music = 1;
+				gMUSIC.music_is_playing = 1;
+				gMUSIC.start_music = 1;
+				gMUSIC.stop_music = 1;
 			}
 		}
 		nk_combo_end(ctx);
@@ -915,6 +921,8 @@ void generate_gui(EFFECT_ITEM *eList, uint8_t eCount)
 	int width = 0, height = 0;
 	int display_width=0, display_height=0;
     	char *fileName = "sounds/rampb-acoustic-guitar-loop-1-70bpm-143363.wav";
+      	 fileName = "sounds/alan-walker-type-guitar-loop-1-246365.wav";
+    	 fileName = "sounds/relaxing-guitar-128296.wav";
 
 	/* GUI */
 	struct device device;
