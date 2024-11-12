@@ -122,6 +122,12 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 				osc->amplitude_limits.maximum = 1E9; 
 			}
 			break;
+		case Schroeder:
+			{
+				SCHROEDERVERB *fv = component->effect;
+				initSchroederVerb(fv, sampleRate);
+			}
+			break;
 		case VariableDelay:
 			{
 				VARDELAY *vDelay = component->effect;

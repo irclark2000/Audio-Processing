@@ -24,6 +24,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define MINIAUDIO_IMPLEMENTATION
 
 #include "external_ma_node.h"
+#include "toolkit_gui.h"
 
 MA_API ma_result ma_effects_init(const ma_effects_config* pConfig, const ma_allocation_callbacks* pAllocationCallbacks, ma_effects *pEffect) {
     if (pEffect == NULL) {
@@ -123,6 +124,7 @@ MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFram
 	    pFramesOutF32 += pEffects->config.channels;
 	    pFramesInF32  += pEffects->config.channels;
     }
+    update_state_periodically ();
     return MA_SUCCESS;
 }
 

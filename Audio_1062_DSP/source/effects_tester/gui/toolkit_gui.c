@@ -123,16 +123,11 @@ void update_effect_state(SLIDER_VALUES *sliders, uint8_t slider_count) {
 	}
 }
 
-void update_state_by_counter (uint16_t counter, uint16_t max_counter) {
+void update_state_periodically () {
+	static count = 0;
 	uint8_t slider_count = gGUI.slider_count;
-	float tolerance = 1.0f / max_counter;
-	float interval = max_counter / slider_count;
-
-	float f_index = counter / interval; 
-	int index = (int) f_index;
-	if (fabs(f_index - index) < tolerance) {
-		update_effect_state_for_slider(gGUI.sliders, index);
-	}
+	update_effect_state_for_slider(gGUI.sliders, count++);
+	if (count == gGUI.slider_count) count = 0;
 }
 
 static void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT * component);
@@ -541,8 +536,8 @@ effect_selector(struct nk_context *ctx, struct media *media)
 			if (nk_combo_item_label(ctx, g_effect_list[i].name, NK_TEXT_LEFT)) {
 				selected_item = i;
 				initializeDisplayState(&gGUI, selected_item);
-				gui_initialize(gGUI.component, 0, 44100.0f);
-				update_effect_state(gGUI.sliders, gGUI.slider_count);
+				// this is called by play music
+				//gui_initialize(gGUI.component, 0, 44100.0f);
 				gMUSIC.music_is_playing = 1;
 				gMUSIC.start_music = 1;
 				gMUSIC.stop_music = 1;
@@ -922,7 +917,7 @@ void generate_gui(EFFECT_ITEM *eList, uint8_t eCount)
 	int display_width=0, display_height=0;
     	char *fileName = "sounds/rampb-acoustic-guitar-loop-1-70bpm-143363.wav";
       	 fileName = "sounds/alan-walker-type-guitar-loop-1-246365.wav";
-    	 fileName = "sounds/relaxing-guitar-128296.wav";
+    	 //fileName = "sounds/relaxing-guitar-128296.wav";
 
 	/* GUI */
 	struct device device;
@@ -1078,6 +1073,7 @@ void generate_gui(EFFECT_ITEM *eList, uint8_t eCount)
 		if (gMUSIC.start_music && !gMUSIC.stop_music && !gMUSIC.music_is_playing && gGUI.component != 0) {
 			int success = play_music (fileName, gGUI.component);
 			if (success == 0) {
+				update_effect_state(gGUI.sliders, gGUI.slider_count);
 				gMUSIC.music_is_playing = 1;
 			}
 			gMUSIC.start_music = 0;
