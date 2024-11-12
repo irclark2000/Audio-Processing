@@ -485,10 +485,10 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		int index = 0;
 		setName_Type(component, 0, "Wet/Dry:S3");
 		component->parameters->floatParameter[index++] = 0.0f;
-		component->parameters->floatParameter[index++] = 0.6f;
+		component->parameters->floatParameter[index++] = 0.9f;
 		component->parameters->floatParameter[index++] = 1.0f;
 		component->parameters[0].currentValue = &(mixer->wet_dry);
-		mixer->wet_dry = 0.6f;
+		mixer->wet_dry = 0.9f;
 		component->childrenCount = 0;
 		component->apply = 0;
 		component->effect_bypass = 0;
@@ -552,6 +552,23 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->apply = 0;
 		component->effect_bypass = 0;
 
+	} else if (strcmp(effectName, "Volume") == 0) {
+		component->type = Volume;
+		VOLUME *vol = (VOLUME *) MALLOC(sizeof(VOLUME));
+		component->effect = vol;
+		component->type = Volume;
+		component->parameterCount = 1;
+		component->parameters = makeBlankParameters(2, component->effect);
+		int index = 0;
+		setName_Type(component, 0, "Wet/Dry:S3");
+		component->parameters->floatParameter[index++] = 0.0f;
+		component->parameters->floatParameter[index++] = 0.9f;
+		component->parameters->floatParameter[index++] = 1.0f;
+		component->parameters[0].currentValue = &(mixer->wet_dry);
+		mixer->wet_dry = 0.9f;
+		component->childrenCount = 0;
+		component->apply = 0;
+		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Variable Delay") == 0) {
 		component->type = VariableDelay;
 		VARDELAY *vDelay;
