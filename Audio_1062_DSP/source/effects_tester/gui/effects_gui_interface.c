@@ -148,7 +148,7 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 				}
 			}
 			break;
-			// do nothing for some 
+		case Volume:
 		case VariableBandpass:
 		case Mixer:
 			break;   

@@ -116,6 +116,9 @@ void update_effect_state_for_slider(SLIDER_VALUES *sliders, uint8_t index) {
 			}
 		}
 	}
+	else if (parameter->previousValue != 0) { // if we don't use recalc
+		*(parameter->previousValue) = *(parameter->currentValue);
+	}
 }
 void update_effect_state(SLIDER_VALUES *sliders, uint8_t slider_count) {
 	for (uint8_t index=0; index < slider_count; ++index) {
@@ -124,10 +127,13 @@ void update_effect_state(SLIDER_VALUES *sliders, uint8_t slider_count) {
 }
 
 void update_state_periodically () {
-	static count = 0;
-	uint8_t slider_count = gGUI.slider_count;
-	update_effect_state_for_slider(gGUI.sliders, count++);
-	if (count == gGUI.slider_count) count = 0;
+	static uint32_t count = 0;
+	uint8_t index = count % gGUI.slider_count;
+	update_effect_state_for_slider(gGUI.sliders, index);
+	if (count++ == 400) {
+		printf("Tik tok\n");
+		count = 0;
+	}
 }
 
 static void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT * component);
@@ -144,6 +150,7 @@ static void initializeDisplayState(DISPLAY_STATE *gui, uint8_t selection) {
 	clearDisplayState (gui);
 	gui->component = createComponent(g_effect_list[selection].name, 0, 0);
 	if (gui->component != NULL) {
+		addChildComponent(gui->component, "Volume");
 		gui->component->effect_bypass = 0;
 		setupSliders(gui, gui->component);
 		gui->display_sliders = 1;
@@ -285,10 +292,10 @@ effect_controls(struct nk_context *ctx, struct media *media)
 		nk_checkbox_label(ctx, "Bypass Effect", &check);
 		nk_layout_row_dynamic(ctx, 30, 3);
 		nk_layout_row(ctx, NK_DYNAMIC, 30, 3, row_widths);
-		nk_label(ctx, "Volume", NK_TEXT_LEFT);
-		nk_slider_float(ctx, 0, &volume, 1.0f, 0.01f);
-		sprintf(value_text, "%5.2f", volume);
-		nk_label(ctx, value_text, NK_TEXT_LEFT);
+		//nk_label(ctx, "Volume", NK_TEXT_LEFT);
+		//nk_slider_float(ctx, 0, &volume, 1.0f, 0.01f);
+		//sprintf(value_text, "%5.2f", volume);
+		//nk_label(ctx, value_text, NK_TEXT_LEFT);
 		for (int j=0; j < gGUI.slider_count; j++) {
 			nk_label(ctx, gGUI.sliders[j].name, NK_TEXT_LEFT);
 			if ( nk_slider_float(ctx, 0, &gGUI.sliders[j].slider_value, 1.0f, 0.01f)) {
@@ -330,6 +337,7 @@ ui_widget(struct nk_context *ctx, struct media *media, float height)
 	nk_spacing(ctx, 1);
 }
 
+#if 0
 	static void
 ui_widget_centered(struct nk_context *ctx, struct media *media, float height)
 {
@@ -338,7 +346,6 @@ ui_widget_centered(struct nk_context *ctx, struct media *media, float height)
 	nk_layout_row(ctx, NK_DYNAMIC, height, 3, ratio);
 	nk_spacing(ctx, 1);
 }
-#if 0
 	static void
 button_demo(struct nk_context *ctx, struct media *media)
 {
@@ -452,13 +459,13 @@ button_demo(struct nk_context *ctx, struct media *media)
 	static void
 effect_selector(struct nk_context *ctx, struct media *media)
 {
-	static int image_active;
+	//static int image_active;
 	//static int check0 = 1;
 	//static int check1 = 0;
 	//static size_t prog = 80;
 	//static float slider_value[10] = {0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5};
 	static int selected_item = 0;
-	static int selected_image = 3;
+	//static int selected_image = 3;
 	//static int selected_icon = 0;
 	//static const char *items[] = {"Item 0","item 1","item 2"};
 	static int piemenu_active = 0;
@@ -915,9 +922,9 @@ void generate_gui(EFFECT_ITEM *eList, uint8_t eCount)
 	static GLFWwindow *win;
 	int width = 0, height = 0;
 	int display_width=0, display_height=0;
-    	char *fileName = "sounds/rampb-acoustic-guitar-loop-1-70bpm-143363.wav";
-      	 fileName = "sounds/alan-walker-type-guitar-loop-1-246365.wav";
-    	 //fileName = "sounds/relaxing-guitar-128296.wav";
+	char *fileName = "sounds/rampb-acoustic-guitar-loop-1-70bpm-143363.wav";
+	fileName = "sounds/alan-walker-type-guitar-loop-1-246365.wav";
+	//fileName = "sounds/relaxing-guitar-128296.wav";
 
 	/* GUI */
 	struct device device;
@@ -1054,7 +1061,7 @@ void generate_gui(EFFECT_ITEM *eList, uint8_t eCount)
 			nk_input_end(&ctx);}
 
 
-			/* GUI */
+		/* GUI */
 		effect_selector(&ctx, &media);
 		//button_demo(&ctx, &media);
 		if (gGUI.display_sliders) {

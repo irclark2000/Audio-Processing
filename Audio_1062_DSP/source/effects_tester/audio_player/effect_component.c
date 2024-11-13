@@ -29,6 +29,7 @@
 #include "effects/variable_filter_effects/wah_wah.h"
 #include "effects/variable_filter_effects/auto_wah.h"
 #include "effects/components/mixer.h"
+#include "effects/components/volume_control.h"
 #include "effects/components/low_frequency_oscillator.h"
 #include "effects/components/variable_bandpass_filter.h"
 #include "effects/components/variable_delay.h"
@@ -142,6 +143,14 @@ EFFECT_PARAMS *makeBlankParameters (uint8_t count, void *effect) {
 		parameters[i].myEffect = effect;
 	}
 	return parameters;
+}
+
+void addChildComponent(EFFECT_COMPONENT * component, char * componentName) {
+	EFFECT_COMPONENT *child = createComponent(componentName, 0, 0);
+	if (child != NULL) {
+		component->childComponents[component->childrenCount] = child;
+		component->childrenCount++;
+	}
 }
 EFFECT_COMPONENT *makeBlankComponent (char *effectName) {
 	EFFECT_COMPONENT * component = (EFFECT_COMPONENT*) MALLOC(sizeof(EFFECT_COMPONENT));
@@ -395,12 +404,10 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 			freeComponent(component);
 		}
 	} else if (strcmp(effectName, "Chorus Element") == 0) {
-		CHORUSELEMENT *cElement;
-		if (effect) {
-			cElement = (CHORUSELEMENT *) effect;
-		}
-		else {
+		CHORUSELEMENT *cElement = (CHORUSELEMENT *) effect;
+		if (effect == 0) {
 			cElement = (CHORUSELEMENT *) MALLOC(sizeof(CHORUSELEMENT));
+			component->main_effect = 1;
 		}
 		component->effect = cElement;
 		component->type = ChorusElement;
@@ -418,18 +425,17 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->childrenCount = 2;
 		component->childComponents[0] = createComponent("Lfo", ptrLfo, &(cElement->lfo));
 		component->childComponents[1] = createComponent("Variable Delay", ptrVarDelay, &(cElement->vDelay));
+		component->apply = 0;
+		component->effect_bypass = 0;
 	}
 	else if (strcmp(effectName, "Envelope Follower") == 0) {
 		component->type = EnvelopeFollower;
-		ENVELOPE_FOLLOWER *ef;
-		if (effect) {
-			ef = (ENVELOPE_FOLLOWER *) effect;
-			component->effect = effect;
-		}
-		else {
+		ENVELOPE_FOLLOWER *ef = (ENVELOPE_FOLLOWER *) effect;
+		if (effect == 0) {
 			ef = (ENVELOPE_FOLLOWER *) MALLOC(sizeof(ENVELOPE_FOLLOWER));
-			component->effect = ef;
+			component->main_effect = 1;
 		}
+		component->effect = ef;
 		// has no parametersp and no children
 		component->parameterCount = 0;
 		component->childrenCount = 0;
@@ -437,15 +443,12 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 	}
 	else if (strcmp(effectName, "Lfo") == 0) {
 		component->type = Lfo;
-		LOWFREQOSC *lfo;
-		if (effect) {
-			lfo = (LOWFREQOSC *) effect;
-			component->effect = effect;
-		}
-		else {
+		LOWFREQOSC *lfo = (LOWFREQOSC *) effect;
+		if (effect == 0) {
 			lfo = (LOWFREQOSC *) MALLOC(sizeof(LOWFREQOSC));
-			component->effect = lfo;
+			component->main_effect = 1;
 		}
+		component->effect = lfo;
 		// must have 2 parameters frequency and Depth
 		char temp[80];
 		int sine = 0;
@@ -477,7 +480,11 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Mixer") == 0) {
 		component->type = Mixer;
-		MIXER *mixer = (MIXER *) MALLOC(sizeof(MIXER));
+		MIXER *mixer = (MIXER *)effect; 
+		if (effect == 0) {
+			mixer = (MIXER *) malloc (sizeof(MIXER)); 
+			component->main_effect = 1;
+		}
 		component->effect = mixer;
 		component->type = Mixer;
 		component->parameterCount = 1;
@@ -485,16 +492,20 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		int index = 0;
 		setName_Type(component, 0, "Wet/Dry:S3");
 		component->parameters->floatParameter[index++] = 0.0f;
-		component->parameters->floatParameter[index++] = 0.9f;
+		component->parameters->floatParameter[index++] = 1.0f;
 		component->parameters->floatParameter[index++] = 1.0f;
 		component->parameters[0].currentValue = &(mixer->wet_dry);
-		mixer->wet_dry = 0.9f;
+		mixer->wet_dry = 1.0f;
 		component->childrenCount = 0;
 		component->apply = 0;
 		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "State Variable Filter") == 0) {
 		component->type = StateVariableFilter;
-		SVFILTER *svf = (SVFILTER *) MALLOC(sizeof(SVFILTER));
+		SVFILTER *svf = (SVFILTER *) effect;
+		if (effect == 0) {	
+			svf = (SVFILTER *) MALLOC(sizeof(SVFILTER));
+			component->main_effect = 1;
+		}
 		component->effect = svf;
 		char temp[160];
 		if (strParameters == 0) {
@@ -525,7 +536,12 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 
 	} else if (strcmp(effectName, "Variable BandPass") == 0) {
 		component->type = VariableDelay;
-		VARBANDPASS *vbp = (VARBANDPASS *) MALLOC(sizeof(VARBANDPASS));
+
+		VARBANDPASS *vbp = (VARBANDPASS *) effect;
+		if (effect == 0) {
+			vbp = (VARBANDPASS *) MALLOC(sizeof(VARBANDPASS));
+			component->main_effect = 1;
+		}
 		component->effect = vbp;
 		char temp[80];
 		strcpy(temp, strParameters);
@@ -554,28 +570,40 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 
 	} else if (strcmp(effectName, "Volume") == 0) {
 		component->type = Volume;
-		VOLUME *vol = (VOLUME *) MALLOC(sizeof(VOLUME));
+		VOLUME *vol = effect;
+		if (effect == 0) {
+			vol = (VOLUME *) MALLOC(sizeof(VOLUME));
+			component->main_effect = 1;
+		}
 		component->effect = vol;
 		component->type = Volume;
-		component->parameterCount = 1;
-		component->parameters = makeBlankParameters(2, component->effect);
+		char temp[80];
+		if (strParameters == 0) {
+			char *elements= "MaxGain:X*1.0\tVolume:S3*0.0,0.9,1.0";
+			strcpy(temp, elements);
+		}
+		else {
+			strcpy(temp, strParameters);
+		}
+		char *ptrMaxGain = strtok(temp, "\t");
+		char *ptrVolume = strtok(NULL, "\t");
+		component->parameterCount = 2;
 		int index = 0;
-		setName_Type(component, 0, "Wet/Dry:S3");
-		component->parameters->floatParameter[index++] = 0.0f;
-		component->parameters->floatParameter[index++] = 0.9f;
-		component->parameters->floatParameter[index++] = 1.0f;
-		component->parameters[0].currentValue = &(mixer->wet_dry);
-		mixer->wet_dry = 0.9f;
+		component->parameters = makeBlankParameters(2, component->effect);
+		float value = setName_Type_Parse_Variables (component, index, ptrMaxGain);
+		component->parameters[index].currentValue = &(vol->maxVolume);
+		*(component->parameters[index].currentValue) = value;
+		index++;
+		value = setName_Type_Parse_Variables (component, index, ptrVolume);
+		component->parameters[index].currentValue = &(vol->volume);
+		*(component->parameters[index].currentValue) = value;
 		component->childrenCount = 0;
 		component->apply = 0;
 		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Variable Delay") == 0) {
 		component->type = VariableDelay;
-		VARDELAY *vDelay;
-		if (effect) {
-			vDelay = (VARDELAY *) effect;
-		}
-		else {
+		VARDELAY *vDelay = (VARDELAY *) effect;
+		if (effect == 0) {
 			vDelay = (VARDELAY *) MALLOC(sizeof(VARDELAY));
 		}
 		component->effect = vDelay;

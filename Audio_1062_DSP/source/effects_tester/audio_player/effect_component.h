@@ -33,7 +33,7 @@ struct EFFECT_COMPONENT;
 typedef enum {
 	Lfo, Mixer, VariableDelay, VariableBandpass,
 	FirstOrderAllPass, CircularBuffer, FeedBackCombFilter, StateVariableFilter,
-	EnvelopeFollower,
+	EnvelopeFollower, Volume,
 	AutoWah, Echo, WahWah, Chorus, Flanger, Vibrato, ChorusElement,
 	Freeverb, Schroeder, Compressor, Expander, Limiter, Noisegate,
 	Phaser, Overdrive, PitchShift, Tremolo,
@@ -67,5 +67,6 @@ char * strSave (char * string);
 void do_nothing0_Component(void * effect);
 void do_nothing1_Component(void * effect, EFFECT_PARAMS *parameters,float sampleRate);
 EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *effect);
+void addChildComponent(EFFECT_COMPONENT * component, char * componentName);
 void freeComponent (EFFECT_COMPONENT *component);
 #endif /* EFFECTS_TESTER_AUDIO_PLAYER_EFFECT_COMPONENT_H_ */
