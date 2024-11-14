@@ -53,7 +53,7 @@ int apply_effect(int source) {
      effect_under_test = createComponent("Freeverb", 0, 0);
      play_music(fileName, effect_under_test);
 #else
-     generate_gui(effects_list, 7);
+     generate_gui(effects_list, 8);
 #endif
     return 0;
 }
