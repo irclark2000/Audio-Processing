@@ -23,16 +23,17 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include <filters/equalizing_filter.h>
-#include <math.h>
+//#include <math.h>
+#include "fast_math/fast_math.h"
 
 static const float PI = 3.14159265358979f;
 
 void calculateCoefficients (EQFILTER *eqf);
 
-void EQFILTER_initialize(EQFILTER *eqf, float centerFreq, float sampleRate, float gain, float bandwidth) {
+void initialize_EQFILTER(EQFILTER *eqf, float centerFreq, float sampleRate, float gain, float bandwidth) {
 	eqf->sampleTime = 1.0/sampleRate;
 	eqf->gain = gain;
-	EQFILTER_setCenterFrequency(eqf, centerFreq, bandwidth);
+	setCenterFrequency_EQFILTER(eqf, centerFreq, bandwidth);
 }
 
 void calculateCoefficients (EQFILTER *eqf) {
@@ -51,7 +52,7 @@ void calculateCoefficients (EQFILTER *eqf) {
 
 }
 
-float EQFILTER_update(EQFILTER *eqf, float input) {
+float apply_EQFILTER(EQFILTER *eqf, float input) {
 	eqf->eqfBufIn[2] = eqf->eqfBufIn[1];
 	eqf->eqfBufIn[1] = eqf->eqfBufIn[0];
 	eqf->eqfBufIn[0] = input;
@@ -67,7 +68,7 @@ float EQFILTER_update(EQFILTER *eqf, float input) {
 	return eqf->eqfOut;
 }
 
-void EQFILTER_setGain(EQFILTER *eqf, float gain) {
+void setGain_EQFILTER(EQFILTER *eqf, float gain) {
 	eqf->gain = gain;
 	float Q = eqf->Q;
 	float K = tanf(eqf->eqfWct/2.0f);
@@ -77,12 +78,13 @@ void EQFILTER_setGain(EQFILTER *eqf, float gain) {
 	eqf->coefficients.a2 = (1.0f - K/Q + K*K)*inv_a0;
 
 }
-void EQFILTER_setCenterFrequency(EQFILTER *eqf, float centerFreq, float bandwidth) {
+void setCenterFrequency_EQFILTER(EQFILTER *eqf, float centerFreq, float bandwidth) {
 	eqf->eqfWct = 2.0f*PI*centerFreq * eqf->sampleTime;
 	eqf->Q = centerFreq / bandwidth;
 	calculateCoefficients(eqf);
 }
 
-void gui_EQFILTER_setCenterFrequency(EQFILTER *eqf) {
-	EQFILTER_setCenterFrequency(eqf, eqf->gui_freq, eqf->gui_freq/eqf->Q);
+void gui_setGain_EQFILTER(EQFILTER *eqf) {
+	float gain = fastPow10(eqf->gui_gainDB/10.0f);
+	EQFILTER_setGain(eqf, gain);
 }

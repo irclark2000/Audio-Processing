@@ -1,11 +1,11 @@
 /*
- * equalizing filter.h
+ * equalizer.c
  *
- *  Created on: Sep 11, 2024
+ *  Created on: Nov 14, 2024
  *      Author: isaac
  */
 /*
-Copyright 2024 Isaac R. Clark, Jr.
+Copyright 2022 Isaac R. Clark, Jr.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
 files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy,
@@ -18,33 +18,30 @@ OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO 
 BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-
-#ifndef EQUALIZING_FILTER_H_
-#define EQUALIZING_FILTER_H_
-
-#include <stdint.h>
-#include "filter_coefficients.h"
+#include "equalizer.h"
 
 typedef struct {
-
-	float sampleTime;
-	float eqfBufIn[3];
-	float eqfBufOut[3];
-	float eqfWct;
-	float eqfOut;
-
-	float gain;
+	float frequency;
 	float Q;
-	float gui_gainDB;
-	float gui_freq;
+} EQPARAMS;
 
-	FILTER_COEF coefficients;
+EQPARAMS bands[] = { {31.25f, 4}, {62.5f, 4}, {125, 4}, {250, 4},
+		{500, 4}, {1000, 4}, {2000, 4}, {4000, 4},
+		{8000, 4}, {16000, 4}
+};
+void initialize_EQUALIZER(EQUALIZER *eq, float sampleRate) {
+	int myCount = sizeof(bands) / sizeof(EQPARAMS);
+	eq->filterCount = myCount;
+	//eq->inv_Count  = 1.0f/myCount;
+	for (int i=0; i < myCount; ++i) {
+		initialize_EQFILTER(&(eq->filter_band[i]), bands[i].frequency, sampleRate, 1.0, bands[i].frequency/bands[i].Q);
+	}
+}
 
-} EQFILTER;
-
-void initialize_EQFILTER(EQFILTER *eqf, float centerFreq, float sampleRate, float gain, float bandwidth);
-float apply_EQFILTER(EQFILTER *eqf, float input);
-void EQFILTER_setGain(EQFILTER *eqf, float gain);
-void setCenterFrequency_EQFILTER(EQFILTER *eqf, float centerFreq, float bandwidth);
-void gui_setGain_EQFILTER(EQFILTER *eqf);
-#endif /* EQUALIZING_FILTER_H_ */
+float apply_EQUALIZER(EQUALIZER *eq, float input) {
+	eq->out = input;
+	for (int i=0; i < eq->filterCount; ++i) {
+		eq->out = apply_EQFILTER(&(eq->filter_band[i]), eq->out);
+	}
+	return eq->out;
+}

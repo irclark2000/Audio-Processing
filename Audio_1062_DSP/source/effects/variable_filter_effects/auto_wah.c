@@ -51,9 +51,9 @@ float apply_AUTOWAH (AUTOWAH *aw, float input) {
 	apply_ENVELOPE_FOLLOWER(&(aw->ef), input * aw->inputGain);
 	coFreq = aw->minCoFreq + (aw->maxCoFreq - aw->minCoFreq) * aw->ef.efOut;
 #if AUDIO_EFFECTS_TESTER
-	setCenterFrequency_VARBANDPASS(&(aw->vbf), aw->vbf.gui_Freq, aw->vbf.gui_Q);
+	setCenterFrequency_VARBANDPASS(&(aw->vbf), coFreq, aw->vbf.gui_Q);
 #else
-	setCenterFrequency_VARBANDPASS(&(aw->vbf), coFreq, 3.0);
+	setCenterFrequency_VARBANDPASS(&(aw->vbf), coFreq, 8.0);
 #endif
 	update_VARBANDPASS(&(aw->vbf), input);
 	aw->awOut = applyWetDry_MIXER (&(aw->mixer), aw->vbf.out * aw->fxGain, input);

@@ -22,6 +22,8 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "effects/delay_based/echo.h"
 #include "effects/reverbs/freeverb.h"
 #include "effects/reverbs/schroeder_verb.h"
+#include "effects/variable_filter_effects/equalizer.h"
+#include "fast_math/fast_math.h"
 #include <string.h>
 #if AUDIO_EFFECTS_TESTER
 #include <stdlib.h>
@@ -97,6 +99,21 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 				}
 			}
 			break;
+		case Equalizer:
+		{
+			for(int i=0; i < component->childrenCount; ++i) {
+				gui_initialize(component->childComponents[i], 0, sampleRate);
+			}
+		}
+		break;
+		case EqualizingFilter:
+		{
+			EQFILTER *eqf = component->effect;
+			eqf->sampleTime = 1.0/sampleRate;
+			eqf->gain = fastPow10(eqf->gui_gainDB/20.0f);
+			setCenterFrequency_EQFILTER(eqf, eqf->gui_freq, eqf->gui_freq/eqf->Q);
+		}
+		break;
 		case EnvelopeFollower:
 			{
 				ENVELOPE_FOLLOWER *ef = component->effect;
@@ -140,6 +157,12 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 				cb_initialize(vDelay->cBufPtr, 0, max_size + 1);	
 			}
 			break;
+		case VariableBandpass:
+			{
+				VARBANDPASS *vbf = component->effect;
+				initialize_SECONDALLPASSFILTER(&(vbf->apf), vbf->gui_Freq, vbf->gui_Q, sampleRate);
+			}
+			break;
 		case Vibrato:
 			{
 				VIBRATO *vb = component->effect;
@@ -149,36 +172,9 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 			}
 			break;
 		case Volume:
-		case VariableBandpass:
 		case Mixer:
 			break;   
 		default:
 			break;
 	}
 }
-/*
- * typedef struct {
- VARDELAY vDelay;
- float feedBack_level;
- float feedback_gain;
- float out;
- MIXER mixer;
- } ECHO;
- *
- */
-/*
- * typedef struct {
- EFFECT_TYPE type;
- void * effect;
- void (*initialize) (void *, EFFECT_PARAMS *parameters, float sampleRate);
- float (*apply) (void *, float);
- void (*uninitialize) (void *);
- char component_parameters[5][80];
- EFFECT_PARAMS *parameters;
- uint8_t parameterCount;
- EFFECT_COMPONENT *childComponents[MAX_CHILD_EFFECT_COMPONENTS];
- uint8_t childrenCount;
- uint8_t effect_bypass;
- } EFFECT_COMPONENT;
- *
- */

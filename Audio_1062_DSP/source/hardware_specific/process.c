@@ -53,10 +53,10 @@
 #define TESTING_CHORUS 0
 #define TESTING_FLANGER 0
 #define TESTING_ECHO 0
-#define TESTING_EQUALIZER 0
+#define TESTING_EQUALIZER 1
 #define TESTING_SECOND_ORDER_ALLPASS 0
 #define TESTING_STATE_VARIABLE_FILTER 0
-#define TESTING_VARIABLE_BANDPASS 1
+#define TESTING_VARIABLE_BANDPASS 0
 #define TESTING_WAH_WAH 0
 #define TESTING_VIBRATO 0
 #define TESTING_PITCH_CHANGE 0
@@ -179,10 +179,10 @@ void initializeEffects(float sampleRate) {
 #endif
 #if TESTING_EQUALIZER
 	intitialize_random_number_generator();
-	EQFILTER_initialize(&eqf0, 4000.0f, sampleRate, 10.0f, 200.0f);
-	EQFILTER_initialize(&eqf1, 12000.0f, sampleRate, 10.0f, 200.0f);
-	EQFILTER_initialize(&eqf2, 12000.0f, sampleRate, 1.0f, 200.0f);
-	EQFILTER_initialize(&eqf3, 500.0f, sampleRate, 1.0f, 200.0f);
+	initialize_EQFILTER(&eqf0, 4000.0f, sampleRate, 10.0f, 200.0f);
+	initialize_EQFILTER(&eqf1, 12000.0f, sampleRate, 10.0f, 200.0f);
+	initialize_EQFILTER(&eqf2, 12000.0f, sampleRate, 1.0f, 200.0f);
+	initialize_EQFILTER(&eqf3, 500.0f, sampleRate, 1.0f, 200.0f);
 #endif
 #if TESTING_VARIABLE_BANDPASS
 	// 100 Hz to 16000 Hz and Q is equal to 3.
@@ -283,10 +283,10 @@ void processHalf(const void *bufferIn, void *bufferOut,
 #if TESTING_EQUALIZER
 		// test EQ filter using freq scan over random noise
 		rightIn = 0.05 * get_random_float();
-		float filterOut = EQFILTER_update(&eqf0, rightIn);
-		filterOut = EQFILTER_update(&eqf1, filterOut);
-		filterOut = EQFILTER_update(&eqf2, filterOut);
-		leftOut = EQFILTER_update(&eqf3, filterOut);
+		float filterOut = apply_EQFILTER(&eqf0, rightIn);
+		filterOut = apply_EQFILTER(&eqf1, filterOut);
+		filterOut = apply_EQFILTER(&eqf2, filterOut);
+		leftOut = apply_EQFILTER(&eqf3, filterOut);
 #endif
 #if TESTING_FLANGER
 		leftOut = update_FLANGER (&flanger, rightIn);
@@ -387,10 +387,10 @@ void test_PROCESS(uint32_t update_counter) {
 	float freq0 = 500 * powf(2.0f, 4.6f * (parameter));
 	float freq1 = 500 * powf(2.0f, 4.6f * (1.0f - parameter));
 #endif
-	EQFILTER_setCenterFrequency(&eqf0, freq0, 200.0f);
-	EQFILTER_setCenterFrequency(&eqf3, freq0, 200.0f);
-	EQFILTER_setCenterFrequency(&eqf1, freq1, 200.0f);
-	EQFILTER_setCenterFrequency(&eqf2, freq1, 200.0f);
+	setCenterFrequency_EQFILTER(&eqf0, freq0, 200.0f);
+	setCenterFrequency_EQFILTER(&eqf3, freq0, 200.0f);
+	setCenterFrequency_EQFILTER(&eqf1, freq1, 200.0f);
+	setCenterFrequency_EQFILTER(&eqf2, freq1, 200.0f);
 	//EQFILTER_setGain (&eqf0, 10.0 * parameter);
 #endif
 #if TESTING_STATE_VARIABLE_FILTER

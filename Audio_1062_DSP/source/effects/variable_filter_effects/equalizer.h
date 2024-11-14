@@ -1,11 +1,11 @@
 /*
- * equalizing filter.h
+ * equalizer.h
  *
- *  Created on: Sep 11, 2024
+ *  Created on: Nov 14, 2024
  *      Author: isaac
  */
 /*
-Copyright 2024 Isaac R. Clark, Jr.
+Copyright 2022 Isaac R. Clark, Jr.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
 files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy,
@@ -19,32 +19,20 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CON
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef EQUALIZING_FILTER_H_
-#define EQUALIZING_FILTER_H_
-
+#ifndef EFFECTS_VARIABLE_FILTER_EFFECTS_EQUALIZER_H_
+#define EFFECTS_VARIABLE_FILTER_EFFECTS_EQUALIZER_H_
+#include "effects/filters/equalizing_filter.h"
 #include <stdint.h>
-#include "filter_coefficients.h"
 
+#define EQUALIZER_BAND_COUNT 10
 typedef struct {
+	uint8_t filterCount;
+	//float inv_Count;
+	EQFILTER filter_band[EQUALIZER_BAND_COUNT];
+	float out;
+} EQUALIZER;
 
-	float sampleTime;
-	float eqfBufIn[3];
-	float eqfBufOut[3];
-	float eqfWct;
-	float eqfOut;
+void initialize_EQUALIZER(EQUALIZER *eq, float sampleRate);
+float apply_EQUALIZER(EQUALIZER *eq, float input);
 
-	float gain;
-	float Q;
-	float gui_gainDB;
-	float gui_freq;
-
-	FILTER_COEF coefficients;
-
-} EQFILTER;
-
-void initialize_EQFILTER(EQFILTER *eqf, float centerFreq, float sampleRate, float gain, float bandwidth);
-float apply_EQFILTER(EQFILTER *eqf, float input);
-void EQFILTER_setGain(EQFILTER *eqf, float gain);
-void setCenterFrequency_EQFILTER(EQFILTER *eqf, float centerFreq, float bandwidth);
-void gui_setGain_EQFILTER(EQFILTER *eqf);
-#endif /* EQUALIZING_FILTER_H_ */
+#endif /* EFFECTS_VARIABLE_FILTER_EFFECTS_EQUALIZER_H_ */

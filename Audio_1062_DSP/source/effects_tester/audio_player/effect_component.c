@@ -28,6 +28,7 @@
 #include "effects/reverbs/schroeder_verb.h"
 #include "effects/variable_filter_effects/wah_wah.h"
 #include "effects/variable_filter_effects/auto_wah.h"
+#include "effects/variable_filter_effects/equalizer.h"
 #include "effects/components/mixer.h"
 #include "effects/components/volume_control.h"
 #include "effects/components/low_frequency_oscillator.h"
@@ -216,6 +217,30 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->childComponents[1] = createComponent("Envelope Follower", 0, &(aw->ef));
 		component->childComponents[2] = createComponent("Mixer", 0, &(aw->mixer));
 		component->apply = (APPLY) apply_AUTOWAH;
+		component->effect_bypass = 0;
+	}
+	else if (strcmp(effectName, "Equalizer") == 0) {
+		EQUALIZER *eq = (EQUALIZER *) MALLOC(sizeof(EQUALIZER));
+		component->effect = eq;
+		component->type = Equalizer;
+		eq->filterCount = 10;
+		component->parameterCount = 0;
+		char *bands[5];
+		bands[0] = "Freq:X*31\tX:Q*4\t31 Hz (db):S3*-12,0,12\nFreq:X*62\tQ:X*4\t62 Hz (db):S3*-12,0,12";
+		bands[1] = "Freq:X*125\tQ:X*4\t125 Hz (db):S3*-12,0,12\nFreq:X*250\tQ:X*4\t250 Hz (db):S3*-12,0,12";
+		bands[2] = "Freq:X*500\tQ:X*4\t500 Hz (db):S3*-12,0,12\nFreq:X*1000\tQ:X*4\t1k Hz (db):S3*-12,0,12";
+		bands[3] = "Freq:X*2000\tQ:X*4\t2k Hz (db):S3*-12,0,12\nFreq:X*4000\tQ:X*4\t4k Hz (db):S3*-12,0,12";
+		bands[4] = "Freq:X*8000\tQ:X*4\t8k Hz (db):S3*-12,0,12\nFreq:X*16000\tQ:X*4\t16k Hz (db):S3*-12,0,12";
+		for(int i=0; i < 5; ++i) {
+			char temp[80];
+			strcpy (temp, bands[i]);
+			char *ptr1 = strtok(temp, "\n");
+			char *ptr2 = strtok(NULL, "\n");
+			component->childComponents[2 * i] = createComponent("Equalizing Filter", ptr1, &(eq->filter_band[2*i]));
+			component->childComponents[2*i+1] = createComponent("Equalizing Filter", ptr2, &(eq->filter_band[2*i+1]));
+		}
+		component->childrenCount = eq->filterCount;
+		component->apply = (APPLY) apply_EQUALIZER;
 		component->effect_bypass = 0;
 	}
 	else if (strcmp(effectName, "Chorus") == 0) {
@@ -441,6 +466,35 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->childrenCount = 0;
 		component->apply = 0;
 	}
+	else if (strcmp(effectName, "Equalizing Filter") == 0) {
+		component->type = EqualizingFilter;
+		EQFILTER *ef = (EQFILTER *) effect;
+		if (effect == 0) {
+			ef = (EQFILTER *) MALLOC(sizeof(EQFILTER));
+			component->main_effect = 1;
+		}
+		component->effect = ef;
+		char temp[160];
+		strcpy(temp, strParameters);
+		char *ptrFreq = strtok(temp, "\t");
+		char *ptrQ = strtok(NULL, "\t");
+		char *ptrGain = strtok(NULL, "\t");
+		component->parameterCount = 3;
+		uint8_t index = 0;
+		component->parameters = makeBlankParameters(3, component->effect);
+		float value = setName_Type_Parse_Variables (component, index, ptrFreq);
+		ef->gui_freq = value;
+		index++;
+		value = setName_Type_Parse_Variables (component, index, ptrQ);
+		ef->Q = value;
+		index++;
+		value = setName_Type_Parse_Variables (component, index, ptrGain);
+		component->parameters[index].currentValue = &(ef->gui_gainDB);
+		*(component->parameters[index].currentValue) = value;
+		component->parameters[index].recalculate = (RECALCULATE)gui_setGain_EQFILTER;
+		component->childrenCount = 0;
+		component->apply = 0;
+	}
 	else if (strcmp(effectName, "Lfo") == 0) {
 		component->type = Lfo;
 		LOWFREQOSC *lfo = (LOWFREQOSC *) effect;
@@ -535,7 +589,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 
 
 	} else if (strcmp(effectName, "Variable BandPass") == 0) {
-		component->type = VariableDelay;
+		component->type = VariableBandpass;
 
 		VARBANDPASS *vbp = (VARBANDPASS *) effect;
 		if (effect == 0) {
@@ -554,13 +608,13 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		float value = setName_Type_Parse_Variables (component, 0, ptrQ);
 		component->parameters[0].currentValue = &(vbp->gui_Q);
 		*(component->parameters[0].currentValue) = value;
-		component->parameters[0].recalculate = (RECALCULATE)gui_setCenterFrequency_VARBANDPASS;
-		component->parameters[0].partnerParameter = &(component->parameters[1]); 
+		//component->parameters[0].recalculate = (RECALCULATE)gui_setCenterFrequency_VARBANDPASS;
+		//component->parameters[0].partnerParameter = &(component->parameters[1]); 
 		value = setName_Type_Parse_Variables (component, 1, ptrCutoff);
 		component->parameters[1].currentValue = &(vbp->gui_Freq);
 		*(component->parameters[1].currentValue) = value;
-		component->parameters[1].recalculate = (RECALCULATE)gui_setCenterFrequency_VARBANDPASS;
-		component->parameters[1].partnerParameter = &(component->parameters[0]); 
+		//component->parameters[1].recalculate = (RECALCULATE)gui_setCenterFrequency_VARBANDPASS;
+		//component->parameters[1].partnerParameter = &(component->parameters[0]); 
 		setName_Type_Parse_Variables (component, 2, ptrPassBlock);
 		vbp->pass_stop = component->parameters[2].intParameter[0];
 		// no children

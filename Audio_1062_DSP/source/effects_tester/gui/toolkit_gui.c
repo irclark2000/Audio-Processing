@@ -131,7 +131,6 @@ void update_state_periodically () {
 	uint8_t index = count % gGUI.slider_count;
 	update_effect_state_for_slider(gGUI.sliders, index);
 	if (count++ == 400) {
-		printf("Tik tok\n");
 		count = 0;
 	}
 }

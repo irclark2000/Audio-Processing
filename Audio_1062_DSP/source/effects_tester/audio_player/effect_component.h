@@ -33,10 +33,10 @@ struct EFFECT_COMPONENT;
 typedef enum {
 	Lfo, Mixer, VariableDelay, VariableBandpass,
 	FirstOrderAllPass, CircularBuffer, FeedBackCombFilter, StateVariableFilter,
-	EnvelopeFollower, Volume,
+	EnvelopeFollower, Volume, EqualizingFilter,
 	AutoWah, Echo, WahWah, Chorus, Flanger, Vibrato, ChorusElement,
 	Freeverb, Schroeder, Compressor, Expander, Limiter, Noisegate,
-	Phaser, Overdrive, PitchShift, Tremolo,
+	Phaser, Overdrive, PitchShift, Tremolo, Equalizer
 
 } EFFECT_TYPE;
 

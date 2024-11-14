@@ -1,7 +1,7 @@
 /*
- * equalizing filter.h
+ * second_order_low_pass.h
  *
- *  Created on: Sep 11, 2024
+ *  Created on: Nov 13, 2024
  *      Author: isaac
  */
 /*
@@ -19,32 +19,34 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CON
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef EQUALIZING_FILTER_H_
-#define EQUALIZING_FILTER_H_
+
+#ifndef EFFECTS_FILTERS_SECOND_ORDER_LOW_PASS_H_
+#define EFFECTS_FILTERS_SECOND_ORDER_LOW_PASS_H_
 
 #include <stdint.h>
 #include "filter_coefficients.h"
 
 typedef struct {
-
+	float sampleRate;
 	float sampleTime;
-	float eqfBufIn[3];
-	float eqfBufOut[3];
-	float eqfWct;
-	float eqfOut;
-
-	float gain;
+	float bufIn[3];
+	float bufOut[3];
+	float lpfWct;
+	float lpfOut;
+	float K;
+	float norm;
 	float Q;
-	float gui_gainDB;
-	float gui_freq;
+	float gui_Freq;
+
+	float inv_Q;
 
 	FILTER_COEF coefficients;
 
-} EQFILTER;
+} SECONDLOWPASSFILTER;
 
-void initialize_EQFILTER(EQFILTER *eqf, float centerFreq, float sampleRate, float gain, float bandwidth);
-float apply_EQFILTER(EQFILTER *eqf, float input);
-void EQFILTER_setGain(EQFILTER *eqf, float gain);
-void setCenterFrequency_EQFILTER(EQFILTER *eqf, float centerFreq, float bandwidth);
-void gui_setGain_EQFILTER(EQFILTER *eqf);
-#endif /* EQUALIZING_FILTER_H_ */
+void initialize_SECONDLOWPASSFILTER(SECONDLOWPASSFILTER *lpf, float centerFreq, float Q, float sampleRate);
+float apply_SECONDLOWPASSFILTER(SECONDLOWPASSFILTER *lpf, float input);
+void setCutoffFrequency_SECONDLOWPASSFILTER(SECONDLOWPASSFILTER *lpf, float centerFreq, float Q);
+void gui_setCutoffFrequency_SECONDLOWPASSFILTER(SECONDLOWPASSFILTER *lpf);
+
+#endif /* EFFECTS_FILTERS_SECOND_ORDER_LOW_PASS_H_ */
