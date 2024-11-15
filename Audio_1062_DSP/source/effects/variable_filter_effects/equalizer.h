@@ -27,7 +27,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define EQUALIZER_BAND_COUNT 10
 typedef struct {
 	uint8_t filterCount;
-	//float inv_Count;
+	float inv_Count;
 	EQFILTER filter_band[EQUALIZER_BAND_COUNT];
 	float out;
 } EQUALIZER;

@@ -29,7 +29,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <stdlib.h>
 
 struct EFFECT_COMPONENT;
-#define MAX_CHILD_EFFECT_COMPONENTS 10
+#define MAX_CHILD_EFFECT_COMPONENTS 15
 typedef enum {
 	Lfo, Mixer, VariableDelay, VariableBandpass,
 	FirstOrderAllPass, CircularBuffer, FeedBackCombFilter, StateVariableFilter,

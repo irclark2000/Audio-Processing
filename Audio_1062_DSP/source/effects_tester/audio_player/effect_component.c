@@ -224,9 +224,10 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->effect = eq;
 		component->type = Equalizer;
 		eq->filterCount = 10;
+		eq->inv_Count = 1.0f/10.0f;
 		component->parameterCount = 0;
 		char *bands[5];
-		bands[0] = "Freq:X*31\tX:Q*4\t31 Hz (db):S3*-12,0,12\nFreq:X*62\tQ:X*4\t62 Hz (db):S3*-12,0,12";
+		bands[0] = "Freq:X*31\tQ:X*4\t31 Hz (db):S3*-12,0,12\nFreq:X*62\tQ:X*4\t62 Hz (db):S3*-12,0,12";
 		bands[1] = "Freq:X*125\tQ:X*4\t125 Hz (db):S3*-12,0,12\nFreq:X*250\tQ:X*4\t250 Hz (db):S3*-12,0,12";
 		bands[2] = "Freq:X*500\tQ:X*4\t500 Hz (db):S3*-12,0,12\nFreq:X*1000\tQ:X*4\t1k Hz (db):S3*-12,0,12";
 		bands[3] = "Freq:X*2000\tQ:X*4\t2k Hz (db):S3*-12,0,12\nFreq:X*4000\tQ:X*4\t4k Hz (db):S3*-12,0,12";

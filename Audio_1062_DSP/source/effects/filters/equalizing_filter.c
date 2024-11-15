@@ -86,5 +86,6 @@ void setCenterFrequency_EQFILTER(EQFILTER *eqf, float centerFreq, float bandwidt
 
 void gui_setGain_EQFILTER(EQFILTER *eqf) {
 	float gain = fastPow10(eqf->gui_gainDB/10.0f);
-	setGain_EQFILTER(eqf, gain);
+	eqf->gain = gain;
+	calculateCoefficients(eqf);
 }

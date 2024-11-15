@@ -32,16 +32,16 @@ EQPARAMS bands[] = { {31.25f, 4}, {62.5f, 4}, {125, 4}, {250, 4},
 void initialize_EQUALIZER(EQUALIZER *eq, float sampleRate) {
 	int myCount = sizeof(bands) / sizeof(EQPARAMS);
 	eq->filterCount = myCount;
-	//eq->inv_Count  = 1.0f/myCount;
+	eq->inv_Count  = 1.0f/myCount;
 	for (int i=0; i < myCount; ++i) {
 		initialize_EQFILTER(&(eq->filter_band[i]), bands[i].frequency, sampleRate, 1.0, bands[i].frequency/bands[i].Q);
 	}
 }
 
 float apply_EQUALIZER(EQUALIZER *eq, float input) {
-	eq->out = input;
+	eq->out = 0;
 	for (int i=0; i < eq->filterCount; ++i) {
-		eq->out = apply_EQFILTER(&(eq->filter_band[i]), eq->out);
+		eq->out += apply_EQFILTER(&(eq->filter_band[i]), input) * eq->inv_Count ;
 	}
 	return eq->out;
 }
