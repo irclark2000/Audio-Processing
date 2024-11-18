@@ -1,26 +1,9 @@
 /* nuklear - v1.05 - public domain */
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <stdarg.h>
-#include <string.h>
-#include <math.h>
-#include <assert.h>
-#include <time.h>
-#include <limits.h>
+
 #if AUDIO_EFFECTS_TESTER
 #include "toolkit_gui.h"
 #include "tester_effect.h"
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
-#define NK_INCLUDE_FIXED_TYPES
-#define NK_INCLUDE_STANDARD_IO
-#define NK_INCLUDE_DEFAULT_ALLOCATOR
-#define NK_INCLUDE_VERTEX_BUFFER_OUTPUT
-#define NK_INCLUDE_FONT_BAKING
-#define NK_INCLUDE_DEFAULT_FONT
+#include "gui_common.h"
 #define NK_IMPLEMENTATION
 #include "nuklear.h"
 
@@ -48,7 +31,8 @@
 #define MAX_SLIDER_COUNT 15
 
 struct media {
-    struct nk_font *font_14;
+	struct nk_font *font_13;
+	struct nk_font *font_14;
     struct nk_font *font_18;
     struct nk_font *font_20;
     struct nk_font *font_22;
@@ -976,6 +960,8 @@ void generate_gui(EFFECT_ITEM *eList, uint8_t eCount)
 			 * e.g.: ctx->style.font.height = 20. */
 			nk_font_atlas_init_default(&atlas);
 			nk_font_atlas_begin(&atlas);
+			// font_13 for file browser
+			media.font_13 = nk_font_atlas_add_from_file(&atlas, "extra_font/Roboto-Regular.ttf", 13.0f, &cfg);
 			media.font_14 = nk_font_atlas_add_from_file(&atlas, "extra_font/Roboto-Regular.ttf", 14.0f, &cfg);
 			media.font_18 = nk_font_atlas_add_from_file(&atlas, "extra_font/Roboto-Regular.ttf", 18.0f, &cfg);
 			media.font_20 = nk_font_atlas_add_from_file(&atlas, "extra_font/Roboto-Regular.ttf", 20.0f, &cfg);
@@ -984,6 +970,7 @@ void generate_gui(EFFECT_ITEM *eList, uint8_t eCount)
 			device_upload_atlas(&device, image, w, h);
 			nk_font_atlas_end(&atlas, nk_handle_id((int)device.font_tex), &device.tex_null);}
 		nk_init_default(&ctx, &media.font_14->handle);}
+
 	glEnable(GL_TEXTURE_2D);
 	media.unchecked = icon_load("icon/unchecked.png");
 	media.checked = icon_load("icon/checked.png");
