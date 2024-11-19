@@ -64,8 +64,6 @@ typedef struct {
 	SLIDER_VALUES sliders[MAX_SLIDER_COUNT];
 } DISPLAY_STATE;
 
-void selected_music_file (char * fileName) {
-}
 
 typedef struct MUSIC_STATE {
 	char *fileName;
@@ -76,6 +74,20 @@ typedef struct MUSIC_STATE {
 
 MUSIC_STATE gMUSIC;
 DISPLAY_STATE gGUI;
+
+void selected_music_file (char * fileName) {
+	if (fileName) {
+		gMUSIC.fileName = fileName;
+		if (gGUI.effect_selected) {
+			if (gMUSIC.music_is_playing) {
+				gMUSIC.gstop_music = 1;
+			}
+			gMUSIC.start_music = 1;
+		}
+	}
+}
+
+
 EFFECT_ITEM *g_effect_list = NULL;
 uint8_t g_effects_count = 0;
 
@@ -863,16 +875,8 @@ static void text_input(GLFWwindow *win, unsigned int codepoint)
 static void scroll_input(GLFWwindow *win, double _, double yoff)
 {UNUSED(_);nk_input_scroll((struct nk_context*)glfwGetWindowUserPointer(win), nk_vec2(0, (float)yoff));}
 
-
-#if 0
-int main(int argc, char *argv[]) {
-	generate_gui();
-	NK_UNUSED(argc);
-	NK_UNUSED(argv);
-	return 0;
-}
-#endif
 #define INITIAL_FLOAT_VALUE -1888.8888f
+
 static void setupSlidersComponent(DISPLAY_STATE *gui, EFFECT_PARAMS *parameter) {
 	uint8_t count = gui->slider_count;
 	assert (parameter->currentValue != 0);
@@ -1070,7 +1074,7 @@ file_selector_init ();
 		}
 
 		// can we start the music here?
-		if (gMUSIC.start_music && !gMUSIC.stop_music && !gMUSIC.music_is_playing && gGUI.component != 0) {
+		if (gGUI.effect_selected & gMUSIC.start_music && !gMUSIC.stop_music && !gMUSIC.music_is_playing && gGUI.component != 0) {
 			int success = play_music (fileName, gGUI.component);
 			if (success == 0) {
 				update_effect_state(gGUI.sliders, gGUI.slider_count);
