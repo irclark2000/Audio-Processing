@@ -4,12 +4,13 @@
 #include "toolkit_gui.h"
 #include "tester_effect.h"
 #include "gui_common.h"
-#define NK_IMPLEMENTATION
 #include "nuklear.h"
+#include "sound_picker.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+#define NK_MEMSET memset
 /* macros */
 #define WINDOW_WIDTH 1200
 #define WINDOW_HEIGHT 800
@@ -57,10 +58,14 @@ struct media {
 };
 typedef struct {
 	int display_sliders;
+	uint8_t effect_selected;
 	EFFECT_COMPONENT *component;
 	uint8_t slider_count;
 	SLIDER_VALUES sliders[MAX_SLIDER_COUNT];
 } DISPLAY_STATE;
+
+void selected_music_file (char * fileName) {
+}
 
 typedef struct MUSIC_STATE {
 	char *fileName;
@@ -123,6 +128,7 @@ static void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT * component);
 
 static void clearDisplayState (DISPLAY_STATE * gui) {
 	gui->display_sliders = 0;
+	gui->effect_selected = 0;
 	gui->slider_count = 0;
 	if (gui->component) {
 		freeComponent(gui->component);
@@ -132,6 +138,7 @@ static void clearDisplayState (DISPLAY_STATE * gui) {
 static void initializeDisplayState(DISPLAY_STATE *gui, uint8_t selection) {
 	clearDisplayState (gui);
 	gui->component = createComponent(g_effect_list[selection].name, 0, 0);
+	gui->effect_selected = 1;
 	if (gui->component != NULL) {
 		addChildComponent(gui->component, "Volume");
 		gui->component->effect_bypass = 0;
@@ -613,7 +620,6 @@ struct device {
 	GLint uniform_proj;
 	GLuint font_tex;
 };
-
 	static void
 die(const char *fmt, ...)
 {
@@ -624,7 +630,6 @@ die(const char *fmt, ...)
 	fputs("\n", stderr);
 	exit(EXIT_FAILURE);
 }
-
 	static struct nk_image
 icon_load(const char *filename)
 {
@@ -1003,6 +1008,7 @@ void generate_gui(EFFECT_ITEM *eList, uint8_t eCount)
 			sprintf(buffer, "images/image%d.png", (i+1));
 			media.images[i] = icon_load(buffer);
 		}}
+file_selector_init ();
 	initializeMusicState(&gMUSIC);
 	gMUSIC.fileName = fileName;
 	while (!glfwWindowShouldClose(win))
@@ -1047,6 +1053,7 @@ void generate_gui(EFFECT_ITEM *eList, uint8_t eCount)
 			nk_input_end(&ctx);}
 
 
+		file_selector (&ctx);
 		/* GUI */
 		effect_selector(&ctx, &media);
 		//button_demo(&ctx, &media);
@@ -1099,6 +1106,7 @@ void generate_gui(EFFECT_ITEM *eList, uint8_t eCount)
 	glDeleteTextures(1,(const GLuint*)&media.dir.handle.id);
 	glDeleteTextures(1,(const GLuint*)&media.del.handle.id);
 	nk_font_atlas_clear(&atlas);
+file_browser_uninit();
 	nk_free(&ctx);
 
 	device_shutdown(&device);

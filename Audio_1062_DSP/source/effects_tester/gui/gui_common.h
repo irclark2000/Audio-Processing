@@ -28,5 +28,7 @@
 #define NK_INCLUDE_FONT_BAKING
 #define NK_INCLUDE_DEFAULT_FONT
 
+void selected_music_file (char * fileName);
+
 #endif // AUDIO EFFECTS TESTER
 #endif /* EFFECTS_TESTER_GUI_GUI_COMMON_H_ */

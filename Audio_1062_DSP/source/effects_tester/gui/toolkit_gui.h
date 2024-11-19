@@ -25,6 +25,7 @@ void update_effect_state(SLIDER_VALUES *sliders, uint8_t slider_count);
 void generate_gui(EFFECT_ITEM *effects_list, uint8_t count);
 void update_state_by_counter (uint16_t counter, uint16_t max_counter);
 void update_state_periodically ();
+void selected_music_file (char * fileName);
 
 
 #endif /* EFFECTS_TESTER_GUI_TOOLKIT_GUI_H_ */
