@@ -80,7 +80,7 @@ void selected_music_file (char * fileName) {
 		gMUSIC.fileName = fileName;
 		if (gGUI.effect_selected) {
 			if (gMUSIC.music_is_playing) {
-				gMUSIC.gstop_music = 1;
+				gMUSIC.stop_music = 1;
 			}
 			gMUSIC.start_music = 1;
 		}
@@ -908,7 +908,7 @@ static void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT * component) {
 	}
 }
 
-void generate_gui(EFFECT_ITEM *eList, uint8_t eCount)
+void generate_gui(EFFECT_ITEM *eList)
 {
 	/* Platform */
 	static GLFWwindow *win;
@@ -930,6 +930,9 @@ void generate_gui(EFFECT_ITEM *eList, uint8_t eCount)
 
 
 	g_effect_list = eList;
+	uint8_t eCount;
+	for (eCount = 0; eList[eCount].eType != None; eCount++);
+
 	g_effects_count = eCount;
 	/* GLFW */
 	glfwSetErrorCallback(error_callback);

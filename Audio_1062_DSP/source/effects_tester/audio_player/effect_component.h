@@ -36,7 +36,7 @@ typedef enum {
 	EnvelopeFollower, Volume, EqualizingFilter,
 	AutoWah, Echo, WahWah, Chorus, Flanger, Vibrato, ChorusElement,
 	Freeverb, Schroeder, Compressor, Expander, Limiter, Noisegate,
-	Phaser, Overdrive, PitchShift, Tremolo, Equalizer
+	Phaser, Overdrive, PitchShift, Tremolo, Equalizer, None
 
 } EFFECT_TYPE;
 

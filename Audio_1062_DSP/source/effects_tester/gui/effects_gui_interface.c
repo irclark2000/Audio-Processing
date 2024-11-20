@@ -48,7 +48,8 @@ EFFECT_ITEM misc_effect[] = {
 
 EFFECT_ITEM effects_list[] = {
 	{"Auto Wah", AutoWah}, {"Chorus", Chorus}, {"Echo", Echo}, {"Flanger", Flanger}, {"Vibrato", Vibrato},
-	{"Freeverb", Freeverb}, {"Schroeder Reverb", Schroeder}, {"Equalizer", Equalizer}
+	{"Freeverb", Freeverb}, {"Schroeder Reverb", Schroeder}, {"Equalizer", Equalizer},
+	{"Tremolo", Tremolo}, {"", None}
 };
 
 
