@@ -20,6 +20,7 @@
  */
 
 #include "effect_component.h"
+#include "effects/tremolo.h"
 #include "effects/delay_based/echo.h"
 #include "effects/delay_based/flanger.h"
 #include "effects/delay_based/chorus.h"
@@ -404,6 +405,31 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->childComponents[0] = createComponent("Mixer", 0, &(fv->mixer));
 		component->childrenCount = 1;
 		component->apply = (APPLY) applyShroederVerb;
+		component->effect_bypass = 0;
+	} else if (strcmp(effectName, "Tremolo") == 0) {
+		TREMOLO *trem = (TREMOLO *) MALLOC(sizeof(TREMOLO));
+		component->effect = trem;
+		component->type = Tremolo;
+		component->main_effect = 1;
+		component->parameters = makeBlankParameters(1, component->effect);
+		component->parameterCount = 1;
+		char temp[480];
+		if (strParameters == 0) {
+			char *elements= "Depth:S3*0.0,0.5,1.0//LFO Freq:S3*0.01,1,4000\tDepth:X*1.0\tSine:I*0";
+		}
+		else {
+			strcpy(temp, strParameters);
+		}
+		char *ptrDepth = strtok(temp, "//");
+		char *ptrLFO = strtok(temp, "//");
+		float value = setName_Type_Parse_Variables (component, 0, ptrDepth);
+		component->parameters[0].currentValue = &(trem->depth);
+		*(component->parameters[0].currentValue) = value;
+		uint8_t index = 0;
+		component->childComponents[index++] = createComponent("Lfo", ptrLfo, &(trem->lfo));
+		component->childComponents[index++] = createComponent("Mixer", 0, &(fv->mixer));
+		component->childrenCount = index;
+		component->apply = 0;
 		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Wah Wah") == 0) {
 		component->type = WahWah;

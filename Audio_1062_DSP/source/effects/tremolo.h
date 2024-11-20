@@ -9,8 +9,8 @@
 
 #ifndef TREMOLO_H_
 #define TREMOLO_H_
-#include <components/low_frequency_oscillator.h>
-
+#include "components/low_frequency_oscillator.h"
+#include "components/mixer.h"
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -21,6 +21,7 @@ typedef struct {
 	LOWFREQOSC osc;
 	float sampleRate;  //Hz
 	float tOut;        // avoids declaring variable inside a function
+	MIXER mixer;
 } TREMOLO;
 
 void initialize_TREMOLO(TREMOLO * trem, float depth, float tremFreq, float sampleRate);

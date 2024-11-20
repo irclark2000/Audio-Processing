@@ -12,6 +12,8 @@
 void initialize_TREMOLO(TREMOLO * trem, float depth, float tremFreq, float sampleRate) {
 	setDepth_TREMOLO (trem, depth);
 	initialize_LOWFREQOSC(&(trem->osc), 1.0f, 0.0f, 30, tremFreq, 0.01f, 4000.0f, 0.0f, 0, sampleRate);
+
+	initialize_MIXER (&(trem->mixer), 0.5);
 }
 
 void setDepth_TREMOLO(TREMOLO * trem, float depth) {
@@ -30,5 +32,7 @@ void setTremFrequency_TREMOLO(TREMOLO * trem, float tremFreq) {
 float update_TREMOLO(TREMOLO *trem, float input, int increment) {
 	update_LOWFREQOSC(&(trem->osc));
 	trem->tOut = input * ((1.0f - trem->depth) + trem->depth * trem->osc.out);
+	trem->tOut = applyWetDry_MIXER (&(trem->mixer), trem->tOut, input);
 	return trem->tOut;
 }
+

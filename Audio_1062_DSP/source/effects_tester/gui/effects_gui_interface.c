@@ -146,6 +146,15 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 				initSchroederVerb(fv, sampleRate);
 			}
 			break;
+		case Tremolo:
+		{
+			TREMOLO *trem = component->effect;
+			trem->sampleRate = sampleRate;
+			for(int i=0; i < component->childrenCount; ++i) {
+				gui_initialize(component->childComponents[i], 0, sampleRate);
+			}
+		}
+		break;
 		case VariableDelay:
 			{
 				VARDELAY *vDelay = component->effect;
