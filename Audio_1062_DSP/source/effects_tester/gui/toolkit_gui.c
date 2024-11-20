@@ -914,8 +914,8 @@ void generate_gui(EFFECT_ITEM *eList)
 	static GLFWwindow *win;
 	int width = 0, height = 0;
 	int display_width=0, display_height=0;
-	char *fileName = "sounds/rampb-acoustic-guitar-loop-1-70bpm-143363.wav";
-	fileName = "sounds/alan-walker-type-guitar-loop-1-246365.wav";
+	//char *fileName = "sounds/rampb-acoustic-guitar-loop-1-70bpm-143363.wav";
+	//fileName = "sounds/alan-walker-type-guitar-loop-1-246365.wav";
 	//fileName = "sounds/relaxing-guitar-128296.wav";
 
 	/* GUI */
@@ -981,8 +981,8 @@ void generate_gui(EFFECT_ITEM *eList)
 			image = nk_font_atlas_bake(&atlas, &w, &h, NK_FONT_ATLAS_RGBA32);
 			device_upload_atlas(&device, image, w, h);
 			nk_font_atlas_end(&atlas, nk_handle_id((int)device.font_tex), &device.tex_null);}
-		nk_init_default(&ctx, &media.font_14->handle);}
-
+		nk_init_default(&ctx, &media.font_14->handle);
+	}
 	glEnable(GL_TEXTURE_2D);
 	media.unchecked = icon_load("icon/unchecked.png");
 	media.checked = icon_load("icon/checked.png");
@@ -1007,15 +1007,13 @@ void generate_gui(EFFECT_ITEM *eList)
 	media.menu[4] = icon_load("icon/settings.png");
 	media.menu[5] = icon_load("icon/volume.png");
 
-
-
 	{int i;
 		for (i = 0; i < 9; ++i) {
 			char buffer[256];
 			sprintf(buffer, "images/image%d.png", (i+1));
 			media.images[i] = icon_load(buffer);
 		}}
-file_selector_init ();
+	file_selector_init ();
 	initializeMusicState(&gMUSIC);
 	gMUSIC.fileName = fileName;
 	while (!glfwWindowShouldClose(win))
