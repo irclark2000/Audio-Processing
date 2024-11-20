@@ -547,9 +547,10 @@ effect_selector(struct nk_context *ctx, struct media *media)
 				initializeDisplayState(&gGUI, selected_item);
 				// this is called by play music
 				//gui_initialize(gGUI.component, 0, 44100.0f);
-				gMUSIC.music_is_playing = 1;
-				gMUSIC.start_music = 1;
-				gMUSIC.stop_music = 1;
+				if (gMUSIC.fileName) { 
+					gMUSIC.start_music = 1;
+					gMUSIC.stop_music = 1;
+				}
 			}
 		}
 		nk_combo_end(ctx);
@@ -1015,7 +1016,7 @@ void generate_gui(EFFECT_ITEM *eList)
 		}}
 	file_selector_init ();
 	initializeMusicState(&gMUSIC);
-	gMUSIC.fileName = fileName;
+	gMUSIC.fileName = 0;
 	while (!glfwWindowShouldClose(win))
 	{
 		/* High DPI displays */
@@ -1076,7 +1077,7 @@ void generate_gui(EFFECT_ITEM *eList)
 
 		// can we start the music here?
 		if (gGUI.effect_selected & gMUSIC.start_music && !gMUSIC.stop_music && !gMUSIC.music_is_playing && gGUI.component != 0) {
-			int success = play_music (fileName, gGUI.component);
+			int success = play_music (gMUSIC.fileName, gGUI.component);
 			if (success == 0) {
 				update_effect_state(gGUI.sliders, gGUI.slider_count);
 				gMUSIC.music_is_playing = 1;

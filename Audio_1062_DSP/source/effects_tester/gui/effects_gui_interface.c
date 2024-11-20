@@ -19,6 +19,7 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CON
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 #include "effects_gui_interface.h"
+#include "effects/tremolo.h"
 #include "effects/delay_based/echo.h"
 #include "effects/reverbs/freeverb.h"
 #include "effects/reverbs/schroeder_verb.h"
@@ -138,6 +139,7 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 				osc->frequency_limits.maximum = 0.25 * sampleRate;
 				osc->amplitude_limits.minimum = 0.0;
 				osc->amplitude_limits.maximum = 1E9; 
+				gui_setFrequency(osc);
 			}
 			break;
 		case Schroeder:

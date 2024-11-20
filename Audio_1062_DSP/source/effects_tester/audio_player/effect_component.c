@@ -415,21 +415,22 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->parameterCount = 1;
 		char temp[480];
 		if (strParameters == 0) {
-			char *elements= "Depth:S3*0.0,0.5,1.0//LFO Freq:S3*0.01,1,4000\tDepth:X*1.0\tSine:I*0";
+			char *elements = "Depth:S3*0.0,0.5,1.0//LFO Freq:S3*0.01,2000,4000\tDepth:X*1.0\tSine:I*0";
+			strcpy(temp, elements);
 		}
 		else {
 			strcpy(temp, strParameters);
 		}
 		char *ptrDepth = strtok(temp, "//");
-		char *ptrLFO = strtok(temp, "//");
+		char *ptrLfo = strtok(NULL, "//");
 		float value = setName_Type_Parse_Variables (component, 0, ptrDepth);
 		component->parameters[0].currentValue = &(trem->depth);
 		*(component->parameters[0].currentValue) = value;
 		uint8_t index = 0;
-		component->childComponents[index++] = createComponent("Lfo", ptrLfo, &(trem->lfo));
-		component->childComponents[index++] = createComponent("Mixer", 0, &(fv->mixer));
+		component->childComponents[index++] = createComponent("Lfo", ptrLfo, &(trem->osc));
+		component->childComponents[index++] = createComponent("Mixer", 0, &(trem->mixer));
 		component->childrenCount = index;
-		component->apply = 0;
+		component->apply = (APPLY) gui_update_TREMOLO;
 		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Wah Wah") == 0) {
 		component->type = WahWah;
@@ -549,7 +550,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		if (ptrSine) {
 			while(*ptrSine != ':' && *ptrSine != 0) ptrSine++;
 			if (*ptrSine == ':' && *(ptrSine + 1) == 'I') {
-				sine  = atoi(ptrSine + 2);
+				sine  = atoi(ptrSine + 3);
 			}	
 		}
 		lfo->triangle_sine_select = sine;
@@ -576,7 +577,7 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->parameters->floatParameter[index++] = 1.0f;
 		component->parameters->floatParameter[index++] = 1.0f;
 		component->parameters[0].currentValue = &(mixer->wet_dry);
-		mixer->wet_dry = 1.0f;
+		mixer->wet_dry = 0.96f;
 		component->childrenCount = 0;
 		component->apply = 0;
 		component->effect_bypass = 0;

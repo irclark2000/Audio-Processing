@@ -28,6 +28,7 @@ void initialize_TREMOLO(TREMOLO * trem, float depth, float tremFreq, float sampl
 void setDepth_TREMOLO(TREMOLO * trem, float depth);
 void setTremFrequency_TREMOLO(TREMOLO * trem, float tremFreq);
 float update_TREMOLO(TREMOLO *trem, float input, int increment);
+float gui_update_TREMOLO(TREMOLO *trem, float input);
 #if defined(__cplusplus)
 }
 #endif
