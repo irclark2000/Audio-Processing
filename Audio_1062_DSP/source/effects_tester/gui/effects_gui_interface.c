@@ -21,6 +21,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "effects_gui_interface.h"
 #include "effects/tremolo.h"
 #include "effects/delay_based/echo.h"
+#include "effects/dynamic_range_control/noise_gate.h"
 #include "effects/reverbs/freeverb.h"
 #include "effects/reverbs/schroeder_verb.h"
 #include "effects/variable_filter_effects/equalizer.h"
@@ -50,7 +51,7 @@ EFFECT_ITEM misc_effect[] = {
 EFFECT_ITEM effects_list[] = {
 	{"Auto Wah", AutoWah}, {"Chorus", Chorus}, {"Echo", Echo}, {"Flanger", Flanger}, {"Vibrato", Vibrato},
 	{"Freeverb", Freeverb}, {"Schroeder Reverb", Schroeder}, {"Equalizer", Equalizer},
-	{"Tremolo", Tremolo}, {"", None}
+	{"Tremolo", Tremolo}, {"Noise Gate", Noisegate}, {"", None}
 };
 
 
@@ -140,6 +141,16 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 				osc->amplitude_limits.minimum = 0.0;
 				osc->amplitude_limits.maximum = 1E9; 
 				gui_setFrequency(osc);
+			}
+			break;
+		case Noisegate:
+			{
+				NOISEGATE *ng = component->effect;
+				ng->smooth_gain = 0.0f;
+				ng->static_gain = 1.0f;
+				ng->sampleTimeMs = 1000.0f/sampleRate;
+				ng->attack_time_accumulator = 0.0f;
+				ng->release_time_accumulator = 0.0f;
 			}
 			break;
 		case Schroeder:

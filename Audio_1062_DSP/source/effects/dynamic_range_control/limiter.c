@@ -54,7 +54,7 @@ float limiter_gain_calc_smoothing(LIMITER *limiter, float xdb, float *xscOut, fl
 void initialize_LIMITER(LIMITER *limiter, float sample_rate) {
 	limiter->sample_time = 1.0f / sample_rate;
 	limiter->gs = 0.0f;
-	limiter->threshold = -10.0f;  //db
+	limiter->threshold_db = -10.0f;  //db
 	limiter->knee = 0.0f;
 	limiter->makeup_gain = 0.0f;
 	limiter->makeup_property_mode = 1;
@@ -104,20 +104,20 @@ float update_LIMITER(LIMITER *limiter, float input) {
 float limiter_gain_calc_smoothing(LIMITER *limiter, float xdb, float *xscOut, float *gcOut) {
 	float xsc;
 	if (limiter->hard_knee || limiter->knee < 0.05) {
-		if (xdb < limiter->threshold) {
+		if (xdb < limiter->threshold_db) {
 			xsc = xdb;
 		} else {
-			xsc = limiter->threshold;
+			xsc = limiter->threshold_db;
 		}
 	} else {
-		if (xdb < (limiter->threshold - limiter->knee / 2.0f)) {
+		if (xdb < (limiter->threshold_db - limiter->knee / 2.0f)) {
 			xsc = xdb;
-		} else if (xdb > (limiter->threshold + limiter->knee / 2.0f)) {
-			xsc = limiter->threshold;
+		} else if (xdb > (limiter->threshold_db + limiter->knee / 2.0f)) {
+			xsc = limiter->threshold_db;
 		} else {
 			xsc = xdb
-					- (xdb - limiter->threshold + limiter->knee / 2.0f)
-					* (xdb - limiter->threshold + limiter->knee / 2.0f) / 2.0f
+					- (xdb - limiter->threshold_db + limiter->knee / 2.0f)
+					* (xdb - limiter->threshold_db + limiter->knee / 2.0f) / 2.0f
 							/ limiter->knee;
 		}
 	}
@@ -133,6 +133,10 @@ float limiter_gain_calc_smoothing(LIMITER *limiter, float xdb, float *xscOut, fl
 	}
 	return gs;
 }
+void gui_setAttackRelease_LIMITER(LIMITER *limit) {
+	setRelease_LIMITER(limit,limit->release_time);
+	setAttack_LIMITER(limit, limit->attack_time);
+}
 
 void setRelease_LIMITER(LIMITER *limit, float release_time) {
 	release_time = MIN_MAX(release_time, LIMITER_MINRELEASE_SEC, LIMITER_MAXRELEASE_SEC);
@@ -146,7 +150,7 @@ void setAttack_LIMITER(LIMITER *limit, float attack_time) {
 }
 void setTreshold_LIMITER(LIMITER * limit, float threshold_db) {
 	threshold_db = MIN_MAX(threshold_db, LIMITER_MINTHRESHOLD_DB, LIMITER_MAXTHRESHOLD_DB);
-	limit->threshold = threshold_db;
+	limit->threshold_db = threshold_db;
 }
 void setKneeWidth_LIMITER(LIMITER * limit, float knee_width) {
 	knee_width = MIN_MAX(knee_width, LIMITER_MINKNEEWIDTH, LIMITER_MAXKNEEWIDTH);

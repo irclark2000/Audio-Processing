@@ -15,7 +15,7 @@
 typedef struct {
 	float sample_time;
 	float gs;  //db
-	float threshold;  //db
+	float threshold_db;  //db
 	float makeup_gain; //db
 	float knee;
 	float absInput;

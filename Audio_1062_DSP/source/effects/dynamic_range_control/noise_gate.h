@@ -9,6 +9,7 @@
 
 #ifndef NOISE_GATE_H_
 #define NOISE_GATE_H_
+#include "effects/components/mixer.h"
 
 typedef struct {
 	float threshold;
@@ -22,11 +23,15 @@ typedef struct {
 	float release_time_accumulator;
 	float smooth_gain;
 	float static_gain;
-
+	float gui_attackMS;
+	float gui_releaseMS;
+	float gui_thresholdDB;
 } NOISEGATE;
 
 void initializeNoiseGate(NOISEGATE *ng, float attackTimeMs, float releaseTimeMs, float holdTimeMs, float sampleRate, float threshold);
 float applyNoiseGate(NOISEGATE *ng, float input);
 void setNoiseAttackRelease(NOISEGATE *ng, float attackMs, float releaseMs);
 void setNoiseThreshold(NOISEGATE *ng, float threshold);
+void gui_setNoiseThreshold(NOISEGATE *ng);
+void gui_setNoiseAttackRelease(NOISEGATE *ng);
 #endif /* NOISE_GATE_H_ */

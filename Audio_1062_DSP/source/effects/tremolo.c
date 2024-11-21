@@ -29,7 +29,7 @@ void setTremFrequency_TREMOLO(TREMOLO * trem, float tremFreq) {
 	setFreq_LOWFREQOSC(&(trem->osc), tremFreq);
 }
 float gui_update_TREMOLO(TREMOLO *trem, float input) {
-	update_TREMOLO(trem, input, 1);
+	return update_TREMOLO(trem, input, 1);
 }
 
 float update_TREMOLO(TREMOLO *trem, float input, int increment) {

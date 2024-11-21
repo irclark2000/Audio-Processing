@@ -13,7 +13,6 @@
 
 #define EXP(x) fastExp(x)
 
-
 void initializeNoiseGate(NOISEGATE *ng, float attackTimeMs, float releaseTimeMs, float holdTimeMs, float sampleRate, float threshold) {
 	ng->smooth_gain = 0.0f;
 	ng->static_gain = 1.0f;
@@ -49,10 +48,11 @@ float applyNoiseGate(NOISEGATE *ng, float input) {
 		ng->attack_time_accumulator = 0;
 		ng->smooth_gain = ng->release_alpha * ng->smooth_gain + (1.0f - ng->release_alpha) * ng->static_gain;
 	}
-
-
 	ng->out = ng->smooth_gain * input;
 	return ng->out;
+}
+void gui_setNoiseThreshold(NOISEGATE *ng) {
+	setNoiseThreshold(ng, fastPow10(ng->gui_thresholdDB/20.0));
 }
 
 void setNoiseThreshold(NOISEGATE *ng, float threshold) {
@@ -64,6 +64,9 @@ void setNoiseThreshold(NOISEGATE *ng, float threshold) {
 	}
 	ng->threshold = threshold;
 
+}
+void gui_setNoiseAttackRelease(NOISEGATE *ng) {
+	setNoiseAttackRelease(ng, ng->gui_attackMS, ng->gui_releaseMS);
 }
 // exponential function requires fast math
 void setNoiseAttackRelease(NOISEGATE *ng, float attackMs, float releaseMs) {

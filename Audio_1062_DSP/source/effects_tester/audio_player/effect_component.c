@@ -25,6 +25,7 @@
 #include "effects/delay_based/flanger.h"
 #include "effects/delay_based/chorus.h"
 #include "effects/delay_based/vibrato.h"
+#include "effects/dynamic_range_control/noise_gate.h"
 #include "effects/reverbs/freeverb.h"
 #include "effects/reverbs/schroeder_verb.h"
 #include "effects/variable_filter_effects/wah_wah.h"
@@ -355,36 +356,6 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 				"LFO Freq:S3*0.1,1,5\tLFO Depth (mSec):S3*0,1,10", 0);
 		component->apply = (APPLY) update_FLANGER;
 		component->effect_bypass = 0;
-	} else if (strcmp(effectName, "Vibrato") == 0) {
-		component->type = Vibrato;
-		VIBRATO *vib = (VIBRATO *) MALLOC(sizeof(VIBRATO));
-		component->effect = vib;
-		component->main_effect = 1;
-		component->uninitialize = (UNINITIALIZE) uninitialize_VIBRATO;
-		char temp[160];
-		if (strParameters == 0) {
-			char * elements = "Base Delay (MS):S3*0.1,5,14//Max Delay:X*15//LFO Frequency:S3*0.1,5,15\tLFO Depth (mSec):S3*0,2.5,5";
-			strcpy(temp, elements);
-		}
-		else {
-			strcpy(temp, strParameters);
-		}
-		char *ptrBaseDelay = strtok(temp, "//");
-		char *ptrVarDelay = strtok(NULL, "//");
-		char *ptrLFO = strtok(NULL, "//");
-
-		component->parameterCount = 1;
-		component->parameters = makeBlankParameters(1, component->effect);
-		float value = setName_Type_Parse_Variables (component, 0, ptrBaseDelay);
-		component->parameters[0].currentValue = &(vib->baseDelayMSec);
-		*(component->parameters[0].currentValue) = value;
-		component->childrenCount = 3;
-		component->childComponents[0] = createComponent("Lfo", ptrLFO, &(vib->lfo));
-		component->childComponents[1] = createComponent("Variable Delay", ptrVarDelay, &(vib->vDelay));
-		component->childComponents[2] = createComponent("Mixer", 0, &(vib->mixer));
-		component->apply = (APPLY) apply_VIBRATO;
-		component->effect_bypass = 0;
-
 	} else if (strcmp(effectName, "Freeverb") == 0) {
 		FREEVERB *fv = (FREEVERB *) MALLOC(sizeof(FREEVERB));
 		component->effect = fv;
@@ -395,7 +366,56 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->childrenCount = 1;
 		component->apply = (APPLY) applyFreeverb;
 		component->effect_bypass = 0;
+	} else if (strcmp(effectName, "Noise Gate") == 0) {
+		NOISEGATE *trem = (NOISEGATE *) MALLOC(sizeof(NOISEGATE));
+		component->effect = ng;
+		component->type = Noisegate;
+		component->main_effect = 1;
+		component->parameters = makeBlankParameters(4, component->effect);
+		component->parameterCount = 4;
+		float gui_attackMS;
+		float gui_releaseMS;
+		float gui_thresholdDB;
+		float holdTimeMs;
 
+		char temp[480];
+		if (strParameters == 0) {
+			char *elements = "Threshold(db):S3*-140,-10, 0.0\tHold Time mSec:S3*0,50,4000\tAttack Time mSec:S3*0,50,4000\tRelease Time mSec:S3*0,50,4000";
+			strcpy(temp, elements);
+		}
+		else {
+			strcpy(temp, strParameters);
+		}
+		char *ptrThreshold = strtok(temp, "\t");
+		char *ptrHold = strtok(NULL, "\t");
+		char *ptrAttack = strtok(NULL, "\t");
+		char *ptrRelease = strtok(NULL, "\t");`
+		uint8_t index = 0;
+
+		float value = setName_Type_Parse_Variables (component, 0, ptrDepth);
+		component->parameters[index].currentValue = &(ng->gui_thresholdDB);
+		*(component->parameters[index].currentValue) = value;
+		parameters[index].recalculate = (RECALCULATE) gui_setNoiseThreshold;
+		index++;
+		value = setName_Type_Parse_Variables (component, 0, ptrHold);
+		component->parameters[index].currentValue = &(ng->holdTimeMs);
+		*(component->parameters[index].currentValue) = value;
+		index++;
+		value = setName_Type_Parse_Variables (component, 0, ptrAttack);
+		component->parameters[index].currentValue = &(ng->gui_attackMS);
+		*(component->parameters[index].currentValue) = value;
+		parameters[index].recalculate = (RECALCULATE)gui_setNoiseAttackRelease;
+		parameters[index].partnerParameter = parameters[index + 1];
+
+		index++;
+		value = setName_Type_Parse_Variables (component, 0, ptrRelease);
+		component->parameters[index].currentValue = &(ng->gui_releaseMS);
+		*(component->parameters[index].currentValue) = value;
+		parameters[index].recalculate = (RECALCULATE) gui_setNoiseAttackRelease;
+		parameters[index].partnerParameter = parameters[index - 1];
+		component->childrenCount = 0;
+		component->apply = (APPLY) applyNoiseGate;
+		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Schroeder Reverb") == 0) {
 		SCHROEDERVERB *fv = (SCHROEDERVERB *) MALLOC(sizeof(SCHROEDERVERB));
 		component->effect = fv;
@@ -432,6 +452,36 @@ EFFECT_COMPONENT * createComponent(char *effectName, char *strParameters, void *
 		component->childrenCount = index;
 		component->apply = (APPLY) gui_update_TREMOLO;
 		component->effect_bypass = 0;
+	} else if (strcmp(effectName, "Vibrato") == 0) {
+		component->type = Vibrato;
+		VIBRATO *vib = (VIBRATO *) MALLOC(sizeof(VIBRATO));
+		component->effect = vib;
+		component->main_effect = 1;
+		component->uninitialize = (UNINITIALIZE) uninitialize_VIBRATO;
+		char temp[160];
+		if (strParameters == 0) {
+			char * elements = "Base Delay (MS):S3*0.1,5,14//Max Delay:X*15//LFO Frequency:S3*0.1,5,15\tLFO Depth (mSec):S3*0,2.5,5";
+			strcpy(temp, elements);
+		}
+		else {
+			strcpy(temp, strParameters);
+		}
+		char *ptrBaseDelay = strtok(temp, "//");
+		char *ptrVarDelay = strtok(NULL, "//");
+		char *ptrLFO = strtok(NULL, "//");
+
+		component->parameterCount = 1;
+		component->parameters = makeBlankParameters(1, component->effect);
+		float value = setName_Type_Parse_Variables (component, 0, ptrBaseDelay);
+		component->parameters[0].currentValue = &(vib->baseDelayMSec);
+		*(component->parameters[0].currentValue) = value;
+		component->childrenCount = 3;
+		component->childComponents[0] = createComponent("Lfo", ptrLFO, &(vib->lfo));
+		component->childComponents[1] = createComponent("Variable Delay", ptrVarDelay, &(vib->vDelay));
+		component->childComponents[2] = createComponent("Mixer", 0, &(vib->mixer));
+		component->apply = (APPLY) apply_VIBRATO;
+		component->effect_bypass = 0;
+
 	} else if (strcmp(effectName, "Wah Wah") == 0) {
 		component->type = WahWah;
 		component->main_effect = 1;
