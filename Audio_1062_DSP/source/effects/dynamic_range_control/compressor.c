@@ -162,4 +162,7 @@ void setMakeupGainDB_COMPRESSOR(COMPRESSOR * comp, float makeup_gain) {
 	makeup_gain = MIN_MAX(makeup_gain, COMPRESSOR_MINMAKEUPGAIN_DB , COMPRESSOR_MAXMAKEUPGAIN_DB );
 	comp->makeup_gain = makeup_gain;
 }
+void gui_setInverseRatio_COMPRESSOR(COMPRESSOR *comp) {
+	comp->inv_ratio = 1.0f / comp->gui_ratio;
+}
 

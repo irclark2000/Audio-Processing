@@ -27,6 +27,7 @@ typedef struct {
 	float sample_time;
 	float gs;  //db
 	float inv_ratio;
+	float gui_ratio;
 	float threshold;  //db
 	float makeup_gain; //db
 	float knee;
@@ -44,6 +45,7 @@ float update_COMPRESSOR (COMPRESSOR * comp, float input);
 void setRelease_COMPRESSOR(COMPRESSOR * comp, float release_time);
 void setAttack_COMPRESSOR(COMPRESSOR * comp, float attack_time);
 void gui_setAttackRelease_COMPRESSOR(COMPRESSOR *comp);
+void gui_setInverseRatio_COMPRESSOR(COMPRESSOR *comp);
 void setKneeWidth_COMPRESSOR(COMPRESSOR * comp, float knee_width);
 void setMakeupDBGain_COMPRESSOR(COMPRESSOR * comp, float makeup_gain);
 

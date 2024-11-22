@@ -318,7 +318,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 	} else if (strcmp(effectName, "Compressor") == 0) {
 		COMPRESSOR *dr = (COMPRESSOR*) MALLOC(sizeof(COMPRESSOR));
 		component->effect = Compressor;
-		component->type = Chompressor;
+		component->type = Compressor;
 		component->parameterCount = 7;
 		component->parameters = makeBlankParameters(7, component->effect);
 		component->childrenCount = 0;
@@ -351,6 +351,8 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 				ptrRatio);
 		component->parameters[index].currentValue = &(dr->ratio);
 		*(component->parameters[index].currentValue) = value;
+		component->parameters[index].recalculate =
+				(RECALCULATE) gui_setInverseRatio_COMPRESSOR;
 		index++;
 		value = setName_Type_Parse_Variables(component, index, ptrAttack);
 		component->parameters[index].currentValue = &(dr->attack_time);
