@@ -317,7 +317,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Compressor") == 0) {
 		COMPRESSOR *dr = (COMPRESSOR*) MALLOC(sizeof(COMPRESSOR));
-		component->effect = Compressor;
+		component->effect = dr;
 		component->type = Compressor;
 		component->parameterCount = 7;
 		component->parameters = makeBlankParameters(7, component->effect);
@@ -349,7 +349,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		index++;
 		value = setName_Type_Parse_Variables(component, index,
 				ptrRatio);
-		component->parameters[index].currentValue = &(dr->ratio);
+		component->parameters[index].currentValue = &(dr->inv_ratio);
 		*(component->parameters[index].currentValue) = value;
 		component->parameters[index].recalculate =
 				(RECALCULATE) gui_setInverseRatio_COMPRESSOR;
@@ -371,7 +371,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		value = setName_Type_Parse_Variables(component, index,
 				ptrHardKnee);
 		component->parameters[index].currentValue = &(dr->hard_knee);
-		*(component->parameters[index].currentValue) = value;
+		*(component->parameters[index].currentValue) = value + 0.1;
 		index++;
 		value = setName_Type_Parse_Variables(component, index,
 				ptrKnee);
@@ -381,7 +381,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		value = setName_Type_Parse_Variables(component, index,
 				ptrMode);
 		component->parameters[index].currentValue = &(dr->makeup_property_mode);
-		*(component->parameters[index].currentValue) = value;
+		*(component->parameters[index].currentValue) = value + 0.1;
 		index++;
 		value = setName_Type_Parse_Variables(component, index,
 				ptrMGain);
