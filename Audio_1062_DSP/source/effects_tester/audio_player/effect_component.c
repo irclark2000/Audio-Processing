@@ -370,8 +370,8 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		index++;
 		value = setName_Type_Parse_Variables(component, index,
 				ptrHardKnee);
-		component->parameters[index].currentValue = &(dr->hard_knee);
-		*(component->parameters[index].currentValue) = value + 0.1;
+		component->parameters[index].currentValue = (float *)&(dr->hard_knee);
+		dr->hard_knee = value + 0.1;
 		index++;
 		value = setName_Type_Parse_Variables(component, index,
 				ptrKnee);
@@ -380,8 +380,8 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		index++;
 		value = setName_Type_Parse_Variables(component, index,
 				ptrMode);
-		component->parameters[index].currentValue = &(dr->makeup_property_mode);
-		*(component->parameters[index].currentValue) = value + 0.1;
+		component->parameters[index].currentValue = (float *)&(dr->makeup_property_mode);
+		dr->makeup_property_mode = value + 0.1;
 		index++;
 		value = setName_Type_Parse_Variables(component, index,
 				ptrMGain);
