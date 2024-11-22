@@ -880,7 +880,7 @@ static void scroll_input(GLFWwindow *win, double _, double yoff)
 
 static void setupSlidersComponent(DISPLAY_STATE *gui, EFFECT_PARAMS *parameter) {
 	uint8_t count = gui->slider_count;
-	gui->sliders[count]useCheckBox = 0;
+	gui->sliders[count].useCheckBox = 0;
 
 	assert (parameter->currentValue != 0);
 	gui->sliders[count].myParameter = parameter;
@@ -904,10 +904,11 @@ static void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT * component) {
 			gui->slider_count++;
 		}
 		else if (component->strTypes[i][0] == 'C') {
+			EFFECT_PARAMS *parameter = component->parameters + i;
 			uint8_t count = gui->slider_count;
-			gui->sliders[count]useCheckBox = 1;
+			gui->sliders[count].useCheckBox = 1;
 			gui->sliders[count].name = name;
-			gui->sliders[count].chkOutput = parameter->currentValue;
+			gui->sliders[count].chkOutput = (uint8_t *)parameter->currentValue;
 			*(gui->sliders[count].chkOutput) = parameter->intParameter[0];
 			gui->sliders[count].previousCheck = 15;
 			gui->slider_count++;

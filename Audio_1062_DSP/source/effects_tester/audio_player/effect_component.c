@@ -404,7 +404,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		char *ptrHold = strtok(NULL, "\t");
 		char *ptrAttack = strtok(NULL, "\t");
 		char *ptrRelease = strtok(NULL, "\t");
-		`
+		
 		uint8_t index = 0;
 
 		float value = setName_Type_Parse_Variables(component, index,
@@ -423,7 +423,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		*(component->parameters[index].currentValue) = value;
 		component->parameters[index].recalculate =
 				(RECALCULATE) gui_setNoiseAttackRelease;
-		component->parameters[index].partnerParameter = parameters[index + 1];
+		component->parameters[index].partnerParameter = component->parameters + index + 1;
 
 		index++;
 		value = setName_Type_Parse_Variables(component, index, ptrRelease);
@@ -431,13 +431,13 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		*(component->parameters[index].currentValue) = value;
 		component->parameters[index].recalculate =
 				(RECALCULATE) gui_setNoiseAttackRelease;
-		component->parameters[index].partnerParameter = parameters[index - 1];
+		component->parameters[index].partnerParameter = component->parameters + index - 1;
 		component->childrenCount = 0;
 		component->apply = (APPLY) applyNoiseGate;
 		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Overdrive") == 0) {
-		OVERDRIVE *ov = (OVERDRIVE*) MALLOC(sizeof(OVERDRIVE));
-		component->effect = ov;
+		OVERDRIVE *od = (OVERDRIVE*) MALLOC(sizeof(OVERDRIVE));
+		component->effect = od;
 		component->type = Overdrive;
 		component->main_effect = 1;
 		component->parameters = makeBlankParameters(4, component->effect);
@@ -453,23 +453,23 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		char *ptrLPFFreq = strtok(NULL, "\t");
 		char *ptrDamp = strtok(NULL, "\t");
 		char *ptrHPFFreq = strtok(NULL, "\t");
-		`
+		
 		uint8_t index = 0;
 		float value = setName_Type_Parse_Variables(component, index, ptrGain);
 		component->parameters[index].currentValue = &(od->preGain);
 		*(component->parameters[index].currentValue) = value;
-		index++
-		value = setName_Type_Parse_Variables(component, index, ptrLPFFReq);
+		index++;
+		value = setName_Type_Parse_Variables(component, index, ptrLPFFreq);
 		component->parameters[index].currentValue = &(od->gui_LPFFreq);
 		*(component->parameters[index].currentValue) = value;
 		component->parameters[index].recalculate =
 				(RECALCULATE) gui_overdriveSetLPF;
-		index++
+		index++;
 		value = setName_Type_Parse_Variables(component, index, ptrDamp);
 		component->parameters[index].currentValue = &(od->lpfOutDamp);
 		*(component->parameters[index].currentValue) = value;
-		index++
-		value = setName_Type_Parse_Variables(component, index, ptrHPFFReq);
+		index++;
+		value = setName_Type_Parse_Variables(component, index, ptrHPFFreq);
 		component->parameters[index].currentValue = &(od->gui_HPFFreq);
 		*(component->parameters[index].currentValue) = value;
 		component->parameters[index].recalculate =

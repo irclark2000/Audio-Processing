@@ -20,7 +20,7 @@
 #endif
 
 #define OVERDRIVE_INPUT_LPF_LENGTH 53
-#define extern const float OVERDRIVE_INPUT_LPF_COEF[OVERDRIVE_INPUT_LPF_LENGTH];
+//extern const float OVERDRIVE_INPUT_LPF_COEF[OVERDRIVE_INPUT_LPF_LENGTH];
 typedef struct {
 	float a0;
 	float a1;
@@ -76,6 +76,7 @@ void overdriveSetLPF(OVERDRIVE *od, float cutoffFreq, float damping);
 void overdriveSetHPF(OVERDRIVE *od, float cutoffFreq);
 float update_OVERDRIVE(OVERDRIVE *od, float input);
 void gui_overdriveSetLPF(OVERDRIVE *od);
+
 void gui_overdriveSetHPF(OVERDRIVE *od);
 
 

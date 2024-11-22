@@ -20,6 +20,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 #include "effects_gui_interface.h"
 #include "effects/tremolo.h"
+#include "effects/overdrive.h"
 #include "effects/delay_based/echo.h"
 #include "effects/dynamic_range_control/noise_gate.h"
 #include "effects/reverbs/freeverb.h"
@@ -51,7 +52,7 @@ EFFECT_ITEM misc_effect[] = {
 EFFECT_ITEM effects_list[] = {
 	{"Auto Wah", AutoWah}, {"Chorus", Chorus}, {"Echo", Echo}, {"Flanger", Flanger}, {"Vibrato", Vibrato},
 	{"Freeverb", Freeverb}, {"Schroeder Reverb", Schroeder}, {"Equalizer", Equalizer},
-	{"Tremolo", Tremolo}, {"Noise Gate", Noisegate}, {"", None}
+	{"Tremolo", Tremolo}, {"Noise Gate", Noisegate}, {"Overdrive", Overdrive}, {"", None}
 };
 
 
@@ -151,6 +152,13 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 				ng->sampleTimeMs = 1000.0f/sampleRate;
 				ng->attack_time_accumulator = 0.0f;
 				ng->release_time_accumulator = 0.0f;
+			}
+			break;
+		case Overdrive:
+			{
+				OVERDRIVE *od = component->effect;
+				initialize_OVERDRIVE(od, sampleRate, od->gui_HPFFreq,
+						od->preGain, od->gui_LPFFreq, od->lpfOutDamp);
 			}
 			break;
 		case Schroeder:
