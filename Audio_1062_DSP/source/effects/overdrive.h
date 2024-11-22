@@ -13,7 +13,7 @@
 #include <stdint.h>
 #include <math.h>
 
-#define USE_DSP_FIR 0  // this is not feasible
+#define USE_DSP_FIR 0  // using DSP version is not feasible
 
 #if defined USE_DSP_FIR && USE_DSP_FIR == 1
 #include "arm_math.h"
@@ -49,6 +49,7 @@ typedef struct {
 	float hpfBufOut[2];
 	float hpfInpWct;
 	float hpfInpOut;
+	float gui_HPFFreq;
 
 	// Settings
 	float preGain;
@@ -60,6 +61,7 @@ typedef struct {
 	float lpfOutWct;
 	float lpfOutDamp;
 	float lpfOutOut;
+	float gui_LPFFreq;
 
 	IIRSecondOrder coefIIR;
 
@@ -73,6 +75,8 @@ void initialize_OVERDRIVE(OVERDRIVE *od, float samplingFreq, float hpfCutoffFreq
 void overdriveSetLPF(OVERDRIVE *od, float cutoffFreq, float damping);
 void overdriveSetHPF(OVERDRIVE *od, float cutoffFreq);
 float update_OVERDRIVE(OVERDRIVE *od, float input);
+void gui_overdriveSetLPF(OVERDRIVE *od);
+void gui_overdriveSetHPF(OVERDRIVE *od);
 
 
 

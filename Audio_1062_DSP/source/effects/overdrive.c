@@ -93,11 +93,17 @@ void initialize_OVERDRIVE(OVERDRIVE *od, float samplingFreq, float hpfCutoffFreq
 	calculateIIRCoef(od, lpfOutCutoffFreq);
 	od->out = 0;
 }
+void gui_overdriveSetLPF(OVERDRIVE *od) {
+	overdriveSetLPF(od, od->gui_LPFFreq, od->lpfOutDamp);
+}
 
 void overdriveSetLPF(OVERDRIVE *od, float cutoffFreq, float damping) {
 	od->lpfOutWct = 2.0f * PI * cutoffFreq * od->T;
 	od->lpfOutDamp = damping;
 	calculateIIRCoef(od, cutoffFreq);
+}
+void gui_overdriveSetHPF(OVERDRIVE *od) {
+	overdriveSetHPF(od, od->gui_LPFFreq);
 }
 
 void overdriveSetHPF(OVERDRIVE *od, float cutoffFreq) {
