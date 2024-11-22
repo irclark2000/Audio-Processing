@@ -134,7 +134,7 @@ float compressor_gain_calc_smoothing(COMPRESSOR *comp, float xdb, float *xscOut,
 	}
 	return gs;
 }
-void gui_setAttackRelease_COMPRESSOR(COMPRESSOR *comp, float release_time) {
+void gui_setAttackRelease_COMPRESSOR(COMPRESSOR *comp) {
 	setRelease_COMPRESSOR(comp, comp->release_time);
 	setAttack_COMPRESSOR(comp, comp->attack_time);
 }

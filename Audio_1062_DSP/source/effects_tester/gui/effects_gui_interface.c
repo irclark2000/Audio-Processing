@@ -23,6 +23,9 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "effects/overdrive.h"
 #include "effects/delay_based/echo.h"
 #include "effects/dynamic_range_control/noise_gate.h"
+#include "effects/dynamic_range_control/compressor.h"
+#include "effects/dynamic_range_control/expander.h"
+#include "effects/dynamic_range_control/limiter.h"
 #include "effects/reverbs/freeverb.h"
 #include "effects/reverbs/schroeder_verb.h"
 #include "effects/variable_filter_effects/equalizer.h"
@@ -52,7 +55,8 @@ EFFECT_ITEM misc_effect[] = {
 EFFECT_ITEM effects_list[] = {
 	{"Auto Wah", AutoWah}, {"Chorus", Chorus}, {"Echo", Echo}, {"Flanger", Flanger}, {"Vibrato", Vibrato},
 	{"Freeverb", Freeverb}, {"Schroeder Reverb", Schroeder}, {"Equalizer", Equalizer},
-	{"Tremolo", Tremolo}, {"Noise Gate", Noisegate}, {"Overdrive", Overdrive}, {"", None}
+	{"Tremolo", Tremolo}, {"Noise Gate", Noisegate}, {"Overdrive", Overdrive},
+	{"Compressor", Compressor}, {"", None}
 };
 
 
@@ -87,6 +91,24 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 				}
 			}
 			break;
+		case Compressor:
+				{
+					COMPRESSOR *dr = component->effect;
+					initialize_COMPRESSOR(dr, sampleRate);
+				}
+				break;
+		case Expander:
+				{
+					EXPANDER *dr = component->effect;
+					initialize_EXPANDER(dr, sampleRate);
+				}
+				break;
+		case Limiter:
+				{
+					LIMITER *dr = component->effect;
+					initialize_LIMITER(dr, sampleRate);
+				}
+				break;
 		case Echo:
 			{
 				//ECHO *echo = component->effect;
