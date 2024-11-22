@@ -50,6 +50,7 @@ static const float ln9 = 2.19722457734f;
 
 
 float compressor_gain_calc_smoothing(COMPRESSOR *comp, float xdb, float *xscOut, float * gcOut);
+
 void initialize_COMPRESSOR(COMPRESSOR *comp, float sample_rate) {
 	comp->sample_time = 1.0f / sample_rate;
 	comp->gs = 0.0f;
@@ -132,6 +133,10 @@ float compressor_gain_calc_smoothing(COMPRESSOR *comp, float xdb, float *xscOut,
 		gs = comp->alphaR * comp->gs + (1.0 - comp->alphaR) * gc;
 	}
 	return gs;
+}
+void gui_setAttackRelease_COMPRESSOR(COMPRESSOR *comp, float release_time) {
+	setRelease_COMPRESSOR(comp, comp->release_time);
+	setAttack_COMPRESSOR(comp, comp->attack_time);
 }
 
 void setRelease_COMPRESSOR(COMPRESSOR *comp, float release_time) {

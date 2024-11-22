@@ -27,6 +27,7 @@
 #include "effects/delay_based/chorus.h"
 #include "effects/delay_based/vibrato.h"
 #include "effects/dynamic_range_control/noise_gate.h"
+#include "effects/dynamic_range_control/compressor.h"
 #include "effects/reverbs/freeverb.h"
 #include "effects/reverbs/schroeder_verb.h"
 #include "effects/variable_filter_effects/wah_wah.h"
@@ -314,6 +315,79 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		component->childrenCount = componentCount;
 		component->apply = (APPLY) update_CHORUS;
 		component->effect_bypass = 0;
+	} else if (strcmp(effectName, "Compressor") == 0) {
+		COMPRESSOR *dr = (COMPRESSOR*) MALLOC(sizeof(COMPRESSOR));
+		component->effect = Compressor;
+		component->type = Chompressor;
+		component->parameterCount = 7;
+		component->parameters = makeBlankParameters(7, component->effect);
+		component->childrenCount = 0;
+		component->uninitialize = (UNINITIALIZE) uninitialize_CHORUS;
+		char temp[480];
+		// forced order: base delay, then Lfo, then Lfo Driven Delay
+		if (strParameters == 0) {
+			char *elements =
+					"Threshold (db):S3*-50,-10,0\tRatio:S3*1,5,50\tAttack Time (sec):S3*0,0.05,4\tRelease Time (sec):S3*0,0.20,4\tHard Knee:C*0\tKnee Width (db):S3*0,0,20\tMakeupMode:C*1\tMakeup Gain:S3*-10.0,24";
+			strcpy(temp, elements);
+		} else {
+			strcpy(temp, strParameters);
+		}
+		char *ptrThreshold = strtok(temp, "\t");
+		char *ptrRatio = strtok(NULL, "\t");
+		char *ptrAttack = strtok(NULL, "\t");
+		char *ptrRelease = strtok(NULL, "\t");
+		char *ptrHardKnee = strtok(NULL, "\t");
+		char *ptrKnee = strtok(NULL, "\t");
+		char *ptrMode = strtok(NULL, "\t");
+		char *ptrMGain = strtok(NULL, "\t");
+		uint8_t index = 0;
+
+		float value = setName_Type_Parse_Variables(component, index,
+				ptrThreshold);
+		component->parameters[index].currentValue = &(dr->threshold);
+		*(component->parameters[index].currentValue) = value;
+		index++;
+		value = setName_Type_Parse_Variables(component, index,
+				ptrRatio);
+		component->parameters[index].currentValue = &(dr->ratio);
+		*(component->parameters[index].currentValue) = value;
+		index++;
+		value = setName_Type_Parse_Variables(component, index, ptrAttack);
+		component->parameters[index].currentValue = &(dr->attack_time);
+		*(component->parameters[index].currentValue) = value;
+		component->parameters[index].recalculate =
+				(RECALCULATE) gui_setAttackRelease_COMPRESSOR;
+		component->parameters[index].partnerParameter = component->parameters + index + 1;
+		index++;
+		value = setName_Type_Parse_Variables(component, index, ptrRelease);
+		component->parameters[index].currentValue = &(dr->release_time);
+		*(component->parameters[index].currentValue) = value;
+		component->parameters[index].recalculate =
+				(RECALCULATE) gui_setAttackRelease_COMPRESSOR;
+		component->parameters[index].partnerParameter = component->parameters + index - 1;
+		index++;
+		value = setName_Type_Parse_Variables(component, index,
+				ptrHardKnee);
+		component->parameters[index].currentValue = &(dr->hard_knee);
+		*(component->parameters[index].currentValue) = value;
+		index++;
+		value = setName_Type_Parse_Variables(component, index,
+				ptrKnee);
+		component->parameters[index].currentValue = &(dr->knee);
+		*(component->parameters[index].currentValue) = value;
+		index++;
+		value = setName_Type_Parse_Variables(component, index,
+				ptrMode);
+		component->parameters[index].currentValue = &(dr->makeup_property_mode);
+		*(component->parameters[index].currentValue) = value;
+		index++;
+		value = setName_Type_Parse_Variables(component, index,
+				ptrMGain);
+		component->parameters[index].currentValue = &(dr->makeup_gain);
+		*(component->parameters[index].currentValue) = value;
+		component->childrenCount = 0;
+		component->apply = (APPLY) update_COMPRESSOR;
+		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Echo") == 0) {
 		component->type = Echo;
 		ECHO *echo = (ECHO*) MALLOC(sizeof(ECHO));
@@ -474,6 +548,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		*(component->parameters[index].currentValue) = value;
 		component->parameters[index].recalculate =
 				(RECALCULATE) gui_overdriveSetHPF;
+		component->parameterCount = 4;
 		component->childrenCount = 0;
 		component->apply = (APPLY) update_OVERDRIVE;
 		component->effect_bypass = 0;
