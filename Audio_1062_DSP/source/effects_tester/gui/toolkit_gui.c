@@ -98,6 +98,11 @@ static void initializeMusicState(MUSIC_STATE *music) {
 void update_effect_state_for_slider(SLIDER_VALUES *sliders, uint8_t index) {
 	EFFECT_PARAMS *parameter = sliders[index].myParameter;
 	void *effect = parameter->myEffect;
+	uint8_t useCheckbox = sliders[index].useCheckBox;
+	if (useCheckbox) {
+		sliders[index].previousCheck = *sliders[index].chkOutput;
+		return;
+	}
 	if (parameter->recalculate) {
 		if (parameter->previousValue != 0
 				&& (*(parameter->currentValue) != *(parameter->previousValue))) {
@@ -280,13 +285,7 @@ static int ui_piemenu(struct nk_context *ctx, struct nk_vec2 pos, float radius,
 
 static void effect_controls(struct nk_context *ctx, struct media *media) {
 	char *title = gGUI.component->effectName;
-	//static char text[3][64];
-	//static int text_len[3];
-	//static const char *items[] = {"Gain","Feedback","Wet/Dry", "Delay", "Frequency"};
-	//static int selected_item = 0;
 	static int check = 1;
-	static float volume = 0.5;
-	//static float slider_value[] = {0.5};
 	static char value_text[64];
 	static float row_widths[] = { 0.25, 0.55, 0.20 };
 
@@ -297,16 +296,10 @@ static void effect_controls(struct nk_context *ctx, struct media *media) {
 					| NK_WINDOW_NO_SCROLLBAR)) {
 		nk_style_set_font(ctx, &media->font_18->handle);
 		nk_layout_row_dynamic(ctx, 30, 1);
-		//nk_label(ctx, "Bypass Effect:", NK_TEXT_LEFT);
 		nk_checkbox_label(ctx, "Bypass Effect", &check);
-		nk_layout_row_dynamic(ctx, 30, 3);
-		nk_layout_row(ctx, NK_DYNAMIC, 30, 3, row_widths);
-		//nk_label(ctx, "Volume", NK_TEXT_LEFT);
-		//nk_slider_float(ctx, 0, &volume, 1.0f, 0.01f);
-		//sprintf(value_text, "%5.2f", volume);
-		//nk_label(ctx, value_text, NK_TEXT_LEFT);
 		for (int j = 0; j < gGUI.slider_count; j++) {
 			if (!gGUI.sliders[j].useCheckBox) {
+				nk_layout_row(ctx, NK_DYNAMIC, 30, 3, row_widths);
 				nk_label(ctx, gGUI.sliders[j].name, NK_TEXT_LEFT);
 				if (nk_slider_float(ctx, 0, &gGUI.sliders[j].slider_value, 1.0f,
 						0.01f)) {
@@ -316,6 +309,7 @@ static void effect_controls(struct nk_context *ctx, struct media *media) {
 				sprintf(value_text, "%5.2f", *(gGUI.sliders[j].slOutput));
 				nk_label(ctx, value_text, NK_TEXT_LEFT);
 			} else {
+				nk_layout_row(ctx, NK_DYNAMIC, 30, 1, row_widths);
 				nk_checkbox_label(ctx, gGUI.sliders[j].name, gGUI.sliders[j].chkOutput);
 
 			}
@@ -923,10 +917,11 @@ static void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT *component) {
 		} else if (component->strTypes[i][0] == 'C') {
 			EFFECT_PARAMS *parameter = component->parameters + i;
 			uint8_t count = gui->slider_count;
+			gui->sliders[count].myParameter = parameter;
 			gui->sliders[count].useCheckBox = 1;
 			gui->sliders[count].name = name;
-			gui->sliders[count].chkOutput = (uint8_t*) parameter->currentValue;
-			*(gui->sliders[count].chkOutput) = parameter->intParameter[0];
+			gui->sliders[count].chkOutput = (int*) parameter->currentValue;
+			*(gui->sliders[count].chkOutput) = parameter->intParameter[0] & 0xFF;
 			gui->sliders[count].previousCheck = 15;
 			gui->slider_count++;
 		}

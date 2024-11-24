@@ -319,15 +319,14 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		COMPRESSOR *dr = (COMPRESSOR*) MALLOC(sizeof(COMPRESSOR));
 		component->effect = dr;
 		component->type = Compressor;
-		component->parameterCount = 7;
-		component->parameters = makeBlankParameters(7, component->effect);
+		component->parameterCount = 8;
+		component->parameters = makeBlankParameters(8, component->effect);
 		component->childrenCount = 0;
-		component->uninitialize = (UNINITIALIZE) uninitialize_CHORUS;
-		char temp[480];
+		char temp[180];
 		// forced order: base delay, then Lfo, then Lfo Driven Delay
 		if (strParameters == 0) {
 			char *elements =
-					"Threshold (db):S3*-50,-10,0\tRatio:S3*1,5,50\tAttack Time (sec):S3*0,0.05,4\tRelease Time (sec):S3*0,0.20,4\tHard Knee:C*0\tKnee Width (db):S3*0,0,20\tMakeupMode:C*1\tMakeup Gain:S3*-10.0,24";
+					"Threshold (db):S3*-50,-10,0\tRatio:S3*1,5,50\tAttack Time (sec):S3*0,0.05,4\tRelease Time (sec):S3*0,0.20,4\tHard Knee:C*0\tKnee Width (db):S3*0,0,20\tMakeupMode:C*1\tMakeup Gain:S3*-10,0,24";
 			strcpy(temp, elements);
 		} else {
 			strcpy(temp, strParameters);

@@ -14,8 +14,8 @@ typedef struct {
 	EFFECT_PARAMS *myParameter;
 	char *name;
 	uint8_t useCheckBox;
-	uint8_t previousCheck;
-	uint8_t *chkOutput;
+	int previousCheck;
+	int *chkOutput;
 	float slope;
 	float intercept;
 	float *slOutput;
