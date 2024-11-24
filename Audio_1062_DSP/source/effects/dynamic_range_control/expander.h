@@ -37,7 +37,7 @@ typedef struct {
 	float hold_time;
 	float alphaA, alphaR;
 	float hold_time_counter;
-	uint8_t hard_knee;
+	int hard_knee;
 	float expand_out;
 } EXPANDER;
 

@@ -35,8 +35,8 @@ typedef struct {
 	float attack_time;
 	float release_time;
 	float alphaA, alphaR;
-	uint8_t hard_knee;
-	uint8_t makeup_property_mode;
+	int hard_knee;
+	int makeup_property_mode;
 	float compress_out;
 } COMPRESSOR;
 
