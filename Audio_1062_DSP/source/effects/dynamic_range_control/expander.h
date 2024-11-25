@@ -43,6 +43,8 @@ typedef struct {
 
 void initialize_EXPANDER (EXPANDER * ex, float sample_rate);
 float update_EXPANDER (EXPANDER * ex, float input);
+void gui_setAttackRelease_EXPANDER(EXPANDER *ex);
+
 void setRelease_EXPANDER(EXPANDER * ex, float release_time);
 void setAttack_EXPANDER(EXPANDER * ex, float attack_time);
 void setHold_EXPANDER(EXPANDER * ex, float hold_time);

@@ -56,7 +56,7 @@ EFFECT_ITEM effects_list[] = {
 	{"Auto Wah", AutoWah}, {"Chorus", Chorus}, {"Echo", Echo}, {"Flanger", Flanger}, {"Vibrato", Vibrato},
 	{"Freeverb", Freeverb}, {"Schroeder Reverb", Schroeder}, {"Equalizer", Equalizer},
 	{"Tremolo", Tremolo}, {"Noise Gate", Noisegate}, {"Overdrive", Overdrive},
-	{"Compressor", Compressor}, {"", None}
+	{"Compressor", Compressor}, {"Limiter", Limiter}, {"Expander", Expander}, {"", None}
 };
 
 

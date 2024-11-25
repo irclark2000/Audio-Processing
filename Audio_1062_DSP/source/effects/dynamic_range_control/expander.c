@@ -144,3 +144,8 @@ void setKneeWidth_EXPANDER(EXPANDER * ex, float knee_width) {
 	knee_width = MIN_MAX(knee_width, EXPANDER_MINKNEEWIDTH, EXPANDER_MAXKNEEWIDTH);
 	ex->knee = knee_width;
 }
+void gui_setAttackRelease_EXPANDER(EXPANDER *ex) {
+	setRelease_EXPANDER(ex, ex->release_time);
+	setAttack_EXPANDER(ex, ex->attack_time);
+}
+

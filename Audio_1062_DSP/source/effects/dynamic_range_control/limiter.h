@@ -22,13 +22,13 @@ typedef struct {
 	float attack_time;
 	float release_time;
 	float alphaA, alphaR;
-	int hard_knee;
 	int makeup_property_mode;
 	float compress_out;
 } LIMITER;
 
 void initialize_LIMITER (LIMITER *limiter, float sample_rate);
 float update_LIMITER (LIMITER *limiter, float input);
+void gui_setAttackRelease_LIMITER(LIMITER *limiter);
 void setRelease_LIMITER(LIMITER *limiter, float release_time);
 void setAttack_LIMITER(LIMITER *limiter, float attack_time);
 void setTreshold_LIMITER(LIMITER * limiter, float threshold_db);

@@ -59,7 +59,6 @@ void initialize_LIMITER(LIMITER *limiter, float sample_rate) {
 	limiter->makeup_gain = 0.0f;
 	limiter->makeup_property_mode = 1;
 	limiter->compress_out = 0.0f;
-	limiter->hard_knee = 0;
 	setRelease_LIMITER(limiter, 0.2f);
 	setAttack_LIMITER(limiter, 0.0f);
 }
@@ -103,7 +102,7 @@ float update_LIMITER(LIMITER *limiter, float input) {
 
 float limiter_gain_calc_smoothing(LIMITER *limiter, float xdb, float *xscOut, float *gcOut) {
 	float xsc;
-	if (limiter->hard_knee || limiter->knee < 0.05) {
+	if (limiter->knee < 0.01) {
 		if (xdb < limiter->threshold_db) {
 			xsc = xdb;
 		} else {
@@ -160,3 +159,4 @@ void setMakeupGainDB_LIMITER(LIMITER * limit, float makeup_gain) {
 	makeup_gain = MIN_MAX(makeup_gain, LIMITER_MINMAKEUPGAIN_DB , LIMITER_MAXMAKEUPGAIN_DB);
 	limit->makeup_gain = makeup_gain;
 }
+
