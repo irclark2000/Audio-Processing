@@ -35,8 +35,10 @@ typedef struct {
 	float attack_time;
 	float release_time;
 	float alphaA, alphaR;
-	int hard_knee;
-	int makeup_property_mode;
+	uint8_t hard_knee;
+	int gui_not_hard_knee;
+	int gui_not_hard_property;
+	uint8_t makeup_property_mode;
 	float compress_out;
 } COMPRESSOR;
 
@@ -48,5 +50,6 @@ void gui_setAttackRelease_COMPRESSOR(COMPRESSOR *comp);
 void gui_setInverseRatio_COMPRESSOR(COMPRESSOR *comp);
 void setKneeWidth_COMPRESSOR(COMPRESSOR * comp, float knee_width);
 void setMakeupDBGain_COMPRESSOR(COMPRESSOR * comp, float makeup_gain);
-
+void gui_setHardKnee_COMPRESSOR (COMPRESSOR *comp);
+void gui_setMakeupPropertyKnee_COMPRESSOR (COMPRESSOR *comp);
 #endif /* EFFECTS_DYNAMIC_RANGE_CONTROL_COMPRESSOR_H_ */

@@ -328,7 +328,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		// forced order: base delay, then Lfo, then Lfo Driven Delay
 		if (strParameters == 0) {
 			char *elements =
-					"Threshold (db):S3*-50,-10,0\tRatio:S3*1,5,50\tAttack Time (sec):S3*0,0.05,4\tRelease Time (sec):S3*0,0.20,4\tHard Knee:C*0\tKnee Width (db):S3*0,0,20\tMakeupMode:C*1\tMakeup Gain:S3*-10,0,24";
+					"Threshold (db):S3*-50,-10,0\tRatio:S3*1,5,50\tAttack Time (sec):S3*0,0.05,4\tRelease Time (sec):S3*0,0.20,4\tHard Knee:C*1\tKnee Width (db):S3*0,0,20\tMakeupMode:C*0\tMakeup Gain:S3*-10,0,24";
 			strcpy(temp, elements);
 		} else {
 			strcpy(temp, strParameters);
@@ -371,8 +371,10 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		index++;
 		value = setName_Type_Parse_Variables(component, index,
 				ptrHardKnee);
-		component->parameters[index].currentValue = (float *)&(dr->hard_knee);
+		component->parameters[index].currentValue = (float *)&(dr->not_hard_knee);
 		dr->hard_knee = value + 0.1;
+		component->parameters[index].recalculate =
+				(RECALCULATE) gui_setHardKnee_COMPRESSOR;
 		index++;
 		value = setName_Type_Parse_Variables(component, index,
 				ptrKnee);
@@ -381,8 +383,10 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		index++;
 		value = setName_Type_Parse_Variables(component, index,
 				ptrMode);
-		component->parameters[index].currentValue = (float *)&(dr->makeup_property_mode);
+		component->parameters[index].currentValue = (float *)&(dr->not_makeup_property_mode);
 		dr->makeup_property_mode = value + 0.1;
+		component->parameters[index].recalculate =
+				(RECALCULATE) gui_setMakeupPropertyKnee_COMPRESSOR;
 		index++;
 		value = setName_Type_Parse_Variables(component, index,
 				ptrMGain);
@@ -417,7 +421,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 
 		float value = setName_Type_Parse_Variables(component, index,
 				ptrThreshold);
-		component->parameters[index].currentValue = &(dr->threshold);
+		component->parameters[index].currentValue = &(dr->threshold_db);
 		*(component->parameters[index].currentValue) = value;
 		index++;
 		value = setName_Type_Parse_Variables(component, index, ptrAttack);
@@ -435,19 +439,16 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		component->parameters[index].partnerParameter = component->parameters + index - 1;
 		index++;
 		value = setName_Type_Parse_Variables(component, index,
-				ptrHardKnee);
-		component->parameters[index].currentValue = (float *)&(dr->hard_knee);
-		dr->hard_knee = value + 0.1;
-		index++;
-		value = setName_Type_Parse_Variables(component, index,
 				ptrKnee);
 		component->parameters[index].currentValue = &(dr->knee);
 		*(component->parameters[index].currentValue) = value;
 		index++;
 		value = setName_Type_Parse_Variables(component, index,
 				ptrMode);
-		component->parameters[index].currentValue = (float *)&(dr->makeup_property_mode);
+		component->parameters[index].currentValue = (float *)&(dr->not_makeup_property_mode);
 		dr->makeup_property_mode = value + 0.1;
+		component->parameters[index].recalculate =
+				(RECALCULATE) gui_setMakeupPropertyKnee_LIMITER;
 		index++;
 		value = setName_Type_Parse_Variables(component, index,
 				ptrMGain);
@@ -460,20 +461,21 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		EXPANDER *dr = (EXPANDER*) MALLOC(sizeof(EXPANDER));
 		component->effect = dr;
 		component->type = Expander;
-		component->parameterCount = 5;
-		component->parameters = makeBlankParameters(5, component->effect);
+		component->parameterCount = 6;
+		component->parameters = makeBlankParameters(6, component->effect);
 		component->childrenCount = 0;
 		char temp[180];
 		// forced order: base delay, then Lfo, then Lfo Driven Delay
 		if (strParameters == 0) {
 			char *elements =
-					"Threshold (db):S3*-140,-10,0\tRatio:S3*1,5,50\tKnee Width (db):S3*0,0,20\tAttack Time (sec):S3*0,0.05,4\tRelease Time (sec):S3*0,0.20,4\tHold Time:S3*0,0.5,4;
+					"Threshold (db):S3*-140,-10,0\tRatio:S3*1,5,50\tHardKnee:C*1\tKnee Width (db):S3*0,0,20\tAttack Time (sec):S3*0,0.05,4\tRelease Time (sec):S3*0,0.20,4\tHold Time:S3*0,0.5,4";
 			strcpy(temp, elements);
 		} else {
 			strcpy(temp, strParameters);
 		}
 		char *ptrThreshold = strtok(temp, "\t");
 		char *ptrRatio = strtok(NULL, "\t");
+		char *ptrHardKnee = strtok(NULL, "\t");
 		char *ptrKnee = strtok(NULL, "\t");
 		char *ptrAttack = strtok(NULL, "\t");
 		char *ptrRelease = strtok(NULL, "\t");
@@ -488,6 +490,13 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 				ptrRatio);
 		component->parameters[index].currentValue = &(dr->ratio);
 		*(component->parameters[index].currentValue) = value;
+		index++;
+		value = setName_Type_Parse_Variables(component, index,
+				ptrHardKnee);
+		component->parameters[index].currentValue = (float *)&(dr->not_hard_knee);
+		dr->hard_knee = value + 0.1;
+		component->parameters[index].recalculate =
+				(RECALCULATE) gui_setHardKnee_EXPANDER;
 		index++;
 		value = setName_Type_Parse_Variables(component, index,
 				ptrKnee);

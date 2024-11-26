@@ -37,7 +37,8 @@ typedef struct {
 	float hold_time;
 	float alphaA, alphaR;
 	float hold_time_counter;
-	int hard_knee;
+	int gui_not_hard_knee;
+	uint8_t hard_knee;
 	float expand_out;
 } EXPANDER;
 
@@ -49,5 +50,6 @@ void setRelease_EXPANDER(EXPANDER * ex, float release_time);
 void setAttack_EXPANDER(EXPANDER * ex, float attack_time);
 void setHold_EXPANDER(EXPANDER * ex, float hold_time);
 void setTreshold_EXPANDER(EXPANDER * ex, float threshold_db);
+void gui_setHardKnee_EXPANDER (EXPANDER *ex);
 
 #endif /* EFFECTS_DYNAMIC_RANGE_CONTROL_EXPANDER_H_ */

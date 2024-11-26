@@ -285,7 +285,7 @@ static int ui_piemenu(struct nk_context *ctx, struct nk_vec2 pos, float radius,
 
 static void effect_controls(struct nk_context *ctx, struct media *media) {
 	char *title = gGUI.component->effectName;
-	static int check = 1;
+	static int check = 0;
 	static char value_text[64];
 	static float row_widths[] = { 0.25, 0.55, 0.20 };
 
@@ -541,7 +541,7 @@ static void effect_selector(struct nk_context *ctx, struct media *media) {
 	ui_header(ctx, media, "Select Effect");
 	ui_widget(ctx, media, 40);
 	if (nk_combo_begin_label(ctx, effects_list[selected_item].name,
-			nk_vec2(nk_widget_width(ctx), 200))) {
+			nk_vec2(nk_widget_width(ctx), 300))) {
 		nk_layout_row_dynamic(ctx, 35, 1);
 		for (i = 0; i < g_effects_count; ++i) {
 			if (nk_combo_item_label(ctx, g_effect_list[i].name, NK_TEXT_LEFT)) {

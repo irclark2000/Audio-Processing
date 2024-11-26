@@ -165,4 +165,9 @@ void setMakeupGainDB_COMPRESSOR(COMPRESSOR * comp, float makeup_gain) {
 void gui_setInverseRatio_COMPRESSOR(COMPRESSOR *comp) {
 	comp->inv_ratio = 1.0f / comp->gui_ratio;
 }
-
+void gui_setHardKnee_COMPRESSOR (COMPRESSOR *comp) {
+	comp->hard_knee = (comp->gui_not_hard_knee == 0) ? 1 : 0;
+}
+void gui_setMakeupPropertyKnee_COMPRESSOR (COMPRESSOR *comp) {
+	comp->makeup_property_mode = (comp->gui_not_hard_property == 0) ? 1 : 0;
+}

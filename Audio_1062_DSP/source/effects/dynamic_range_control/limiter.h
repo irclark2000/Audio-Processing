@@ -22,7 +22,8 @@ typedef struct {
 	float attack_time;
 	float release_time;
 	float alphaA, alphaR;
-	int makeup_property_mode;
+	int gui_not_hard_property;
+	uint8_t makeup_property_mode;
 	float compress_out;
 } LIMITER;
 
@@ -33,6 +34,7 @@ void setRelease_LIMITER(LIMITER *limiter, float release_time);
 void setAttack_LIMITER(LIMITER *limiter, float attack_time);
 void setTreshold_LIMITER(LIMITER * limiter, float threshold_db);
 void setKneeWidth_LIMITER(LIMITER * limiter, float knee_width);
+void gui_setMakeupPropertyKnee_LIMITER (LIMITER *limiter);
 
 
 #endif /* EFFECTS_DYNAMIC_RANGE_CONTROL_LIMITER_H_ */

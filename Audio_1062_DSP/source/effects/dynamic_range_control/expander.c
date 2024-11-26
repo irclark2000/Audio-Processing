@@ -148,4 +148,6 @@ void gui_setAttackRelease_EXPANDER(EXPANDER *ex) {
 	setRelease_EXPANDER(ex, ex->release_time);
 	setAttack_EXPANDER(ex, ex->attack_time);
 }
-
+void gui_setHardKnee_EXPANDER (EXPANDER *ex){
+	ex->hard_knee = (ex->gui_not_hard_knee == 0) ? 1 : 0;
+}

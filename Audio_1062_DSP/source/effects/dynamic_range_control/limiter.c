@@ -159,4 +159,7 @@ void setMakeupGainDB_LIMITER(LIMITER * limit, float makeup_gain) {
 	makeup_gain = MIN_MAX(makeup_gain, LIMITER_MINMAKEUPGAIN_DB , LIMITER_MAXMAKEUPGAIN_DB);
 	limit->makeup_gain = makeup_gain;
 }
+void gui_setMakeupPropertyKnee_LIMITER (LIMITER *limiter) {
+	limiter->makeup_property_mode = (limiter->gui_not_hard_property == 0) ? 1 : 0;
+}
 
