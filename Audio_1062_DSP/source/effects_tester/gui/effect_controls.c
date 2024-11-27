@@ -93,3 +93,29 @@ static void setupSlidersComponent(DISPLAY_STATE *gui, EFFECT_PARAMS *parameter) 
 	gui->sliders[count].previousOutput = INITIAL_FLOAT_VALUE;
 	parameter->previousValue = &(gui->sliders[count].previousOutput);
 }
+
+void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT *component) {
+	for (int i = 0; i < component->parameterCount; i++) {
+		char *name = component->strParameters[i];
+		if (component->strTypes[i][0] == 'S') {
+			EFFECT_PARAMS *parameter = component->parameters + i;
+			setupSlidersComponent(gui, parameter);
+			gui->sliders[gui->slider_count].name = name;
+			gui->slider_count++;
+		} else if (component->strTypes[i][0] == 'C') {
+			EFFECT_PARAMS *parameter = component->parameters + i;
+			uint8_t count = gui->slider_count;
+			gui->sliders[count].myParameter = parameter;
+			gui->sliders[count].useCheckBox = 1;
+			gui->sliders[count].name = name;
+			gui->sliders[count].chkOutput = (int*) parameter->currentValue;
+			*(gui->sliders[count].chkOutput) = parameter->intParameter[0] & 0xFF;
+			gui->sliders[count].previousCheck = 15;
+			gui->slider_count++;
+		}
+	}
+	for (int i = 0; i < component->childrenCount; i++) {
+		EFFECT_COMPONENT *childComponent = component->childComponents[i];
+		setupSliders(gui, childComponent);
+	}
+}
