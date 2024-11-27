@@ -95,18 +95,22 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 				{
 					COMPRESSOR *dr = component->effect;
 					initialize_COMPRESSOR(dr, sampleRate);
+					dr->hard_knee = (dr->gui_not_hard_knee == 0) ? 1 : 0;
+					dr->makeup_property_mode = (dr->gui_not_hard_property == 0) ? 1 : 0;
 				}
 				break;
 		case Expander:
 				{
 					EXPANDER *dr = component->effect;
 					initialize_EXPANDER(dr, sampleRate);
+					dr->hard_knee = (dr->gui_not_hard_knee == 0) ? 1 : 0;
 				}
 				break;
 		case Limiter:
 				{
 					LIMITER *dr = component->effect;
 					initialize_LIMITER(dr, sampleRate);
+					dr->makeup_property_mode = (dr->gui_not_hard_property == 0) ? 1 : 0;
 				}
 				break;
 		case Echo:

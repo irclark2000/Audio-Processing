@@ -371,7 +371,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		index++;
 		value = setName_Type_Parse_Variables(component, index,
 				ptrHardKnee);
-		component->parameters[index].currentValue = (float *)&(dr->not_hard_knee);
+		component->parameters[index].currentValue = (float *)&(dr->gui_not_hard_knee);
 		dr->hard_knee = value + 0.1;
 		component->parameters[index].recalculate =
 				(RECALCULATE) gui_setHardKnee_COMPRESSOR;
@@ -383,7 +383,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		index++;
 		value = setName_Type_Parse_Variables(component, index,
 				ptrMode);
-		component->parameters[index].currentValue = (float *)&(dr->not_makeup_property_mode);
+		component->parameters[index].currentValue = (float *)&(dr->gui_not_hard_property);
 		dr->makeup_property_mode = value + 0.1;
 		component->parameters[index].recalculate =
 				(RECALCULATE) gui_setMakeupPropertyKnee_COMPRESSOR;
@@ -445,7 +445,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		index++;
 		value = setName_Type_Parse_Variables(component, index,
 				ptrMode);
-		component->parameters[index].currentValue = (float *)&(dr->not_makeup_property_mode);
+		component->parameters[index].currentValue = (float *)&(dr->gui_not_hard_property);
 		dr->makeup_property_mode = value + 0.1;
 		component->parameters[index].recalculate =
 				(RECALCULATE) gui_setMakeupPropertyKnee_LIMITER;
@@ -493,7 +493,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		index++;
 		value = setName_Type_Parse_Variables(component, index,
 				ptrHardKnee);
-		component->parameters[index].currentValue = (float *)&(dr->not_hard_knee);
+		component->parameters[index].currentValue = (float *)&(dr->gui_not_hard_knee);
 		dr->hard_knee = value + 0.1;
 		component->parameters[index].recalculate =
 				(RECALCULATE) gui_setHardKnee_EXPANDER;
