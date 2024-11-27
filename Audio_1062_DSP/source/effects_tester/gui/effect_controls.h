@@ -1,7 +1,7 @@
 /*
- * toolkit_gui.h
+ * effect_controls.h
  *
- *  Created on: Oct 30, 2024
+ *  Created on: Nov 26, 2024
  *      Author: isaac
  */
 /*
@@ -19,15 +19,44 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CON
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef EFFECTS_TESTER_GUI_TOOLKIT_GUI_H_
-#define EFFECTS_TESTER_GUI_TOOLKIT_GUI_H_
+#ifndef EFFECTS_TESTER_GUI_EFFECT_CONTROLS_H_
+#define EFFECTS_TESTER_GUI_EFFECT_CONTROLS_H_
+#include <stdint.h>
 #include "effects_tester/audio_player/effect_component.h"
 #include "effects_gui_interface.h"
-#include "effect_controls.h"
 
+// effects slider parameters
+typedef struct SLIDER_VALUES {
+	EFFECT_PARAMS *myParameter;
+	char *name;
+	uint8_t useCheckBox;
+	int previousCheck;
+	int *chkOutput;
+	float slope;
+	float intercept;
+	float *slOutput;
+	float previousOutput;
+	float slider_value;  // 0.0->1.0;
+} SLIDER_VALUES;
+
+#define MAX_SLIDER_COUNT 15
+
+typedef struct {
+	int display_sliders;
+	uint8_t effect_selected;
+	float effect_volume;
+	int effect_enabled;
+	EFFECT_COMPONENT *component;
+	uint8_t slider_count;
+	SLIDER_VALUES sliders[MAX_SLIDER_COUNT];
+} DISPLAY_STATE;
 
 extern DISPLAY_STATE gGUI;
-void selected_music_file (char * fileName);
+
+void update_effect_state(SLIDER_VALUES *sliders, uint8_t slider_count);
+void generate_gui(EFFECT_ITEM *effects_list);
+void update_state_by_counter (uint16_t counter, uint16_t max_counter);
+void update_state_periodically ();
 
 
-#endif /* EFFECTS_TESTER_GUI_TOOLKIT_GUI_H_ */
+#endif /* EFFECTS_TESTER_GUI_EFFECT_CONTROLS_H_ */

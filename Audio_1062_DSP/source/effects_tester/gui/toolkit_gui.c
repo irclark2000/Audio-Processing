@@ -6,6 +6,7 @@
 #include "gui_common.h"
 #include "nuklear.h"
 #include "sound_picker.h"
+#include "effect_controls.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -28,8 +29,6 @@
 #else
 #define NK_SHADER_VERSION "#version 300 es\n"
 #endif
-
-#define MAX_SLIDER_COUNT 15
 
 struct media {
 	struct nk_font *font_13;
@@ -56,15 +55,6 @@ struct media {
 	struct nk_image images[9];
 	struct nk_image menu[6];
 };
-typedef struct {
-	int display_sliders;
-	uint8_t effect_selected;
-	float effect_volume;
-	uint8_t effect_enabled;
-	EFFECT_COMPONENT *component;
-	uint8_t slider_count;
-	SLIDER_VALUES sliders[MAX_SLIDER_COUNT];
-} DISPLAY_STATE;
 
 typedef struct MUSIC_STATE {
 	char *fileName;
@@ -325,11 +315,6 @@ static void effect_controls(struct nk_context *ctx, struct media *media) {
 
 			}
 		}
-	}
-	if (check) {
-		//printf("Bypass on.\n");
-	} else {
-		//printf("Bypass off.\n");
 	}
 	nk_end(ctx);
 	nk_style_set_font(ctx, &media->font_14->handle);
