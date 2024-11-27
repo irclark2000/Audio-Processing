@@ -87,6 +87,7 @@ static void initializeMusicState(MUSIC_STATE *music) {
 	music->stop_music = 0;
 	//music->fileName = 0;
 }
+#if 0
 void update_effect_state_for_slider(SLIDER_VALUES *sliders, uint8_t index) {
 	EFFECT_PARAMS *parameter = sliders[index].myParameter;
 	void *effect = parameter->myEffect;
@@ -130,7 +131,7 @@ void update_state_periodically() {
 }
 
 static void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT *component);
-
+#endif
 static void clearDisplayState(DISPLAY_STATE *gui) {
 	gui->display_sliders = 0;
 	gui->effect_selected = 0;
