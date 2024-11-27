@@ -59,6 +59,8 @@ struct media {
 typedef struct {
 	int display_sliders;
 	uint8_t effect_selected;
+	float effect_volume;
+	uint8_t effect_enabled;
 	EFFECT_COMPONENT *component;
 	uint8_t slider_count;
 	SLIDER_VALUES sliders[MAX_SLIDER_COUNT];
@@ -150,10 +152,12 @@ static void clearDisplayState(DISPLAY_STATE *gui) {
 }
 static void initializeDisplayState(DISPLAY_STATE *gui, uint8_t selection) {
 	clearDisplayState(gui);
+	gui->effect_volume = 1.0f;
+	gui->effect_enabled = 1;
+
 	gui->component = createComponent(g_effect_list[selection].name, 0, 0);
 	gui->effect_selected = 1;
 	if (gui->component != NULL) {
-		addChildComponent(gui->component, "Volume");
 		gui->component->effect_bypass = 0;
 		setupSliders(gui, gui->component);
 		gui->display_sliders = 1;
@@ -285,7 +289,7 @@ static int ui_piemenu(struct nk_context *ctx, struct nk_vec2 pos, float radius,
 
 static void effect_controls(struct nk_context *ctx, struct media *media) {
 	char *title = gGUI.component->effectName;
-	static int check = 0;
+	//static int check = 1;
 	static char value_text[64];
 	static float row_widths[] = { 0.25, 0.55, 0.20 };
 
@@ -296,7 +300,14 @@ static void effect_controls(struct nk_context *ctx, struct media *media) {
 					| NK_WINDOW_NO_SCROLLBAR)) {
 		nk_style_set_font(ctx, &media->font_18->handle);
 		nk_layout_row_dynamic(ctx, 30, 1);
-		nk_checkbox_label(ctx, "Bypass Effect", &check);
+		nk_checkbox_label(ctx, "Bypass Effect", &gGUI.effect_enabled);
+		nk_layout_row(ctx, NK_DYNAMIC, 30, 3, row_widths);
+		nk_label(ctx, "Volume", NK_TEXT_LEFT);
+		if (nk_slider_float(ctx, 0, &gGUI.effect_volume, 10.0f,
+				0.01f)) {
+		}
+		sprintf(value_text, "%5.2f", gGUI.effect_volume);
+		nk_label(ctx, value_text, NK_TEXT_LEFT);
 		for (int j = 0; j < gGUI.slider_count; j++) {
 			if (!gGUI.sliders[j].useCheckBox) {
 				nk_layout_row(ctx, NK_DYNAMIC, 30, 3, row_widths);

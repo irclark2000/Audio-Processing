@@ -171,12 +171,12 @@ EFFECT_COMPONENT* makeBlankComponent(char *effectName) {
 	component->childrenCount = 0;
 	component->effect = 0;
 	component->main_effect = 0;
+	component->volume = 1.0f;
 	if (effectName) {
 		component->effectName = strSave(effectName);
 	} else {
 		component->effectName = 0;
 	}
-
 	return component;
 }
 

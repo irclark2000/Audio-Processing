@@ -62,6 +62,7 @@ typedef struct EFFECT_COMPONENT {
 	struct EFFECT_COMPONENT *childComponents[MAX_CHILD_EFFECT_COMPONENTS];
 	uint8_t childrenCount;
 	uint8_t effect_bypass;   // disable effect during playback
+	float volume;
 } EFFECT_COMPONENT;
 char * strSave (char * string);
 void do_nothing0_Component(void * effect);
