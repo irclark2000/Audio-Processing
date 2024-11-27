@@ -111,7 +111,7 @@ MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFram
 	    for (iChannel = 0; iChannel < pEffects->config.channels; iChannel += 1) {
 		    if (component->effect_bypass == 0) {
 		    	if (iChannel == 0) {
-		    		float out = component->apply(component->effect, pFramesInF32[iChannel]);
+		    		float out = component->apply(component->effect, pFramesInF32[iChannel]) * component->volume;
 		    		pFramesOutF32[iChannel] = out;
 		    	}
 		    	else {
