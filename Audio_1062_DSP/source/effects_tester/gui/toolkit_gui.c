@@ -130,7 +130,6 @@ void update_state_periodically() {
 	}
 }
 
-static void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT *component);
 #endif
 static void clearDisplayState(DISPLAY_STATE *gui) {
 	gui->display_sliders = 0;
@@ -885,6 +884,8 @@ static void scroll_input(GLFWwindow *win, double _, double yoff) {
 			nk_vec2(0, (float) yoff));
 }
 
+#if 0
+
 #define INITIAL_FLOAT_VALUE -1888.8888f
 
 static void setupSlidersComponent(DISPLAY_STATE *gui, EFFECT_PARAMS *parameter) {
@@ -928,7 +929,7 @@ static void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT *component) {
 		setupSliders(gui, childComponent);
 	}
 }
-
+#endif
 void generate_gui(EFFECT_ITEM *eList) {
 	/* Platform */
 	static GLFWwindow *win;

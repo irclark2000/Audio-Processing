@@ -57,6 +57,7 @@ void update_effect_state(SLIDER_VALUES *sliders, uint8_t slider_count);
 void generate_gui(EFFECT_ITEM *effects_list);
 void update_state_by_counter (uint16_t counter, uint16_t max_counter);
 void update_state_periodically ();
-
+void update_effect_state_for_slider(SLIDER_VALUES *sliders, uint8_t index);
+void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT *component);
 
 #endif /* EFFECTS_TESTER_GUI_EFFECT_CONTROLS_H_ */

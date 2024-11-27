@@ -21,7 +21,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 #include "effect_controls.h"
-
+#include <assert.h>
 
 void update_effect_state_for_slider(SLIDER_VALUES *sliders, uint8_t index) {
 	EFFECT_PARAMS *parameter = sliders[index].myParameter;
@@ -65,8 +65,6 @@ void update_state_periodically() {
 	}
 }
 
-static void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT *component);
-
 static void clearDisplayState(DISPLAY_STATE *gui) {
 	gui->display_sliders = 0;
 	gui->effect_selected = 0;
@@ -75,4 +73,23 @@ static void clearDisplayState(DISPLAY_STATE *gui) {
 		freeComponent(gui->component);
 		gui->component = NULL;
 	}
+}
+
+#define INITIAL_FLOAT_VALUE -1888.8888f
+
+static void setupSlidersComponent(DISPLAY_STATE *gui, EFFECT_PARAMS *parameter) {
+	uint8_t count = gui->slider_count;
+	gui->sliders[count].useCheckBox = 0;
+
+	assert(parameter->currentValue != 0);
+	gui->sliders[count].myParameter = parameter;
+	gui->sliders[count].slope = parameter->floatParameter[2]
+			- parameter->floatParameter[0];
+	gui->sliders[count].intercept = parameter->floatParameter[0];
+	gui->sliders[count].slider_value = (parameter->floatParameter[1]
+			- parameter->floatParameter[0]) / gui->sliders[count].slope;
+	gui->sliders[count].slOutput = parameter->currentValue;
+	*(parameter->currentValue) = parameter->floatParameter[1];
+	gui->sliders[count].previousOutput = INITIAL_FLOAT_VALUE;
+	parameter->previousValue = &(gui->sliders[count].previousOutput);
 }
