@@ -28,6 +28,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 typedef struct {
 	uint8_t filterCount;
 	float inv_Count;
+	int parallel;
 	EQFILTER filter_band[EQUALIZER_BAND_COUNT];
 	float out;
 } EQUALIZER;

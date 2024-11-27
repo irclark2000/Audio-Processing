@@ -36,12 +36,18 @@ void initialize_EQUALIZER(EQUALIZER *eq, float sampleRate) {
 	for (int i=0; i < myCount; ++i) {
 		initialize_EQFILTER(&(eq->filter_band[i]), bands[i].frequency, sampleRate, 1.0, bands[i].frequency/bands[i].Q);
 	}
+	eq->parallel = 1;
 }
 
 float apply_EQUALIZER(EQUALIZER *eq, float input) {
-	eq->out = 0;
+	eq->out = (eq->parallel == 0) ? input : 0.0f;
 	for (int i=0; i < eq->filterCount; ++i) {
-		eq->out += apply_EQFILTER(&(eq->filter_band[i]), input) * eq->inv_Count ;
+		if (eq->parallel == 0) {
+			eq->out = apply_EQFILTER(&(eq->filter_band[i]), eq->out);
+		}
+		else {
+			eq->out += apply_EQFILTER(&(eq->filter_band[i]), input) * eq->inv_Count ;
+		}
 	}
 	return eq->out;
 }

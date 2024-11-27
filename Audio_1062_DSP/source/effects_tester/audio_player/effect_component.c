@@ -237,7 +237,12 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		component->type = Equalizer;
 		eq->filterCount = 10;
 		eq->inv_Count = 1.0f / 10.0f;
-		component->parameterCount = 0;
+		component->parameterCount = 1;
+		component->parameters = makeBlankParameters(1, component->effect);
+		float value = setName_Type_Parse_Variables(component, 0,
+				"Series:C*0");
+		component->parameters[index].currentValue = &(eq->parallel);
+		*(component->parameters[index].currentValue) = value + 0.1;
 		char *bands[5];
 		bands[0] =
 				"Freq:X*31\tQ:X*4\t31 Hz (db):S3*-12,0,12\nFreq:X*62\tQ:X*4\t62 Hz (db):S3*-12,0,12";
