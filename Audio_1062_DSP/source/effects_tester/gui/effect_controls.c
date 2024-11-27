@@ -60,6 +60,10 @@ void update_state_periodically() {
 	static uint32_t count = 0;
 	uint8_t index = count % gGUI.slider_count;
 	update_effect_state_for_slider(gGUI.sliders, index);
+	if (index == 0) {
+		gGUI.component->effect_bypass = (gGUI.effect_enabled == 0) ? 0 : 1;
+		gGUI.component->volume = gGUI.effect_volume;
+	}
 	if (count++ == 400) {
 		count = 0;
 	}
