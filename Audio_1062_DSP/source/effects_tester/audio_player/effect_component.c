@@ -238,8 +238,9 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		eq->filterCount = 10;
 		eq->inv_Count = 1.0f / 10.0f;
 		component->parameterCount = 1;
+		uint8_t index = 0;
 		component->parameters = makeBlankParameters(1, component->effect);
-		float value = setName_Type_Parse_Variables(component, 0,
+		float value = setName_Type_Parse_Variables(component, index,
 				"Series:C*0");
 		component->parameters[index].currentValue = &(eq->parallel);
 		*(component->parameters[index].currentValue) = value + 0.1;
