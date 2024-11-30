@@ -199,7 +199,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 			strcpy(temp, strParameters);
 		}
 		char *ptrParameters = strtok(temp, "//");
-		char *ptrFollower = strtok(temp, "//");
+		char *ptrFollower = strtok(NULL, "//");
 		char *ptrVarBandPass = strtok(NULL, "//");
 		// 4 parameters
 		component->parameterCount = 5;

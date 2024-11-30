@@ -239,11 +239,11 @@ static void effect_controls(struct nk_context *ctx, struct media *media) {
 				nk_layout_row(ctx, NK_DYNAMIC, 30, 3, row_widths);
 				nk_label(ctx, gGUI.sliders[j].name, NK_TEXT_LEFT);
 				if (nk_slider_float(ctx, 0, &gGUI.sliders[j].slider_value, 1.0f,
-						0.01f)) {
+						0.001f)) {
 				}
 				*(gGUI.sliders[j].slOutput) = gGUI.sliders[j].slider_value
 						* gGUI.sliders[j].slope + gGUI.sliders[j].intercept;
-				sprintf(value_text, "%5.2f", *(gGUI.sliders[j].slOutput));
+				sprintf(value_text, "%6.3f", *(gGUI.sliders[j].slOutput));
 				nk_label(ctx, value_text, NK_TEXT_LEFT);
 			} else {
 				nk_layout_row(ctx, NK_DYNAMIC, 30, 1, row_widths);
