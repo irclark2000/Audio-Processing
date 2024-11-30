@@ -60,6 +60,7 @@ float apply_AUTOWAH (AUTOWAH *aw, float input) {
 	setCenterFrequency_VARBANDPASS(&(aw->vbf), coFreq, 8.0);
 #endif
 	update_VARBANDPASS(&(aw->vbf), input);
+	aw->awOut = aw->vbf.out;
 	return aw->awOut;
 }
 void setFxGain_AUTOWAH (AUTOWAH *aw, float fxGain) {

@@ -189,7 +189,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		component->effect = aw;
 		component->type = AutoWah;
 		component->main_effect = 1;
-		component->parameters = makeBlankParameters(4, component->effect);
+		component->parameters = makeBlankParameters(5, component->effect);
 		char temp[480];
 		if (strParameters == 0) {
 			char *elements =
@@ -202,7 +202,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		char *ptrVarBandPass = strtok(NULL, "//");
 		// 4 parameters
 		component->parameterCount = 5;
-		char *params[4];
+		char *params[5];
 		char *ptr = strtok(ptrParameters, "\t");
 		for (int i = 0; i < component->parameterCount; i++) {
 			params[i] = ptr;
@@ -212,7 +212,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		for (int i = 0; i < component->parameterCount; i++) {
 			values[i] = setName_Type_Parse_Variables(component, i, params[i]);
 		}
-		component->parameters[0].currentValue = &(aw->down_scan);
+		component->parameters[0].currentValue = (float *)&(aw->down_scan);
 		*(component->parameters[0].currentValue) = values[0];
 		component->parameters[1].currentValue = &(aw->inputGain);
 		*(component->parameters[1].currentValue) = values[1];
