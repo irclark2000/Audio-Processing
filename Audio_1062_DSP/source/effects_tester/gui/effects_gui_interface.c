@@ -148,6 +148,7 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 			{
 				ENVELOPE_FOLLOWER *ef = component->effect;
 				ef->sampleRate = sampleRate;
+				gui_setAttackRelease_ENVELOPE_FOLLOWER(ef);
 			}
 			break;
 		case Freeverb:

@@ -193,12 +193,13 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		char temp[480];
 		if (strParameters == 0) {
 			char *elements =
-					"Up Sweep:C*0\tInputGain:S3*0.01,1,10\tFxGain:S3*0.01,1,10\tMin Cutoff Freq:S3*10,267,500\tMax Cutoff Freq:S3*510,2000,3000//Q:S3*0.7,4,10\tCutoff Freq:X*2000\tPass:I*1";
+					"Up Sweep:C*0\tInputGain:S3*0.01,1,10\tFxGain:S3*0.01,1,10\tMin Cutoff Freq:S3*10,267,500\tMax Cutoff Freq:S3*510,2000,3000//Attack Time (s):S3*0.001,0.001,0.01\tRelease Time (s):S3*0.01,0.4,2.0//Q:S3*0.7,4,10\tCutoff Freq:X*2000\tPass:I*1";
 			strcpy(temp, elements);
 		} else {
 			strcpy(temp, strParameters);
 		}
 		char *ptrParameters = strtok(temp, "//");
+		char *ptrFollower = strtok(temp, "//");
 		char *ptrVarBandPass = strtok(NULL, "//");
 		// 4 parameters
 		component->parameterCount = 5;
@@ -227,7 +228,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		component->childrenCount = 2;
 		component->childComponents[0] = createComponent("Variable BandPass",
 				ptrVarBandPass, &(aw->vbf));
-		component->childComponents[1] = createComponent("Envelope Follower", 0,
+		component->childComponents[1] = createComponent("Envelope Follower", ptrFollower,
 				&(aw->ef));
 		component->apply = (APPLY) apply_AUTOWAH;
 		component->effect_bypass = 0;
@@ -822,8 +823,25 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 			component->main_effect = 1;
 		}
 		component->effect = ef;
-		// has no parametersp and no children
-		component->parameterCount = 0;
+		component->parameterCount = 2;
+		component->parameters = makeBlankParameters(2, component->effect);
+		uint8_t index = 0;
+		char temp[160];
+		strcpy(temp, strParameters);
+		char *ptrAttack = strtok(temp, "\t");
+		char *ptrRelease = strtok(NULL, "\t");
+		float value = setName_Type_Parse_Variables(component, index, ptrAttack);
+		component->parameters[index].currentValue = &(ef->gui_attack_time);
+		*(component->parameters[index].currentValue) = value;
+		component->parameters[index].recalculate = (RECALCULATE)gui_setAttackRelease_ENVELOPE_FOLLOWER;
+		component->parameters[index].partnerParameter = &(component->parameters[index + 1]);
+		index++;
+		value = setName_Type_Parse_Variables(component, index, ptrRelease);
+		component->parameters[index].currentValue = &(ef->gui_release_time);
+		*(component->parameters[index].currentValue) = value;
+		component->parameters[index].recalculate = (RECALCULATE)gui_setAttackRelease_ENVELOPE_FOLLOWER;
+		component->parameters[index].partnerParameter = &(component->parameters[index - 1]);
+
 		component->childrenCount = 0;
 		component->apply = 0;
 	} else if (strcmp(effectName, "Equalizing Filter") == 0) {
