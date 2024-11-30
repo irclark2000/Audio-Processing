@@ -193,7 +193,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		char temp[480];
 		if (strParameters == 0) {
 			char *elements =
-					"InputGain:S3*0.01,1,10\tFxGain:S3*0.01,1,10\tMin Cutoff Freq:S3*10,267,500\tMax Cutoff Freq:S3*510,600,2000//Q:S3*0.7,4,10\tCutoff Freq:X*1000\tPass:I*1";
+					"Up Sweep:C*0\tInputGain:S3*0.01,1,10\tFxGain:S3*0.01,1,10\tMin Cutoff Freq:S3*10,267,500\tMax Cutoff Freq:S3*510,2000,3000//Q:S3*0.7,4,10\tCutoff Freq:X*2000\tPass:I*1";
 			strcpy(temp, elements);
 		} else {
 			strcpy(temp, strParameters);
@@ -201,7 +201,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		char *ptrParameters = strtok(temp, "//");
 		char *ptrVarBandPass = strtok(NULL, "//");
 		// 4 parameters
-		component->parameterCount = 4;
+		component->parameterCount = 5;
 		char *params[4];
 		char *ptr = strtok(ptrParameters, "\t");
 		for (int i = 0; i < component->parameterCount; i++) {
@@ -212,23 +212,23 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		for (int i = 0; i < component->parameterCount; i++) {
 			values[i] = setName_Type_Parse_Variables(component, i, params[i]);
 		}
-		component->parameters[0].currentValue = &(aw->inputGain);
+		component->parameters[0].currentValue = &(aw->down_scan);
 		*(component->parameters[0].currentValue) = values[0];
-		component->parameters[1].currentValue = &(aw->fxGain);
+		component->parameters[1].currentValue = &(aw->inputGain);
 		*(component->parameters[1].currentValue) = values[1];
-		component->parameters[2].currentValue = &(aw->minCoFreq);
+		component->parameters[2].currentValue = &(aw->fxGain);
 		*(component->parameters[2].currentValue) = values[2];
-		component->parameters[3].currentValue = &(aw->maxCoFreq);
+		component->parameters[3].currentValue = &(aw->minCoFreq);
 		*(component->parameters[3].currentValue) = values[3];
+		component->parameters[4].currentValue = &(aw->maxCoFreq);
+		*(component->parameters[4].currentValue) = values[4];
 
 		// children
-		component->childrenCount = 3;
+		component->childrenCount = 2;
 		component->childComponents[0] = createComponent("Variable BandPass",
 				ptrVarBandPass, &(aw->vbf));
 		component->childComponents[1] = createComponent("Envelope Follower", 0,
 				&(aw->ef));
-		component->childComponents[2] = createComponent("Mixer", 0,
-				&(aw->mixer));
 		component->apply = (APPLY) apply_AUTOWAH;
 		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Equalizer") == 0) {
@@ -239,22 +239,25 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		eq->inv_Count = 1.0f / 10.0f;
 		component->parameterCount = 1;
 		uint8_t index = 0;
+
+		char temp[15];
+		strcpy(temp, "Series:C*0");
 		component->parameters = makeBlankParameters(1, component->effect);
-		float value = setName_Type_Parse_Variables(component, index,
-				"Series:C*0");
-		component->parameters[index].currentValue = &(eq->parallel);
+		float value = setName_Type_Parse_Variables(component, index, temp);
+		component->parameters[index].currentValue = (float *)&(eq->parallel);
 		*(component->parameters[index].currentValue) = value + 0.1;
+		
 		char *bands[5];
 		bands[0] =
-				"Freq:X*31\tQ:X*4\t31 Hz (db):S3*-12,0,12\nFreq:X*62\tQ:X*4\t62 Hz (db):S3*-12,0,12";
+				"Freq:X*31\tQ:X*4\t31 Hz (db):S3*-20,0,20\nFreq:X*62\tQ:X*4\t62 Hz (db):S3*-20,0,20";
 		bands[1] =
-				"Freq:X*125\tQ:X*4\t125 Hz (db):S3*-12,0,12\nFreq:X*250\tQ:X*4\t250 Hz (db):S3*-12,0,12";
+				"Freq:X*125\tQ:X*4\t125 Hz (db):S3*-20,0,20\nFreq:X*250\tQ:X*4\t250 Hz (db):S3*-20,0,20";
 		bands[2] =
-				"Freq:X*500\tQ:X*4\t500 Hz (db):S3*-12,0,12\nFreq:X*1000\tQ:X*4\t1k Hz (db):S3*-12,0,12";
+				"Freq:X*500\tQ:X*4\t500 Hz (db):S3*-20,0,20\nFreq:X*1000\tQ:X*4\t1k Hz (db):S3*-20,0,20";
 		bands[3] =
-				"Freq:X*2000\tQ:X*4\t2k Hz (db):S3*-12,0,12\nFreq:X*4000\tQ:X*4\t4k Hz (db):S3*-12,0,12";
+				"Freq:X*2000\tQ:X*4\t2k Hz (db):S3*-20,0,20\nFreq:X*4000\tQ:X*4\t4k Hz (db):S3*-20,0,20";
 		bands[4] =
-				"Freq:X*8000\tQ:X*4\t8k Hz (db):S3*-12,0,12\nFreq:X*16000\tQ:X*4\t16k Hz (db):S3*-12,0,12";
+				"Freq:X*8000\tQ:X*4\t8k Hz (db):S3*-20,0,20\nFreq:X*16000\tQ:X*4\t16k Hz (db):S3*-20,0,20";
 		for (int i = 0; i < 5; ++i) {
 			char temp[80];
 			strcpy(temp, bands[i]);

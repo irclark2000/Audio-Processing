@@ -26,7 +26,6 @@ void initialize_ENVELOPE_FOLLOWER(ENVELOPE_FOLLOWER *ef, float sampleRate) {
 	ef->efOut = 0.0f;
 	ef->attack_parameter = 0.5;
 	ef->release_parameter = 0.999;
-
 }
 float apply_ENVELOPE_FOLLOWER(ENVELOPE_FOLLOWER *ef, float input) {
 	ef->absInput = input;
@@ -41,3 +40,8 @@ float apply_ENVELOPE_FOLLOWER(ENVELOPE_FOLLOWER *ef, float input) {
 	}
 	return ef->efOut;
 }
+void gui_setAttackRelease_ENVELOPE_FOLLOWER(ENVELOPE_FOLLOWER *ef) {
+	ef->attack_parameter = fastExp(-1.0f / (ef->gui_attack_time * ef->sampleRate));
+    ef->release_parameter = fastExp(-1.0f / (ef->gui_release_time * ef->sampleRate));
+}
+

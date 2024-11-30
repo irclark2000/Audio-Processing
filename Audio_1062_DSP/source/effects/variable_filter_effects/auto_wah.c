@@ -39,24 +39,27 @@ void initialize_AUTOWAH (AUTOWAH *aw, float inputGain, float fxGain, float minCo
 	aw->fxGain = 1.0f;
 	aw->minCoFreq = minCoFreq;
 	aw->maxCoFreq = maxCoFreq;
-
+	aw->down_scan = 0;
 	aw->sampleRate = sampleRate;
 	setFxGain_AUTOWAH (aw, fxGain);
 	setInputGain_AUTOWAH (aw, inputGain);
 	initialize_ENVELOPE_FOLLOWER(&(aw->ef), sampleRate);
-	initialize_MIXER (&(aw->mixer), 0.5f);
 	initialize_VARBANDPASS(&(aw->vbf), 1000.0f, 8, sampleRate, 1);
 }
 float apply_AUTOWAH (AUTOWAH *aw, float input) {
 	apply_ENVELOPE_FOLLOWER(&(aw->ef), input * aw->inputGain);
-	coFreq = aw->minCoFreq + (aw->maxCoFreq - aw->minCoFreq) * aw->ef.efOut;
+	if (aw->down_scan) {
+		coFreq = aw->maxCoFreq - (aw->maxCoFreq - aw->minCoFreq) * aw->ef.efOut;
+	}
+	else {
+		coFreq = aw->minCoFreq + (aw->maxCoFreq - aw->minCoFreq) * aw->ef.efOut;
+	}
 #if AUDIO_EFFECTS_TESTER
 	setCenterFrequency_VARBANDPASS(&(aw->vbf), coFreq, aw->vbf.gui_Q);
 #else
 	setCenterFrequency_VARBANDPASS(&(aw->vbf), coFreq, 8.0);
 #endif
 	update_VARBANDPASS(&(aw->vbf), input);
-	aw->awOut = applyWetDry_MIXER (&(aw->mixer), aw->vbf.out * aw->fxGain, input);
 	return aw->awOut;
 }
 void setFxGain_AUTOWAH (AUTOWAH *aw, float fxGain) {
@@ -66,7 +69,4 @@ void setFxGain_AUTOWAH (AUTOWAH *aw, float fxGain) {
 void setInputGain_AUTOWAH (AUTOWAH *aw, float inputGain) {
 	inputGain = MIN_MAX(inputGain, 0.0f, 2.0f);
 	aw->inputGain = inputGain;
-}
-void setWetDry_AUTOWAH (AUTOWAH *aw, float wet_dry) {
-	setWetDry_MIXER (&(aw->mixer), wet_dry);
 }

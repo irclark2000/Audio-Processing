@@ -21,7 +21,8 @@
 
 #ifndef EFFECTS_COMPONENTS_ENVELOPE_FOLLOWER_H_
 #define EFFECTS_COMPONENTS_ENVELOPE_FOLLOWER_H_
-#include "leaky_integrator.h"
+//#include "leaky_integrator.h"
+#include "fast_math/fast_math.h"
 
 typedef struct {
 	float efOut;
@@ -29,9 +30,11 @@ typedef struct {
 	float attack_parameter;
 	float release_parameter;
 	float absInput;
+	float gui_attack_time;
+	float gui_release_time;
 }ENVELOPE_FOLLOWER;
 
 void initialize_ENVELOPE_FOLLOWER(ENVELOPE_FOLLOWER *ef, float sampleRate);
 float apply_ENVELOPE_FOLLOWER(ENVELOPE_FOLLOWER *ef, float input);
-
+void gui_setAttackRelease_ENVELOPE_FOLLOWER(ENVELOPE_FOLLOWER *ef);
 #endif /* EFFECTS_COMPONENTS_ENVELOPE_FOLLOWER_H_ */

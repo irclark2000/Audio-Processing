@@ -51,3 +51,4 @@ float apply_EQUALIZER(EQUALIZER *eq, float input) {
 	}
 	return eq->out;
 }
+

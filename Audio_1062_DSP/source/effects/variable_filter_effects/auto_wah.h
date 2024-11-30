@@ -31,10 +31,10 @@ typedef struct {
 	float awOut;
 	float sampleRate;
 	ENVELOPE_FOLLOWER ef;
-	MIXER mixer;
 	VARBANDPASS vbf;
 	float inputGain;
 	float fxGain;
+	int down_scan;
 	float minCoFreq;
 	float maxCoFreq;
 } AUTOWAH;
@@ -43,6 +43,5 @@ void initialize_AUTOWAH (AUTOWAH *aw, float inputGain, float outputGain, float m
 float apply_AUTOWAH (AUTOWAH *aw, float input);
 void setFxGain_AUTOWAH (AUTOWAH *aw, float outputGain);
 void setInputGain_AUTOWAH (AUTOWAH *aw, float inputGain);
-void setWetDry_AUTOWAH (AUTOWAH *aw, float wet_dry);
 
 #endif /* EFFECTS_VARIABLE_FILTER_EFFECTS_AUTO_WAH_H_ */

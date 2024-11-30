@@ -217,10 +217,11 @@ static void effect_controls(struct nk_context *ctx, struct media *media) {
 	//static int check = 1;
 	static char value_text[64];
 	static float row_widths[] = { 0.25, 0.55, 0.20 };
+	int length = (gGUI.slider_count > 10) ? 550 : 450;
 
 	//int i;
 	nk_style_set_font(ctx, &media->font_20->handle);
-	if (nk_begin(ctx, title, nk_rect(650, 150, 575, 450),
+	if (nk_begin(ctx, title, nk_rect(650, 150, 575, length),
 			NK_WINDOW_TITLE | NK_WINDOW_BORDER | NK_WINDOW_MOVABLE
 					| NK_WINDOW_NO_SCROLLBAR)) {
 		nk_style_set_font(ctx, &media->font_18->handle);
