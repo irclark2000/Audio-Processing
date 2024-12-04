@@ -71,8 +71,10 @@ void update_state_periodically() {
 
 void clearDisplayState(DISPLAY_STATE *gui) {
 	gui->display_sliders = 0;
-	gui->effect_selected = 0;
 	gui->slider_count = 0;
+	gui->effect_selected = -1;
+	gui->previous_effect  = -1;
+
 	if (gui->component) {
 		freeComponent(gui->component);
 		gui->component = NULL;
@@ -83,8 +85,9 @@ void initializeDisplayState(DISPLAY_STATE *gui, uint8_t selection) {
 	gui->effect_volume = 1.0f;
 	gui->effect_enabled = 1;
 
+	gui->effect_selected = selection;
 	gui->component = createComponent(g_effect_list[selection].name, 0, 0);
-	gui->effect_selected = 1;
+
 	if (gui->component != NULL) {
 		gui->component->effect_bypass = 0;
 		setupSliders(gui, gui->component);

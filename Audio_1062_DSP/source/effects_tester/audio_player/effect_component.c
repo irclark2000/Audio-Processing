@@ -193,7 +193,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		char temp[480];
 		if (strParameters == 0) {
 			char *elements =
-					"Up Sweep:C*0\tInputGain:S3*0.01,1,10\tFxGain:S3*0.01,1,10\tMin Cutoff Freq:S3*10,267,500\tMax Cutoff Freq:S3*510,2000,3000//Attack Time (s):S3*0.001,0.001,0.01\tRelease Time (s):S3*0.01,0.4,2.0//Q:S3*0.7,4,10\tCutoff Freq:X*2000\tPass:I*1";
+					"Up Sweep:C*0\tInputGain:S2*0.01,1,10\tFxGain:S2*0.01,1,10\tMin Cutoff Freq:S2*10,267,500\tMax Cutoff Freq:S2*510,2000,3000//Attack Time (s):S3*0.001,0.001,0.01\tRelease Time (s):S2*0.01,0.4,2.0//Q:S2*0.7,4,10\tCutoff Freq:X*2000\tPass:I*1";
 			strcpy(temp, elements);
 		} else {
 			strcpy(temp, strParameters);
@@ -250,15 +250,15 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		
 		char *bands[5];
 		bands[0] =
-				"Freq:X*31\tQ:X*4\t31 Hz (db):S3*-20,0,20\nFreq:X*62\tQ:X*4\t62 Hz (db):S3*-20,0,20";
+				"Freq:X*31\tQ:X*4\t31 Hz (db):S2*-20,0,20\nFreq:X*62\tQ:X*4\t62 Hz (db):S2*-20,0,20";
 		bands[1] =
-				"Freq:X*125\tQ:X*4\t125 Hz (db):S3*-20,0,20\nFreq:X*250\tQ:X*4\t250 Hz (db):S3*-20,0,20";
+				"Freq:X*125\tQ:X*4\t125 Hz (db):S2*-20,0,20\nFreq:X*250\tQ:X*4\t250 Hz (db):S2*-20,0,20";
 		bands[2] =
-				"Freq:X*500\tQ:X*4\t500 Hz (db):S3*-20,0,20\nFreq:X*1000\tQ:X*4\t1k Hz (db):S3*-20,0,20";
+				"Freq:X*500\tQ:X*4\t500 Hz (db):S2*-20,0,20\nFreq:X*1000\tQ:X*4\t1k Hz (db):S2*-20,0,20";
 		bands[3] =
-				"Freq:X*2000\tQ:X*4\t2k Hz (db):S3*-20,0,20\nFreq:X*4000\tQ:X*4\t4k Hz (db):S3*-20,0,20";
+				"Freq:X*2000\tQ:X*4\t2k Hz (db):S2*-20,0,20\nFreq:X*4000\tQ:X*4\t4k Hz (db):S2*-20,0,20";
 		bands[4] =
-				"Freq:X*8000\tQ:X*4\t8k Hz (db):S3*-20,0,20\nFreq:X*16000\tQ:X*4\t16k Hz (db):S3*-20,0,20";
+				"Freq:X*8000\tQ:X*4\t8k Hz (db):S2*-20,0,20\nFreq:X*16000\tQ:X*4\t16k Hz (db):S2*-20,0,20";
 		for (int i = 0; i < 5; ++i) {
 			char temp[80];
 			strcpy(temp, bands[i]);
@@ -283,7 +283,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		// forced order: base delay, then Lfo, then Lfo Driven Delay
 		if (strParameters == 0) {
 			char *elements =
-					"Count:I*2//BaseDelay 1:S3*0,1,10\nLFO 1 Freq:S3*0.1,1,5\tLFO 1 Depth (mSec):S3*0,1,10\nDelay 1 Max:X*30//BaseDelay 2:S3*0,1,10\nLFO 2 Freq:S3*0.1,1,5\tLFO 2 Depth (mSec):S3*0,1,10\nDelay 2 Max:X*30";
+					"Count:I*2//BaseDelay 1:S2*0,1,10\nLFO 1 Freq:S2*0.1,1,5\tLFO 1 Depth (mSec):S2*0,1,10\nDelay 1 Max:X*30//BaseDelay 2:S2*0,1,10\nLFO 2 Freq:S2*0.1,1,5\tLFO 2 Depth (mSec):S2*0,1,10\nDelay 2 Max:X*30";
 			strcpy(temp, elements);
 		} else {
 			strcpy(temp, strParameters);
@@ -338,7 +338,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		// forced order: base delay, then Lfo, then Lfo Driven Delay
 		if (strParameters == 0) {
 			char *elements =
-					"Threshold (db):S3*-50,-10,0\tRatio:S3*1,5,50\tAttack Time (sec):S3*0,0.05,4\tRelease Time (sec):S3*0,0.20,4\tHard Knee:C*1\tKnee Width (db):S3*0,0,20\tMakeupMode:C*0\tMakeup Gain:S3*-10,0,24";
+					"Threshold (db):S2*-50,-10,0\tRatio:S2*1,5,50\tAttack Time (sec):S2*0,0.05,4\tRelease Time (sec):S2*0,0.20,4\tHard Knee:C*1\tKnee Width (db):S2*0,0,20\tMakeupMode:C*0\tMakeup Gain:S2*-10,0,24";
 			strcpy(temp, elements);
 		} else {
 			strcpy(temp, strParameters);
@@ -416,7 +416,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		// forced order: base delay, then Lfo, then Lfo Driven Delay
 		if (strParameters == 0) {
 			char *elements =
-					"Threshold (db):S3*-50,-10,0\tAttack Time (sec):S3*0,0.0,4\tRelease Time (sec):S3*0,0.20,4\tKnee Width (db):S3*0,0,20\tMakeupMode:C*1\tMakeup Gain:S3*-10,0,24";
+					"Threshold (db):S2*-50,-10,0\tAttack Time (sec):S2*0,0.0,4\tRelease Time (sec):S2*0,0.20,4\tKnee Width (db):S2*0,0,20\tMakeupMode:C*1\tMakeup Gain:S2*-10,0,24";
 			strcpy(temp, elements);
 		} else {
 			strcpy(temp, strParameters);
@@ -478,7 +478,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		// forced order: base delay, then Lfo, then Lfo Driven Delay
 		if (strParameters == 0) {
 			char *elements =
-					"Threshold (db):S3*-140,-10,0\tRatio:S3*1,5,50\tHardKnee:C*1\tKnee Width (db):S3*0,0,20\tAttack Time (sec):S3*0,0.05,4\tRelease Time (sec):S3*0,0.20,4\tHold Time:S3*0,0.5,4";
+					"Threshold (db):S2*-140,-10,0\tRatio:S2*1,5,50\tHardKnee:C*1\tKnee Width (db):S2*0,0,20\tAttack Time (sec):S2*0,0.05,4\tRelease Time (sec):S2*0,0.20,4\tHold Time:S2*0,0.5,4";
 			strcpy(temp, elements);
 		} else {
 			strcpy(temp, strParameters);
@@ -555,7 +555,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		component->childComponents[index++] = createComponent("Mixer", 0,
 				&(echo->mixer));
 		component->childComponents[index++] = createComponent("Variable Delay",
-				"Delay mSec:S3*0,250,500", &(echo->vDelay));
+				"Delay mSec:S2*0,250,500", &(echo->vDelay));
 		component->apply = (APPLY) update_Echo;
 		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Flanger") == 0) {
@@ -585,7 +585,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		component->childComponents[index++] = createComponent("Variable Delay",
 				"Delay mSec:X*30", &(flng->vDelay));
 		component->childComponents[index++] = createComponent("Lfo",
-				"LFO Freq:S3*0.1,1,5\tLFO Depth (mSec):S3*0,1,10", 0);
+				"LFO Freq:S2*0.1,1,5\tLFO Depth (mSec):S2*0,1,10", 0);
 		component->apply = (APPLY) update_FLANGER;
 		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Freeverb") == 0) {
@@ -610,7 +610,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		char temp[480];
 		if (strParameters == 0) {
 			char *elements =
-					"Threshold(db):S3*-140,-10, 0.0\tHold Time mSec:S3*0,50,4000\tAttack Time mSec:S3*0,50,4000\tRelease Time mSec:S3*0,50,4000";
+					"Threshold(db):S2*-140,-10, 0.0\tHold Time mSec:S2*0,50,4000\tAttack Time mSec:S2*0,50,4000\tRelease Time mSec:S2*0,50,4000";
 			strcpy(temp, elements);
 		} else {
 			strcpy(temp, strParameters);
@@ -659,7 +659,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		char temp[480];
 		if (strParameters == 0) {
 			char *elements =
-					"PreGain:S3*0.01,1,10\tLow Pass Cutoff Freq:S3*2500,3000,10000\tDamping:X*1.0\tHigh Pass Cutoff Freq:S3*2000,2000,3000";
+					"PreGain:S2*0.01,1,10\tLow Pass Cutoff Freq:S2*2500,3000,10000\tDamping:X*1.0\tHigh Pass Cutoff Freq:S2*2000,2000,3000";
 			strcpy(temp, elements);
 		} else {
 			strcpy(temp, strParameters);
@@ -714,7 +714,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		char temp[480];
 		if (strParameters == 0) {
 			char *elements =
-					"Depth:S3*0.0,0.5,1.0//LFO Freq:S3*0.01,2000,4000\tDepth:X*1.0\tSine:I*0";
+					"Depth:S2*0.0,0.5,1.0//LFO Freq:S2*0.01,2000,4000\tDepth:X*1.0\tSine:I*0";
 			strcpy(temp, elements);
 		} else {
 			strcpy(temp, strParameters);
@@ -741,7 +741,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		char temp[160];
 		if (strParameters == 0) {
 			char *elements =
-					"Base Delay (MS):S3*0.1,5,14//Max Delay:X*15//LFO Frequency:S3*0.1,5,15\tLFO Depth (mSec):S3*0,2.5,5";
+					"Base Delay (MS):S2*0.1,5,14//Max Delay:X*15//LFO Frequency:S2*0.1,5,15\tLFO Depth (mSec):S2*0,2.5,5";
 			strcpy(temp, elements);
 		} else {
 			strcpy(temp, strParameters);
@@ -770,8 +770,8 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		component->main_effect = 1;
 		char temp[160];
 		if (strParameters == 0) {
-			char *elements = "Q:X*6\tCenter Frequency:S3*500,2000,5000"
-					"//LFO Freq:S3*0.1,2000,3000\tLFO Depth (Hz):S3*0,250,1000";
+			char *elements = "Q:X*6\tCenter Frequency:S2*500,2000,5000"
+					"//LFO Freq:S2*0.1,2000,3000\tLFO Depth (Hz):S2*0,250,1000";
 			strcpy(temp, elements);
 		} else {
 			strcpy(temp, strParameters);
@@ -943,7 +943,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		char temp[160];
 		if (strParameters == 0) {
 			char *elements =
-					"Damping:S3*0.01, 0.05,1.0\tCenter Frequency:S3*500,2000,5000";
+					"Damping:S2*0.01, 0.05,1.0\tCenter Frequency:S2*500,2000,5000";
 			strcpy(temp, elements);
 		} else {
 			strcpy(temp, strParameters);
@@ -1013,7 +1013,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		component->type = Volume;
 		char temp[80];
 		if (strParameters == 0) {
-			char *elements = "MaxGain:X*1.0\tVolume:S3*0.0,0.9,1.0";
+			char *elements = "MaxGain:X*1.0\tVolume:S2*0.0,0.9,1.0";
 			strcpy(temp, elements);
 		} else {
 			strcpy(temp, strParameters);
@@ -1041,6 +1041,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 			vDelay = (VARDELAY*) MALLOC(sizeof(VARDELAY));
 		}
 		component->effect = vDelay;
+		vDelay->cBuf.storage = 0;
 		char temp[80];
 		strcpy(temp, strParameters);
 		component->parameterCount = 1;

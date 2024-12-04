@@ -479,12 +479,7 @@ static void effect_selector(struct nk_context *ctx, struct media *media) {
 			if (nk_combo_item_label(ctx, g_effect_list[i].name, NK_TEXT_LEFT)) {
 				selected_item = i;
 				initializeDisplayState(&gGUI, selected_item);
-				// this is called by play music
-				//gui_initialize(gGUI.component, 0, 44100.0f);
-				if (gMUSIC.fileName) {
-					gMUSIC.start_music = 1;
-					gMUSIC.stop_music = 1;
-				}
+
 			}
 		}
 		nk_combo_end(ctx);
@@ -1003,6 +998,15 @@ void generate_gui(EFFECT_ITEM *eList) {
 		if (gGUI.display_sliders) {
 			effect_controls(&ctx, &media);
 		}
+		// check for selected effect
+		if(gGUI.effect_selected != -1 && (gGUI.effect_selected != gGUI.previous_effect)) {
+			// start music if a music is available selected
+			if (gMUSIC.fileName) {
+				gMUSIC.start_music = 1;
+				gMUSIC.stop_music = 1;
+				gGUI.previous_elect = gGUI.effect_selected;
+			}
+		}
 		// check for stopping first
 		if (gMUSIC.stop_music) {
 			if (gMUSIC.music_is_playing) {
@@ -1013,7 +1017,7 @@ void generate_gui(EFFECT_ITEM *eList) {
 		}
 
 		// can we start the music here?
-		if (gGUI.effect_selected & gMUSIC.start_music && !gMUSIC.stop_music
+		if (gGUI.effect_selected > 0 && (gGUi.effect_selected == gGUI.previous_effect) && gMUSIC.start_music && !gMUSIC.stop_music
 				&& !gMUSIC.music_is_playing && gGUI.component != 0) {
 			int success = play_music(gMUSIC.fileName, gGUI.component);
 			if (success == 0) {

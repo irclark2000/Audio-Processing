@@ -43,7 +43,8 @@ typedef struct SLIDER_VALUES {
 
 typedef struct {
 	int display_sliders;
-	uint8_t effect_selected;
+	int effect_selected;
+	int previous_effect;
 	float effect_volume;
 	int effect_enabled;
 	EFFECT_COMPONENT *component;
