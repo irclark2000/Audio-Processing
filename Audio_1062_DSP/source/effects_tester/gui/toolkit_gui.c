@@ -1004,7 +1004,7 @@ void generate_gui(EFFECT_ITEM *eList) {
 			if (gMUSIC.fileName) {
 				gMUSIC.start_music = 1;
 				gMUSIC.stop_music = 1;
-				gGUI.previous_elect = gGUI.effect_selected;
+				gGUI.previous_effect = gGUI.effect_selected;
 			}
 		}
 		// check for stopping first
@@ -1017,7 +1017,7 @@ void generate_gui(EFFECT_ITEM *eList) {
 		}
 
 		// can we start the music here?
-		if (gGUI.effect_selected > 0 && (gGUi.effect_selected == gGUI.previous_effect) && gMUSIC.start_music && !gMUSIC.stop_music
+		if (gGUI.effect_selected > 0 && (gGUI.effect_selected == gGUI.previous_effect) && gMUSIC.start_music && !gMUSIC.stop_music
 				&& !gMUSIC.music_is_playing && gGUI.component != 0) {
 			int success = play_music(gMUSIC.fileName, gGUI.component);
 			if (success == 0) {
