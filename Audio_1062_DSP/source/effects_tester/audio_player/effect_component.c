@@ -79,7 +79,8 @@ static float setName_Type_Parse_Variables (EFFECT_COMPONENT *component, uint8_t 
    float value = 0;
    switch (*(ptr+1)) {
 	   case 'S':
-		   count = atoi(ptr + 2);
+		   //count = atoi(ptr + 2);
+		   count = 3;
 		   for (int i=0; i < count; i++) {
 			   if (i == 0) ptr2 = strtok(ptr2, ",");
 			   else ptr2 = strtok(NULL, ",");
@@ -783,7 +784,8 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		while (*ptr != ':' && *ptr != 0)
 			ptr++;
 		if (*ptr == ':' && *(ptr + 1) == 'S') {
-			uint8_t count = atoi(ptr + 2);
+			//uint8_t count = atoi(ptr + 2);
+			uint8_t count = 3;
 			ptr = strtok(NULL, "*");
 			ptr = parseParameters(ptr, component->parameters, count);
 		} else {
