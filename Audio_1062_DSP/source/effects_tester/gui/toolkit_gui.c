@@ -218,6 +218,8 @@ static void effect_controls(struct nk_context *ctx, struct media *media) {
 	static char value_text[64];
 	static float row_widths[] = { 0.25, 0.55, 0.20 };
 	int length = (gGUI.slider_count > 10) ? 550 : 450;
+	enum {EASY, HARD};
+	static int op = EASY;
 
 	//int i;
 	nk_style_set_font(ctx, &media->font_20->handle);
@@ -246,9 +248,11 @@ static void effect_controls(struct nk_context *ctx, struct media *media) {
 				sprintf(value_text, "%6.3f", *(gGUI.sliders[j].slOutput));
 				nk_label(ctx, value_text, NK_TEXT_LEFT);
 			} else {
-				nk_layout_row(ctx, NK_DYNAMIC, 30, 1, row_widths);
-				nk_checkbox_label(ctx, gGUI.sliders[j].name, gGUI.sliders[j].chkOutput);
-
+				//nk_layout_row(ctx, NK_DYNAMIC, 30, 1, row_widths);
+				//nk_checkbox_label(ctx, gGUI.sliders[j].name, gGUI.sliders[j].chkOutput);
+				nk_layout_row_dynamic(ctx, 30, 2);
+				if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;
+				if (nk_option_label(ctx, "hard", op == HARD)) op = HARD;
 			}
 		}
 	}
