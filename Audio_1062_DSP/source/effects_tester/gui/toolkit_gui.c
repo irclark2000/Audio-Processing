@@ -246,7 +246,7 @@ static void effect_controls(struct nk_context *ctx, struct media *media) {
 				}
 				*(gGUI.sliders[j].slOutput) = gGUI.sliders[j].slider_value
 						* gGUI.sliders[j].slope + gGUI.sliders[j].intercept;
-				sprintf(value_text, sliderFormat.fmt, *(gGUI.sliders[j].slOutput));
+				sprintf(value_text, sliderFormat.slider_fmt, *(gGUI.sliders[j].slOutput));
 				nk_label(ctx, value_text, NK_TEXT_LEFT);
 			} else {
 				nk_layout_row(ctx, NK_DYNAMIC, 30, 1, row_widths);
