@@ -26,11 +26,19 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "effects_gui_interface.h"
 
 // effects slider parameters
+typedef struct SLIDER_FORMAT {
+	char *slider_fmt;
+	float slider_increment;
+} SLIDER_FORMAT;
+
+
+
 typedef struct SLIDER_VALUES {
 	EFFECT_PARAMS *myParameter;
 	char *name;
 	uint8_t useCheckBox;
 	int previousCheck;
+	int slider_fmt_number;
 	int *chkOutput;
 	float slope;
 	float intercept;
@@ -55,6 +63,7 @@ typedef struct {
 extern DISPLAY_STATE gGUI;
 extern EFFECT_ITEM *g_effect_list;
 extern uint8_t g_effects_count;
+extern SLIDER_FORMAT gFormats[];
 
 void update_effect_state(SLIDER_VALUES *sliders, uint8_t slider_count);
 void generate_gui(EFFECT_ITEM *effects_list);

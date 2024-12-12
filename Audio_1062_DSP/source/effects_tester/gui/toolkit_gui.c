@@ -238,21 +238,22 @@ static void effect_controls(struct nk_context *ctx, struct media *media) {
 		nk_label(ctx, value_text, NK_TEXT_LEFT);
 		for (int j = 0; j < gGUI.slider_count; j++) {
 			if (!gGUI.sliders[j].useCheckBox) {
+				SLIDER_FORMAT sliderFormat = gFormats[gGUI.sliders[j].slider_fmt_number];
 				nk_layout_row(ctx, NK_DYNAMIC, 30, 3, row_widths);
 				nk_label(ctx, gGUI.sliders[j].name, NK_TEXT_LEFT);
 				if (nk_slider_float(ctx, 0, &gGUI.sliders[j].slider_value, 1.0f,
-						0.001f)) {
+						sliderFormat.slider_increment)) {
 				}
 				*(gGUI.sliders[j].slOutput) = gGUI.sliders[j].slider_value
 						* gGUI.sliders[j].slope + gGUI.sliders[j].intercept;
-				sprintf(value_text, "%6.3f", *(gGUI.sliders[j].slOutput));
+				sprintf(value_text, sliderFormat.fmt, *(gGUI.sliders[j].slOutput));
 				nk_label(ctx, value_text, NK_TEXT_LEFT);
 			} else {
-				//nk_layout_row(ctx, NK_DYNAMIC, 30, 1, row_widths);
-				//nk_checkbox_label(ctx, gGUI.sliders[j].name, gGUI.sliders[j].chkOutput);
-				nk_layout_row_dynamic(ctx, 30, 2);
-				if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;
-				if (nk_option_label(ctx, "hard", op == HARD)) op = HARD;
+				nk_layout_row(ctx, NK_DYNAMIC, 30, 1, row_widths);
+				nk_checkbox_label(ctx, gGUI.sliders[j].name, gGUI.sliders[j].chkOutput);
+				//nk_layout_row_dynamic(ctx, 30, 2);
+				//if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;
+				//if (nk_option_label(ctx, "hard", op == HARD)) op = HARD;
 			}
 		}
 	}

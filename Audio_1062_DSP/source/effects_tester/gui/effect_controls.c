@@ -23,6 +23,11 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "effect_controls.h"
 #include <assert.h>
 
+SLIDER_FORMAT gFormats[] = {
+		{"%3.0f", 1.0f}, {"%4.1f", 0.1f},
+		{"%5.2f", 0.01f}, {"%6.3f", 0.001f}
+};
+
 void update_effect_state_for_slider(SLIDER_VALUES *sliders, uint8_t index) {
 	EFFECT_PARAMS *parameter = sliders[index].myParameter;
 	void *effect = parameter->myEffect;
@@ -118,6 +123,8 @@ void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT *component) {
 	for (int i = 0; i < component->parameterCount; i++) {
 		char *name = component->strParameters[i];
 		if (component->strTypes[i][0] == 'S') {
+			int index = atoi(&component->strTypes[i][1]);
+			gui->sliders[gui->slider_count].slider_fmt_number = index;
 			EFFECT_PARAMS *parameter = component->parameters + i;
 			setupSlidersComponent(gui, parameter);
 			gui->sliders[gui->slider_count].name = name;
