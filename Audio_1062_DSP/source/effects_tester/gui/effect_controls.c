@@ -31,8 +31,7 @@ SLIDER_FORMAT gFormats[] = {
 void update_effect_state_for_slider(SLIDER_VALUES *sliders, uint8_t index) {
 	EFFECT_PARAMS *parameter = sliders[index].myParameter;
 	void *effect = parameter->myEffect;
-	uint8_t useCheckbox = sliders[index].useCheckBox;
-	if (useCheckbox) {
+	if (sliders[index].control_type == CHECKBOX) {
 		sliders[index].previousCheck = *sliders[index].chkOutput;
 		return;
 	}
@@ -104,8 +103,7 @@ void initializeDisplayState(DISPLAY_STATE *gui, uint8_t selection) {
 
 static void setupSlidersComponent(DISPLAY_STATE *gui, EFFECT_PARAMS *parameter) {
 	uint8_t count = gui->slider_count;
-	gui->sliders[count].useCheckBox = 0;
-
+	gui->sliders[count].control_type = SLIDER;
 	assert(parameter->currentValue != 0);
 	gui->sliders[count].myParameter = parameter;
 	gui->sliders[count].slope = parameter->floatParameter[2]
@@ -123,6 +121,7 @@ void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT *component) {
 	for (int i = 0; i < component->parameterCount; i++) {
 		char *name = component->strParameters[i];
 		if (component->strTypes[i][0] == 'S') {
+			gui->sliders[gui->slider_count].control_type = SLIDER;
 			int index = atoi(&component->strTypes[i][1]);
 			gui->sliders[gui->slider_count].slider_fmt_number = index;
 			EFFECT_PARAMS *parameter = component->parameters + i;
@@ -133,12 +132,16 @@ void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT *component) {
 			EFFECT_PARAMS *parameter = component->parameters + i;
 			uint8_t count = gui->slider_count;
 			gui->sliders[count].myParameter = parameter;
-			gui->sliders[count].useCheckBox = 1;
+			gui->sliders[count].control_type = CHECKBOX;
 			gui->sliders[count].name = name;
 			gui->sliders[count].chkOutput = (int*) parameter->currentValue;
 			*(gui->sliders[count].chkOutput) = parameter->intParameter[0] & 0xFF;
 			gui->sliders[count].previousCheck = 15;
 			gui->slider_count++;
+		} else if (component->strTypes[i][0] == 'R') {
+			EFFECT_PARAMS *parameter = component->parameters + i;
+			uint8_t count = gui->slider_count;
+			gui->sliders[count].control_type = RADIOBUTTON;
 		}
 	}
 	for (int i = 0; i < component->childrenCount; i++) {

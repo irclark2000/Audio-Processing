@@ -194,7 +194,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		char temp[480];
 		if (strParameters == 0) {
 			char *elements =
-					"Up Sweep:C*0\tInputGain:S2*0.01,1,10\tFxGain:S2*0.01,1,10\tMin Cutoff Freq:S2*10,267,500\tMax Cutoff Freq:S2*510,2000,3000//Attack Time (s):S3*0.001,0.001,0.01\tRelease Time (s):S2*0.01,0.4,2.0//Q:S2*0.7,4,10\tCutoff Freq:X*2000\tPass:I*1";
+					"Up Sweep:C*0\tInputGain:S2*0.01,1,10\tFxGain:S2*0.01,1,10\tMin Cutoff Freq:S0*10,267,500\tMax Cutoff Freq:S0*510,2000,3000//Attack Time (s):S3*0.001,0.001,0.01\tRelease Time (s):S2*0.01,0.4,2.0//Q:S2*0.7,4,10\tCutoff Freq:X*2000\tPass:I*1";
 			strcpy(temp, elements);
 		} else {
 			strcpy(temp, strParameters);
@@ -715,7 +715,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		char temp[480];
 		if (strParameters == 0) {
 			char *elements =
-					"Depth:S2*0.0,0.5,1.0//LFO Freq:S2*0.01,2000,4000\tDepth:X*1.0\tSine:I*0";
+					"Depth:S2*0.0,0.5,1.0//LFO Freq:S2*0.01,2000,4000\tDepth:X*1.0\tSine,Triangle:R*0";
 			strcpy(temp, elements);
 		} else {
 			strcpy(temp, strParameters);
@@ -891,7 +891,8 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		char *ptrFreq = strtok(temp, "\t");
 		char *ptrDepth = strtok(NULL, "\t");
 		char *ptrSine = strtok(NULL, "\t");
-		component->parameters = makeBlankParameters(2, component->effect);
+		component->parameters = makeBlankParameters(3, component->effect); // may need 3
+		component->parameterCount = 2;
 		float value = setName_Type_Parse_Variables(component, 0, ptrFreq);
 		component->parameters[0].currentValue = &(lfo->oscFreq);
 		*(component->parameters[0].currentValue) = value;
@@ -904,6 +905,13 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 				ptrSine++;
 			if (*ptrSine == ':' && *(ptrSine + 1) == 'I') {
 				sine = atoi(ptrSine + 3);
+			}
+			else if (*ptrSine == ':' && *(ptrSine + 1) == 'R') {
+				sine = atoi(ptrSine + 3);
+				component->parameters[component->parameterCount].recalculate = (RECALCULATE) gui_setOscType;
+				component->parameters[component->parameterCount].currentValue = &(lfo->triangle_sine_select;);
+				*(component->parameters[component->parameterCount].currentValue) = sine;
+				component->parameterCount++;
 			}
 		}
 		lfo->triangle_sine_select = sine;

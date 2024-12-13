@@ -26,7 +26,7 @@ typedef struct {
 	PARAMETER_LIMITS frequency_limits;
 	float phaseAngleDeg;
 	float phaseRadians;
-	uint8_t triangle_sine_select;   // 0 = triangle, 1 = sine
+	int triangle_sine_select;   // 0 = triangle, 1 = sine
 
 	float counter;
 	float direction;

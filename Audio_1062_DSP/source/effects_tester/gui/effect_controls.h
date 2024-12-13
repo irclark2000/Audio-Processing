@@ -31,12 +31,14 @@ typedef struct SLIDER_FORMAT {
 	float slider_increment;
 } SLIDER_FORMAT;
 
-
+typedef enum CONTROL_TYPE {
+	SLIDER, CHECKBOX, RADIOBUTTON
+} CONTROL_TYPE;
 
 typedef struct SLIDER_VALUES {
 	EFFECT_PARAMS *myParameter;
 	char *name;
-	uint8_t useCheckBox;
+	CONTROL_TYPE control_type;
 	int previousCheck;
 	int slider_fmt_number;
 	int *chkOutput;
