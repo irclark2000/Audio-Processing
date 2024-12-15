@@ -38,6 +38,7 @@ typedef enum CONTROL_TYPE {
 typedef struct SLIDER_VALUES {
 	EFFECT_PARAMS *myParameter;
 	char *name;
+	char *name0, *name1;
 	CONTROL_TYPE control_type;
 	int previousCheck;
 	int slider_fmt_number;

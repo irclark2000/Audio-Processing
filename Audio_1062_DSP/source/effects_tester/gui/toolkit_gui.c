@@ -237,7 +237,7 @@ static void effect_controls(struct nk_context *ctx, struct media *media) {
 		sprintf(value_text, "%5.2f", gGUI.effect_volume);
 		nk_label(ctx, value_text, NK_TEXT_LEFT);
 		for (int j = 0; j < gGUI.slider_count; j++) {
-			if (gGUI.sliders[j].control_type == SLIDERS) {
+			if (gGUI.sliders[j].control_type == SLIDER) {
 				SLIDER_FORMAT sliderFormat = gFormats[gGUI.sliders[j].slider_fmt_number];
 				nk_layout_row(ctx, NK_DYNAMIC, 30, 3, row_widths);
 				nk_label(ctx, gGUI.sliders[j].name, NK_TEXT_LEFT);

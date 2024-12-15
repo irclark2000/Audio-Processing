@@ -909,7 +909,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 			else if (*ptrSine == ':' && *(ptrSine + 1) == 'R') {
 				sine = atoi(ptrSine + 3);
 				component->parameters[component->parameterCount].recalculate = (RECALCULATE) gui_setOscType;
-				component->parameters[component->parameterCount].currentValue = &(lfo->triangle_sine_select;);
+				component->parameters[component->parameterCount].currentValue = &(lfo->triangle_sine_select);
 				*(component->parameters[component->parameterCount].currentValue) = sine;
 				component->parameterCount++;
 			}

@@ -24,7 +24,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <assert.h>
 
 SLIDER_FORMAT gFormats[] = {
-		{"%3.0f", 1.0f}, {"%4.1f", 0.1f},
+		{"%3.0f", 0.01f}, {"%4.1f", 0.01f},
 		{"%5.2f", 0.01f}, {"%6.3f", 0.001f}
 };
 
@@ -33,6 +33,15 @@ void update_effect_state_for_slider(SLIDER_VALUES *sliders, uint8_t index) {
 	void *effect = parameter->myEffect;
 	if (sliders[index].control_type == CHECKBOX) {
 		sliders[index].previousCheck = *sliders[index].chkOutput;
+		return;
+	}
+	if (sliders[index].control_type == RADIOBUTTON) {
+		if (sliders[index].previousCheck != *sliders[index].chkOutput) {
+			if (parameter->recalculate != 0) {
+				parameter->recalculate(effect);
+			}
+			sliders[index].previousCheck = *sliders[index].chkOutput;
+		}
 		return;
 	}
 	if (parameter->recalculate) {
@@ -142,6 +151,16 @@ void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT *component) {
 			EFFECT_PARAMS *parameter = component->parameters + i;
 			uint8_t count = gui->slider_count;
 			gui->sliders[count].control_type = RADIOBUTTON;
+			gui->sliders[count].name = name;
+			char buf[80];
+			strcpy (buf, name);
+		        char *ptr = strtok(buf, ",");
+			gui->sliders[count].name0 = strSave(ptr);
+		        ptr = strtok(NULL, ",");
+			gui->sliders[count].name1 = strSave(ptr);
+			gui->sliders[count].chkOutput = (int*) parameter->currentValue;
+			gui->sliders[count].previousCheck = 15;
+			gui->slider_count++;
 		}
 	}
 	for (int i = 0; i < component->childrenCount; i++) {
