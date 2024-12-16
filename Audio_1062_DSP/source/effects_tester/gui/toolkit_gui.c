@@ -255,9 +255,12 @@ static void effect_controls(struct nk_context *ctx, struct media *media) {
 				//if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;
 				//if (nk_option_label(ctx, "hard", op == HARD)) op = HARD;
 			} else if (gGUI.sliders[j].control_type == RADIOBUTTON) {
+				char *name0 = gGUI.sliders[j].name0;
+				char *name1 = gGUI.sliders[j].name1;
+				int *intPtr = gGUI.sliders[j].chkOutput;
 				nk_layout_row_dynamic(ctx, 30, 2);
-				if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;
-				if (nk_option_label(ctx, "hard", op == HARD)) op = HARD;
+				if (nk_option_label(ctx, name0, *intPtr == 0)) *intPtr = 0;
+				if (nk_option_label(ctx, name1, *intPtr == 1)) *intPtr = 1;
 			}
 		}
 	}

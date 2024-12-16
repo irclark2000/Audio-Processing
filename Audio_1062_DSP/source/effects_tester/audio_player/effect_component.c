@@ -88,6 +88,7 @@ static float setName_Type_Parse_Variables (EFFECT_COMPONENT *component, uint8_t 
 		   }
 		   value = component->parameters[index].floatParameter[1];
 		   break;
+	   case 'R':
 	   case 'C':
 	   case 'I':
 		   component->parameters[index].intParameter[0] = atoi(ptr2);
@@ -891,7 +892,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		char *ptrFreq = strtok(temp, "\t");
 		char *ptrDepth = strtok(NULL, "\t");
 		char *ptrSine = strtok(NULL, "\t");
-		component->parameters = makeBlankParameters(3, component->effect); // may need 3
+		component->parameters = makeBlankParameters(4, component->effect); // may need 4 for sine and phase
 		component->parameterCount = 2;
 		float value = setName_Type_Parse_Variables(component, 0, ptrFreq);
 		component->parameters[0].currentValue = &(lfo->oscFreq);
@@ -901,23 +902,17 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		component->parameters[1].currentValue = &(lfo->amplitude);
 		*(component->parameters[1].currentValue) = value;
 		if (ptrSine) {
-			while (*ptrSine != ':' && *ptrSine != 0)
-				ptrSine++;
-			if (*ptrSine == ':' && *(ptrSine + 1) == 'I') {
-				sine = atoi(ptrSine + 3);
-			}
-			else if (*ptrSine == ':' && *(ptrSine + 1) == 'R') {
-				sine = atoi(ptrSine + 3);
-				component->parameters[component->parameterCount].recalculate = (RECALCULATE) gui_setOscType;
-				component->parameters[component->parameterCount].currentValue = &(lfo->triangle_sine_select);
-				*(component->parameters[component->parameterCount].currentValue) = sine;
-				component->parameterCount++;
-			}
+			value = setName_Type_Parse_Variables(component, 2, ptrSine);
+			sine = value + 0.1f;
+			component->parameters[2].recalculate = (RECALCULATE) gui_setOscType;
+			component->parameters[2].currentValue = (float *) &(lfo->triangle_sine_select);
+			*(component->parameters[2].currentValue) = sine;
+			component->parameterCount = 3;
+
 		}
 		lfo->triangle_sine_select = sine;
 		lfo->phaseAngleDeg = phase;
 
-		component->parameterCount = 2;
 		component->childrenCount = 0;
 		component->apply = 0;
 		component->effect_bypass = 0;
@@ -953,7 +948,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		char temp[160];
 		if (strParameters == 0) {
 			char *elements =
-					"Damping:S2*0.01, 0.05,1.0\tCenter Frequency:S2*500,2000,5000";
+				"Damping:S2*0.01, 0.05,1.0\tCenter Frequency:S2*500,2000,5000";
 			strcpy(temp, elements);
 		} else {
 			strcpy(temp, strParameters);
@@ -966,13 +961,13 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		component->parameters[0].currentValue = &(svf->damping);
 		*(component->parameters[0].currentValue) = value;
 		component->parameters[0].recalculate =
-				(RECALCULATE) gui_set_frequency_damping_SVFILTER;
+			(RECALCULATE) gui_set_frequency_damping_SVFILTER;
 		component->parameters[0].partnerParameter = &(component->parameters[1]);
 		value = setName_Type_Parse_Variables(component, 0, ptrFreq);
 		component->parameters[1].currentValue = &(svf->centerFreq);
 		*(component->parameters[1].currentValue) = value;
 		component->parameters[1].recalculate =
-				(RECALCULATE) gui_set_frequency_damping_SVFILTER;
+			(RECALCULATE) gui_set_frequency_damping_SVFILTER;
 		component->parameters[1].partnerParameter = &(component->parameters[0]);
 		component->childrenCount = 0;
 		component->apply = 0;
@@ -1065,7 +1060,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		}
 		component->parameters[0].currentValue = &(vDelay->gui_delayMSec);
 		component->parameters[0].recalculate =
-				(RECALCULATE) gui_setDelay_VARDELAY;
+			(RECALCULATE) gui_setDelay_VARDELAY;
 		*(component->parameters[0].currentValue) = current_delay;
 		vDelay->max_delay = maxDelay / 1000.0f;
 		component->childrenCount = 0;
