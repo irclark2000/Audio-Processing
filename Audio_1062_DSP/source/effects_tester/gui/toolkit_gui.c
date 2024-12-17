@@ -69,7 +69,7 @@ DISPLAY_STATE gGUI;
 void selected_music_file(char *fileName) {
 	if (fileName) {
 		gMUSIC.fileName = fileName;
-		if (gGUI.effect_selected) {
+		if (gGUI.effect_selected != -1) {
 			if (gMUSIC.music_is_playing) {
 				gMUSIC.stop_music = 1;
 			}
@@ -219,7 +219,7 @@ static void effect_controls(struct nk_context *ctx, struct media *media) {
 	static float row_widths[] = { 0.25, 0.55, 0.20 };
 	int length = (gGUI.slider_count > 10) ? 550 : 450;
 	enum {EASY, HARD};
-	static int op = EASY;
+	//static int op = EASY;
 
 	//int i;
 	nk_style_set_font(ctx, &media->font_20->handle);
@@ -1029,7 +1029,7 @@ void generate_gui(EFFECT_ITEM *eList) {
 		}
 
 		// can we start the music here?
-		if (gGUI.effect_selected > 0 && (gGUI.effect_selected == gGUI.previous_effect) && gMUSIC.start_music && !gMUSIC.stop_music
+		if (gGUI.effect_selected != -1 && (gGUI.effect_selected == gGUI.previous_effect) && gMUSIC.start_music && !gMUSIC.stop_music
 				&& !gMUSIC.music_is_playing && gGUI.component != 0) {
 			int success = play_music(gMUSIC.fileName, gGUI.component);
 			if (success == 0) {
