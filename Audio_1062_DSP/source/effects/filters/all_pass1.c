@@ -30,13 +30,20 @@ float applyAllpassFilter1(ALLPASS1 *pass, float input) {
 
 		pass->bufOut = pass->buf[pass->bufIndx];
 		undenormalise(pass->bufOut);
+#if 0
 
 		pass->bufOut = -pass->gain *input + pass->bufOut;
 		pass->next = pass->bufOut * pass->gain + input;
 		pass->buf[pass->bufIndx] = pass->next;
 		if(++(pass->bufIndx)>=pass->bufSize) pass->bufIndx = 0;
-
 		return pass->bufOut;
+#else
+		pass->next = pass->bufOut * pass->gain + input;
+		pass->out = pass->bufOut - pass->gain * pass->next;
+		pass->buf[pass->bufIndx] = pass->next;
+		if(++(pass->bufIndx)>=pass->bufSize) pass->bufIndx = 0;
+		return pass->out;
+#endif
 }
 
 static void mute (ALLPASS1 *pass) {
