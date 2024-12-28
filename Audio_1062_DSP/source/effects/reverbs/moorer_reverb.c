@@ -63,6 +63,7 @@ void intialize_MOORER_REVERB(MOORER_REVERB *mr, float **buf, uint32_t * sizes, f
 	initAllpassFilter1(&(mr->allpass), ap0_buf, 60 * 48, 0.7f);
 	mr->use_free = 0;
 #endif
+	initialize_MIXER (&(mr->mixer), sampleRate);
 }
 
 void gui_initialize_MOORER_REVERB(MOORER_REVERB *mr, float sampleRate) {
@@ -77,6 +78,8 @@ float apply_MOORER_REVERB(MOORER_REVERB *mr, float input) {
 		mr->comb_out += apply_MOORER_COMB(&(mr->comb_filter[i]), mr->out);
 	}
 	mr->out = applyAllpassFilter1(&(mr->allpass), mr->comb_out);
+	mr->out = applyWetDry_MIXER (&(mr->mixer), mr->out,  input);
+
 	return mr->out;
 }
 void uninitialize_MOORER_REVERB(MOORER_REVERB *mr) {

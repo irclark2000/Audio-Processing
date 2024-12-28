@@ -46,6 +46,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "filters/moorer_comb.h"
 #include "effects/components/mixer.h"
 #include "effects/components/tapped_delay.h"
+#include "effects/components/mixer.h"
 
 typedef struct MOORER_REVERB {
 	TAPPED_DELAY td;
@@ -54,6 +55,7 @@ typedef struct MOORER_REVERB {
 	uint8_t use_free;
 	float out;
 	float comb_out;
+	MIXER mixer;
 
 } MOORER_REVERB;
 
