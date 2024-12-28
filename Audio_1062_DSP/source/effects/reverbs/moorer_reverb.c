@@ -64,6 +64,12 @@ void intialize_MOORER_REVERB(MOORER_REVERB *mr, float **buf, uint32_t * sizes, f
 	mr->use_free = 0;
 #endif
 }
+
+void gui_initialize_MOORER_REVERB(MOORER_REVERB *mr, float sampleRate) {
+	intialize_MOORER_REVERB(mr, 0, buf_sizes, 0, 19, sampleRate);
+
+}
+
 float apply_MOORER_REVERB(MOORER_REVERB *mr, float input) {
 	mr->out = update_TAPPED_DELAY(&(mr->td), input);
 	mr->comb_out = 0;

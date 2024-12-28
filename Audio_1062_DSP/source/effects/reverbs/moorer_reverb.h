@@ -58,6 +58,7 @@ typedef struct MOORER_REVERB {
 } MOORER_REVERB;
 
 void intialize_MOORER_REVERB(MOORER_REVERB *mr, float **comb_buf, uint32_t * sizes, float * allpassbuf, uint32_t allpass_size, float sampleRate);
+void gui_initialize_MOORER_REVERB(MOORER_REVERB *mr, float sampleRate);
 float apply_MOORER_REVERB(MOORER_REVERB *mr, float input);
 void uninitialize_MOORER_REVERB(MOORER_REVERB *mr);
 #endif /* EFFECTS_REVERBS_MOORER_REVERB_H_ */

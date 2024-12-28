@@ -32,6 +32,7 @@
 #include "effects/dynamic_range_control/limiter.h"
 #include "effects/reverbs/freeverb.h"
 #include "effects/reverbs/schroeder_verb.h"
+#include "effects/reverbs/moorer_reverb.h"
 #include "effects/variable_filter_effects/wah_wah.h"
 #include "effects/variable_filter_effects/auto_wah.h"
 #include "effects/variable_filter_effects/equalizer.h"
@@ -600,6 +601,17 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 				&(fv->mixer));
 		component->childrenCount = 1;
 		component->apply = (APPLY) applyFreeverb;
+		component->effect_bypass = 0;
+	} else if (strcmp(effectName, "Moorer Reverb") == 0) {
+		MOORER_REVERB *fv = (MOORER_REVERB*) MALLOC(sizeof(MOORER_REVERB));
+		component->effect = fv;
+		component->type = Moorer;
+		component->main_effect = 1;
+		component->parameterCount = 0;
+		component->childComponents[0] = createComponent("Mixer", 0,
+				&(fv->mixer));
+		component->childrenCount = 1;
+		component->apply = (APPLY) apply_MOORER_REVERB;
 		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Noise Gate") == 0) {
 		NOISEGATE *ng = (NOISEGATE*) MALLOC(sizeof(NOISEGATE));

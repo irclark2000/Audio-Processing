@@ -28,6 +28,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "effects/dynamic_range_control/limiter.h"
 #include "effects/reverbs/freeverb.h"
 #include "effects/reverbs/schroeder_verb.h"
+#include "effects/reverbs/moorer_reverb.h"
 #include "effects/variable_filter_effects/equalizer.h"
 #include "fast_math/fast_math.h"
 #include <string.h>
@@ -40,7 +41,7 @@ EFFECT_ITEM delay_based_effect[] = {
 		{"Chorus", Chorus}
 };
 EFFECT_ITEM reverb_effect[] = {
-		{"Freeverb", Freeverb}, {"Schroeder Reverb", Schroeder}
+		{"Freeverb", Freeverb}, {"Schroeder Reverb", Schroeder}, {"Moorer Reverb", Moorer}
 };
 EFFECT_ITEM dynamic_range_control_effect[] = {
 		{"Compressor", Compressor}, {"Expander", Expander},
@@ -54,7 +55,8 @@ EFFECT_ITEM misc_effect[] = {
 
 EFFECT_ITEM effects_list[] = {
 	{"Auto Wah", AutoWah}, {"Chorus", Chorus}, {"Echo", Echo}, {"Flanger", Flanger}, {"Vibrato", Vibrato},
-	{"Freeverb", Freeverb}, {"Schroeder Reverb", Schroeder}, {"Equalizer", Equalizer},
+	{"Freeverb", Freeverb}, {"Schroeder Reverb", Schroeder}, {"Moorer Reverb", Moorer},
+	{"Equalizer", Equalizer},
 	{"Tremolo", Tremolo}, {"Noise Gate", Noisegate}, {"Overdrive", Overdrive},
 	{"Compressor", Compressor}, {"Limiter", Limiter}, {"Expander", Expander}, {"", None}
 };
@@ -171,6 +173,11 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 				gui_setFrequency(osc);
 			}
 			break;
+		case Moorer:
+		{
+			MOORER_REVERB *mr = component->effect;
+			gui_initialize_MOORER_REVERB(mr, sampleRate);
+		}
 		case Noisegate:
 			{
 				NOISEGATE *ng = component->effect;
