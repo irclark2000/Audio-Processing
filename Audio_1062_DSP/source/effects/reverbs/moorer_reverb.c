@@ -48,7 +48,7 @@ void intialize_MOORER_REVERB(MOORER_REVERB *mr, float **buf, uint32_t * sizes, f
 #if AUDIO_EFFECTS_TESTER
 	gui_initialize_MOORER_TAPPED_DELAY (&(mr->td), sampleRate);
 	for(uint8_t i=0; i < NUMBER_COMB_FILTERS; ++i) {
-		initialize_MOORER_COMB(&(mr->mr->comb_filter[i]), 0, buf_sizes[i], low_pass_frequency[i], calculate_gain_by_interpolation (0, sampleRate), sampleRate);
+		initialize_MOORER_COMB(&(mr->comb_filter[i]), 0, buf_sizes[i], low_pass_frequency[i], calculate_gain_by_interpolation (0, sampleRate), sampleRate);
 	}
 	initAllpassFilter1(&(mr->allpass), 0, 60 * 48, 0.7f);
 	mr->use_free = 1;
