@@ -75,7 +75,7 @@ float apply_MOORER_REVERB(MOORER_REVERB *mr, float input) {
 	mr->out = update_TAPPED_DELAY(&(mr->td), input);
 	mr->comb_out = 0;
 	for(uint8_t i=0; i < NUMBER_COMB_FILTERS; ++i) {
-		mr->comb_out += apply_MOORER_COMB(&(mr->comb_filter[i]), mr->out);
+		mr->comb_out += apply_MOORER_COMB(&(mr->comb_filter[i]), mr->out) * 0.16666667f;
 	}
 	mr->out = applyAllpassFilter1(&(mr->allpass), mr->comb_out);
 	mr->out = applyWetDry_MIXER (&(mr->mixer), mr->out,  input);
