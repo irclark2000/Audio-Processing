@@ -25,7 +25,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <cr_section_macros.h>
 #endif
 
-
+static const uint8_t NUM_TAPS = 19;
 static float moorer_gain[] = {1.0, 0.841, 0.540, 0.491, 0.397, 0.380, 0.346, 0.289, 0.272,
 		0.193, 0.192, 0.217, 0.181, 0.180, 0.181, 0.176, 0.142, 0.167, 0.134};
 
@@ -37,8 +37,9 @@ static uint32_t moorer_delay_buf_sizes[] = { 0, 0.0043 * 48000, 0.0215 * 48000, 
 		0.0572 * 48000, 0.0587 * 48000, 0.0595  * 48000, 0.0612, 0.0707  * 48000,
 		0.0708 * 48000, 0.0726, 0.0741 * 48000, 0.0753 * 48000, 0.0797 * 48000};
 
+
 #if !AUDIO_EFFECTS_TESTER
-__NOINIT(RAM3) static float moorer_td_buf [(uint32_t)(0.0797 * 48000)];
+__NOINIT(RAM3) static float moorer_td_buf [3825]; // 0.0797 * 48000
 #endif
 
 void initialize_TAPPED_DELAY (TAPPED_DELAY *td, float * buf, uint32_t * delay_buf_sizes, float *gain, uint8_t tap_count, float sampleRate){
@@ -61,16 +62,17 @@ void initialize_TAPPED_DELAY (TAPPED_DELAY *td, float * buf, uint32_t * delay_bu
 }
 void initialize_MOORER_TAPPED_DELAY (TAPPED_DELAY *td, float sampleRate){
 #if !AUDIO_EFFECTS_TESTER
-	initialize_TAPPED_DELAY (td, moorer_td_buf, moorer_delay_buf_sizes, moorer_gain, 19, sampleRate);
+	initialize_TAPPED_DELAY (td, moorer_td_buf, moorer_delay_buf_sizes, moorer_gain, NUM_TAPS, sampleRate);
 #endif
 }
 
 void gui_initialize_MOORER_TAPPED_DELAY (TAPPED_DELAY *td, float sampleRate) {
-	gui_initialize_TAPPED_DELAY (td, moorer_delay_sec, moorer_gain, 19, sampleRate);
+	gui_initialize_TAPPED_DELAY (td, moorer_delay_sec, moorer_gain, NUM_TAPS, sampleRate);
 }
 void gui_initialize_TAPPED_DELAY (TAPPED_DELAY *td, float * delay_buf_Sec, float *gain, uint8_t tap_count, float sampleRate) {
 	uint32_t * delay_buf_sizes = (uint32_t *)MALLOC(sizeof(uint32_t)* tap_count);
 	uint32_t max_delay  = 0;
+	td->tap_count = tap_count;
 	for (uint8_t i=0; i < tap_count; ++i) {
 		delay_buf_sizes[i] = delay_buf_Sec[i] * sampleRate;
 		if (delay_buf_sizes[i] > max_delay) {
