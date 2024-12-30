@@ -21,9 +21,11 @@ Effects include the following
 - Reverberation
     - Schroeder Reverb
     - Freeverb
+    - Moorer
 - Variable Filter Based Effects
     - Phaser (under development)
     - Wah Wah (under development)
+    - Auto Wah
 - Miscellaneous
     - Pitch Shifting
     - Tremolo*
@@ -39,6 +41,7 @@ Effects include the following
     - First Order All Pass Filter
     - Feedback Comb Filter
     - Feedforward Comb Filter
+    - Tapped Delay
     
 
 *The code for the Tremolo, Noise Gate, and Overdrive effects is based on code provided by 
