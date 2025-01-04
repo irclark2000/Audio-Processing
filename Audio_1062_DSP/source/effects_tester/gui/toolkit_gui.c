@@ -240,10 +240,10 @@ static void effect_controls(struct nk_context *ctx, struct media *media) {
 		sprintf(value_text, "%5.2f", gGUI.effect_volume);
 		nk_label(ctx, value_text, NK_TEXT_LEFT);
 		for (int j = 0; j < gGUI.slider_count; j++) {
-			if (gGUI.sliders[j].control_type == SLIDER) {
+			if (gGUI.sliders[0][j].control_type == SLIDER) {
 				SLIDER_FORMAT sliderFormat = gFormats[gGUI.sliders[0][j].slider_fmt_number];
 				nk_layout_row(ctx, NK_DYNAMIC, 30, 3, row_widths);
-				nk_label(ctx, gGUI.sliders[j].name, NK_TEXT_LEFT);
+				nk_label(ctx, gGUI.sliders[0][j].name, NK_TEXT_LEFT);
 				if (nk_slider_float(ctx, 0, &gGUI.sliders[0][j].slider_value, 1.0f,
 						sliderFormat.slider_increment)) {
 				}
@@ -257,7 +257,7 @@ static void effect_controls(struct nk_context *ctx, struct media *media) {
 				//nk_layout_row_dynamic(ctx, 30, 2);
 				//if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;
 				//if (nk_option_label(ctx, "hard", op == HARD)) op = HARD;
-			} else if (gGUI.sliders[j].control_type == RADIOBUTTON) {
+			} else if (gGUI.sliders[0][j].control_type == RADIOBUTTON) {
 				char *name0 = gGUI.sliders[0][j].name0;
 				char *name1 = gGUI.sliders[0][j].name1;
 				int *intPtr = gGUI.sliders[0][j].chkOutput;
@@ -1034,7 +1034,7 @@ void generate_gui(EFFECT_ITEM *eList) {
 		// can we start the music here?
 		if (gGUI.effect_selected != -1 && (gGUI.effect_selected == gGUI.previous_effect) && gMUSIC.start_music && !gMUSIC.stop_music
 				&& !gMUSIC.music_is_playing && gGUI.channels.channel_count != 0) {
-			int success = play_music(gMUSIC.fileName, gGUI.component);
+			int success = play_music(gMUSIC.fileName, gGUI.channels);
 			if (success == 0) {
 				update_effect_state(gGUI.sliders, gGUI.slider_count);
 				gMUSIC.music_is_playing = 1;
