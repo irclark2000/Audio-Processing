@@ -215,7 +215,8 @@ static int ui_piemenu(struct nk_context *ctx, struct nk_vec2 pos, float radius,
  * ===============================================================*/
 
 static void effect_controls(struct nk_context *ctx, struct media *media) {
-	char *title = gGUI.component->effectName;
+	//char *title = gGUI.component->effectName;
+	char *title = gGUI.channels.channel[0]->effectName;
 	//static int check = 1;
 	static char value_text[64];
 	static float row_widths[] = { 0.25, 0.55, 0.20 };
@@ -240,26 +241,26 @@ static void effect_controls(struct nk_context *ctx, struct media *media) {
 		nk_label(ctx, value_text, NK_TEXT_LEFT);
 		for (int j = 0; j < gGUI.slider_count; j++) {
 			if (gGUI.sliders[j].control_type == SLIDER) {
-				SLIDER_FORMAT sliderFormat = gFormats[gGUI.sliders[j].slider_fmt_number];
+				SLIDER_FORMAT sliderFormat = gFormats[gGUI.sliders[0][j].slider_fmt_number];
 				nk_layout_row(ctx, NK_DYNAMIC, 30, 3, row_widths);
 				nk_label(ctx, gGUI.sliders[j].name, NK_TEXT_LEFT);
-				if (nk_slider_float(ctx, 0, &gGUI.sliders[j].slider_value, 1.0f,
+				if (nk_slider_float(ctx, 0, &gGUI.sliders[0][j].slider_value, 1.0f,
 						sliderFormat.slider_increment)) {
 				}
-				*(gGUI.sliders[j].slOutput) = gGUI.sliders[j].slider_value
-						* gGUI.sliders[j].slope + gGUI.sliders[j].intercept;
-				sprintf(value_text, sliderFormat.slider_fmt, *(gGUI.sliders[j].slOutput));
+				*(gGUI.sliders[0][j].slOutput) = gGUI.sliders[0][j].slider_value
+						* gGUI.sliders[0][j].slope + gGUI.sliders[0][j].intercept;
+				sprintf(value_text, sliderFormat.slider_fmt, *(gGUI.sliders[0][j].slOutput));
 				nk_label(ctx, value_text, NK_TEXT_LEFT);
-			} else if (gGUI.sliders[j].control_type == CHECKBOX) {
+			} else if (gGUI.sliders[0][j].control_type == CHECKBOX) {
 				nk_layout_row(ctx, NK_DYNAMIC, 30, 1, row_widths);
-				nk_checkbox_label(ctx, gGUI.sliders[j].name, gGUI.sliders[j].chkOutput);
+				nk_checkbox_label(ctx, gGUI.sliders[0][j].name, gGUI.sliders[0][j].chkOutput);
 				//nk_layout_row_dynamic(ctx, 30, 2);
 				//if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;
 				//if (nk_option_label(ctx, "hard", op == HARD)) op = HARD;
 			} else if (gGUI.sliders[j].control_type == RADIOBUTTON) {
-				char *name0 = gGUI.sliders[j].name0;
-				char *name1 = gGUI.sliders[j].name1;
-				int *intPtr = gGUI.sliders[j].chkOutput;
+				char *name0 = gGUI.sliders[0][j].name0;
+				char *name1 = gGUI.sliders[0][j].name1;
+				int *intPtr = gGUI.sliders[0][j].chkOutput;
 				nk_layout_row_dynamic(ctx, 30, 2);
 				if (nk_option_label(ctx, name0, *intPtr == 0)) *intPtr = 0;
 				if (nk_option_label(ctx, name1, *intPtr == 1)) *intPtr = 1;
@@ -841,8 +842,8 @@ void generate_gui(EFFECT_ITEM *eList) {
 	struct nk_context ctx;
 
 	gGUI.display_sliders = 0;
-	gGUI.component = NULL;
-	clear_AUDIO_COMPONENT(&(gui->channels));
+	//gGUI.component = NULL;
+	clear_AUDIO_COMPONENT(&(gGUI.channels));
 	gGUI.slider_count = 0;
 
 	g_effect_list = eList;
@@ -1032,7 +1033,7 @@ void generate_gui(EFFECT_ITEM *eList) {
 
 		// can we start the music here?
 		if (gGUI.effect_selected != -1 && (gGUI.effect_selected == gGUI.previous_effect) && gMUSIC.start_music && !gMUSIC.stop_music
-				&& !gMUSIC.music_is_playing && gGUI.component != 0) {
+				&& !gMUSIC.music_is_playing && gGUI.channels.channel_count != 0) {
 			int success = play_music(gMUSIC.fileName, gGUI.component);
 			if (success == 0) {
 				update_effect_state(gGUI.sliders, gGUI.slider_count);
