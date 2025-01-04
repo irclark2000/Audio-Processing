@@ -46,15 +46,15 @@ MA_API void ma_effects_uninit(ma_effects* pEffects, const ma_allocation_callback
 MA_API void ma_effects_set_parameter(ma_effects* pEffect, AUDIO_COMPONENT *channels, float value) {
 
 }
-MA_API float ma_effects_get_parameter(const ma_effects* pEffect, AUDIO_COMPONENT *channels) {
+MA_API float ma_effects_get_parameter(const ma_effects* pEffect, AUDIO_COMPONENT *aChannels) {
 	return 0.0f;
 }
-MA_API ma_effects_node_config ma_effects_node_config_init(ma_uint32 channels, ma_uint32 sampleRate, EFFECT_COMPONENT *component)
+MA_API ma_effects_node_config ma_effects_node_config_init(ma_uint32 channels, ma_uint32 sampleRate, AUDIO_COMPONENT *aChannels)
 {
     ma_effects_node_config config;
 
     config.nodeConfig = ma_node_config_init();
-    config.effect = ma_effects_config_init(channels, sampleRate, component);
+    config.effect = ma_effects_config_init(channels, sampleRate, aChannels);
 
     return config;
 }
