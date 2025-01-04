@@ -58,7 +58,7 @@ int apply_effect(int source) {
     return 0;
 }
 
-int play_music (char *fileName, EFFECT_COMPONENT *ec) {
+int play_music (char *fileName, AUDIO_COMPONENT *ac) {
 	ma_result result;
 	result = ma_engine_init(NULL, &g_engine);
 	if (result != MA_SUCCESS) {
@@ -75,7 +75,7 @@ int play_music (char *fileName, EFFECT_COMPONENT *ec) {
 		gui_initialize(ec, 0, sampleRate);
 
 		// the third parameter should be of type EFFECT_COMPONENT *
-		effectsNodeConfig = ma_effects_node_config_init(channels, sampleRate, ec);
+		effectsNodeConfig = ma_effects_node_config_init(channels, sampleRate, ac);
 
 		result = ma_effects_node_init(ma_engine_get_node_graph(&g_engine), &effectsNodeConfig, NULL, &g_effects_node);
 		if (result != MA_SUCCESS) {

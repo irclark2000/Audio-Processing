@@ -23,11 +23,12 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define EFFECTS_TESTER_AUDIO_PLAYER_TESTER_EFFECT_H_
 
 #include "effects/delay_based/echo.h"
-#include "effect_component.h"
+//#include "effect_component.h"
+#include "audio_component.h"
 #include "effects_gui_interface.h"
 #include "toolkit_gui.h"
 
 int apply_effect(int source);
-int play_music (char *fileName, EFFECT_COMPONENT *ec);
+int play_music (char *fileName, AUDIO_COMPONENT *aChannels);
 void stop_music_playing ();
 #endif /* EFFECTS_TESTER_AUDIO_PLAYER_TESTER_EFFECT_H_ */
