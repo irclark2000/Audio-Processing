@@ -22,7 +22,8 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #ifndef EFFECTS_TESTER_GUI_EFFECT_CONTROLS_H_
 #define EFFECTS_TESTER_GUI_EFFECT_CONTROLS_H_
 #include <stdint.h>
-#include "effects_tester/audio_player/effect_component.h"
+//#include "effects_tester/audio_player/effect_component.h"
+#include "effects_tester/audio_player/audio_component.h"
 #include "effects_gui_interface.h"
 
 // effects slider parameters
@@ -58,9 +59,10 @@ typedef struct {
 	int previous_effect;
 	float effect_volume;
 	int effect_enabled;
-	EFFECT_COMPONENT *component;
+	//EFFECT_COMPONENT *component;
 	uint8_t slider_count;
-	SLIDER_VALUES sliders[MAX_SLIDER_COUNT];
+	SLIDER_VALUES sliders[MAX_NUMBER_CHANNELS][MAX_SLIDER_COUNT];
+	AUDIO_COMPONENT channels;
 } DISPLAY_STATE;
 
 extern DISPLAY_STATE gGUI;
@@ -73,8 +75,8 @@ void generate_gui(EFFECT_ITEM *effects_list);
 void update_state_by_counter (uint16_t counter, uint16_t max_counter);
 void update_state_periodically ();
 void update_effect_state_for_slider(SLIDER_VALUES *sliders, uint8_t index);
-void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT *component);
+void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT *component, uint8_t channel);
 void clearDisplayState(DISPLAY_STATE *gui);
-void initializeDisplayState(DISPLAY_STATE *gui, uint8_t selection);
+void initializeDisplayState(DISPLAY_STATE *gui, uint8_t selection, uint8_t channel);
 
 #endif /* EFFECTS_TESTER_GUI_EFFECT_CONTROLS_H_ */

@@ -24,6 +24,8 @@
 #define MAX(a,b) ((a) < (b) ? (b) : (a))
 #define LEN(a) (sizeof(a)/sizeof(a)[0])
 
+#define NUM_CHANNELS 1
+
 #ifdef __APPLE__
   #define NK_SHADER_VERSION "#version 150\n"
 #else
@@ -490,8 +492,7 @@ static void effect_selector(struct nk_context *ctx, struct media *media) {
 		for (i = 0; i < g_effects_count; ++i) {
 			if (nk_combo_item_label(ctx, g_effect_list[i].name, NK_TEXT_LEFT)) {
 				selected_item = i;
-				initializeDisplayState(&gGUI, selected_item);
-
+				initializeDisplayState(&gGUI, selected_item, NUM_CHANNELS);
 			}
 		}
 		nk_combo_end(ctx);
@@ -841,6 +842,7 @@ void generate_gui(EFFECT_ITEM *eList) {
 
 	gGUI.display_sliders = 0;
 	gGUI.component = NULL;
+	clear_AUDIO_COMPONENT(&(gui->channels));
 	gGUI.slider_count = 0;
 
 	g_effect_list = eList;
