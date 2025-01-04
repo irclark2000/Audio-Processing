@@ -43,10 +43,10 @@ MA_API ma_result ma_effects_init(const ma_effects_config* pConfig, const ma_allo
 
 MA_API void ma_effects_uninit(ma_effects* pEffects, const ma_allocation_callbacks* pAllocationCallbacks) {
 }
-MA_API void ma_effects_set_parameter(ma_effects* pEffect, EFFECT_COMPONENT *component, float value) {
+MA_API void ma_effects_set_parameter(ma_effects* pEffect, AUDIO_COMPONENT *channels, float value) {
 
 }
-MA_API float ma_effects_get_parameter(const ma_effects* pEffect, EFFECT_COMPONENT *component) {
+MA_API float ma_effects_get_parameter(const ma_effects* pEffect, AUDIO_COMPONENT *channels) {
 	return 0.0f;
 }
 MA_API ma_effects_node_config ma_effects_node_config_init(ma_uint32 channels, ma_uint32 sampleRate, EFFECT_COMPONENT *component)
@@ -58,14 +58,14 @@ MA_API ma_effects_node_config ma_effects_node_config_init(ma_uint32 channels, ma
 
     return config;
 }
-MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sampleRate, EFFECT_COMPONENT *component)
+MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sampleRate, AUDIO_COMPONENT *aChannels)
 {
     ma_effects_config config;
 
     MA_ZERO_OBJECT(&config);
     config.channels      = channels;
     config.sampleRate    = sampleRate;
-    config.component = component;
+    config.component = aChannels;
    /*
     config.delayStart    = (decay == 0) ? MA_TRUE : MA_FALSE;
     config.wet           = 1;
@@ -105,10 +105,14 @@ MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFram
     if (pEffects == NULL || pFramesOut == NULL || pFramesIn == NULL) {
         return MA_INVALID_ARGS;
     }
-    EFFECT_COMPONENT *component = pEffects->config.component;
+    AUDIO_COMPONENT *aChannels = pEffects->config.component;
 
     for (iFrame = 0; iFrame < frameCount; iFrame += 1) {
 	    for (iChannel = 0; iChannel < pEffects->config.channels; iChannel += 1) {
+	    	EFFECT_COMPONENT *component = NULL;
+	    	if (iChannel < aChannels->channel_count) {
+	    		component = aChannels->channels[iChannel];
+	    	}
 		    if (component->effect_bypass == 0) {
 		    	if (iChannel == 0) {
 		    		float out = component->apply(component->effect, pFramesInF32[iChannel]) * component->volume;
