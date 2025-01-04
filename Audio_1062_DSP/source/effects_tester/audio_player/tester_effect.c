@@ -29,7 +29,7 @@ static ma_engine g_engine;
 static ma_sound g_sound;            /* This example will play only a single sound at once, so we only need one `ma_sound` object. */
 static ma_effects_node g_effects_node;   /* The echo effect is achieved using a delay node. */
 
-int play_music (char *fileName, EFFECT_COMPONENT *ec);
+int play_music (char *fileName, AUDIO_COMPONENT *ac);
 
 int apply_effect(int source) {
     /* The engine needs to be initialized first. */
@@ -72,7 +72,7 @@ int play_music (char *fileName, AUDIO_COMPONENT *ac) {
 
 		channels   = ma_engine_get_channels(&g_engine);
 		sampleRate = ma_engine_get_sample_rate(&g_engine);
-		gui_initialize(ec, 0, sampleRate);
+		gui_initialize(ac, 0, sampleRate);
 
 		// the third parameter should be of type EFFECT_COMPONENT *
 		effectsNodeConfig = ma_effects_node_config_init(channels, sampleRate, ac);
