@@ -43,7 +43,7 @@ MA_API ma_result ma_effects_init(const ma_effects_config* pConfig, const ma_allo
 
 MA_API void ma_effects_uninit(ma_effects* pEffects, const ma_allocation_callbacks* pAllocationCallbacks) {
 }
-MA_API void ma_effects_set_parameter(ma_effects* pEffect, AUDIO_COMPONENT *channels, float value) {
+MA_API void ma_effects_set_parameter(ma_effects* pEffect, AUDIO_COMPONENT *aChannels, float value) {
 
 }
 MA_API float ma_effects_get_parameter(const ma_effects* pEffect, AUDIO_COMPONENT *aChannels) {
@@ -105,6 +105,10 @@ MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFram
     if (pEffects == NULL || pFramesOut == NULL || pFramesIn == NULL) {
         return MA_INVALID_ARGS;
     }
+	if (aChannels == 0 || aChannels->channel_ count == 0) {
+        return MA_INVALID_ARGS;
+	}
+
     AUDIO_COMPONENT *aChannels = pEffects->config.component;
 
     for (iFrame = 0; iFrame < frameCount; iFrame += 1) {
@@ -113,17 +117,16 @@ MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFram
 	    	if (iChannel < aChannels->channel_count) {
 	    		component = aChannels->channels[iChannel];
 	    	}
-		    if (component->effect_bypass == 0) {
-		    	if (iChannel == 0) {
+		    if (component !=0 && component->effect_bypass == 0) {
 		    		float out = component->apply(component->effect, pFramesInF32[iChannel]) * component->volume;
 		    		pFramesOutF32[iChannel] = out;
-		    	}
-		    	else {
-		    		pFramesOutF32[iChannel] = pFramesOutF32[0]; // copy to right channel
-		    	}
+		    }
+		    else if (component == 0 && component->effect_bypass == 0) {
+		    	// Just from previous channel
+			    pFramesOutF32[iChannel] = pFramesOutF32[iChannel - 1];
 		    }
 		    else {
-			    // Just copying for now
+		    	// copying input to output
 			    pFramesOutF32[iChannel] = pFramesInF32[iChannel];
 		    }
 	    }
