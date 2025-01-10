@@ -101,6 +101,7 @@ MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFram
     ma_uint32 iChannel;
     float* pFramesOutF32 = (float*)pFramesOut;
     const float* pFramesInF32 = (const float*)pFramesIn;
+    AUDIO_COMPONENT *aChannels = pEffects->config.component;
 
     if (pEffects == NULL || pFramesOut == NULL || pFramesIn == NULL) {
         return MA_INVALID_ARGS;
@@ -109,7 +110,6 @@ MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFram
         return MA_INVALID_ARGS;
 	}
 
-    AUDIO_COMPONENT *aChannels = pEffects->config.component;
 
     for (iFrame = 0; iFrame < frameCount; iFrame += 1) {
 	    for (iChannel = 0; iChannel < pEffects->config.channels; iChannel += 1) {
