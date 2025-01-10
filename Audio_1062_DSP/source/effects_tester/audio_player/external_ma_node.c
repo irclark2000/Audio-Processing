@@ -65,7 +65,7 @@ MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sa
     MA_ZERO_OBJECT(&config);
     config.channels      = channels;
     config.sampleRate    = sampleRate;
-    config.component = aChannels;
+    config.aChannels = aChannels;
    /*
     config.delayStart    = (decay == 0) ? MA_TRUE : MA_FALSE;
     config.wet           = 1;
@@ -101,12 +101,12 @@ MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFram
     ma_uint32 iChannel;
     float* pFramesOutF32 = (float*)pFramesOut;
     const float* pFramesInF32 = (const float*)pFramesIn;
-    AUDIO_COMPONENT *aChannels = pEffects->config.component;
+    AUDIO_COMPONENT *aChannels = pEffects->config.aChannels;
 
     if (pEffects == NULL || pFramesOut == NULL || pFramesIn == NULL) {
         return MA_INVALID_ARGS;
     }
-	if (aChannels == 0 || aChannels->channel_ count == 0) {
+	if (aChannels == 0 || aChannels->channel_count == 0) {
         return MA_INVALID_ARGS;
 	}
 
@@ -115,7 +115,7 @@ MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFram
 	    for (iChannel = 0; iChannel < pEffects->config.channels; iChannel += 1) {
 	    	EFFECT_COMPONENT *component = NULL;
 	    	if (iChannel < aChannels->channel_count) {
-	    		component = aChannels->channels[iChannel];
+	    		component = aChannels->channel[iChannel];
 	    	}
 		    if (component !=0 && component->effect_bypass == 0) {
 		    		float out = component->apply(component->effect, pFramesInF32[iChannel]) * component->volume;
