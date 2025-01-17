@@ -123,57 +123,57 @@ void initializeDisplayState(DISPLAY_STATE *gui, uint8_t selection,
 static void setupSlidersComponent(DISPLAY_STATE *gui, EFFECT_PARAMS *parameter,
 		uint8_t channel) {
 	uint8_t count = gui->slider_count;
-	SLIDER_VALUES slider = gui->sliders[channel][count];
-	slider.control_type = SLIDER;
+	SLIDER_VALUES *slider = &(gui->sliders[channel][count]);
+	slider->control_type = SLIDER;
 	assert(parameter->currentValue != 0);
-	slider.myParameter = parameter;
-	slider.slope = parameter->floatParameter[2] - parameter->floatParameter[0];
-	slider.intercept = parameter->floatParameter[0];
-	slider.slider_value = (parameter->floatParameter[1]
+	slider->myParameter = parameter;
+	slider->slope = parameter->floatParameter[2] - parameter->floatParameter[0];
+	slider->intercept = parameter->floatParameter[0];
+	slider->slider_value = (parameter->floatParameter[1]
 			- parameter->floatParameter[0]) / slider.slope;
-	slider.slOutput = parameter->currentValue;
+	slider->slOutput = parameter->currentValue;
 	*(parameter->currentValue) = parameter->floatParameter[1];
-	slider.previousOutput = INITIAL_FLOAT_VALUE;
-	parameter->previousValue = &(slider.previousOutput);
+	slider->previousOutput = INITIAL_FLOAT_VALUE;
+	parameter->previousValue = &(slider->previousOutput);
 }
 
 void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT *component,
 		uint8_t channel) {
-	SLIDER_VALUES slider = gui->sliders[channel][gui->slider_count];
+	SLIDER_VALUES *slider = &(gui->sliders[channel][gui->slider_count]);
 	for (int i = 0; i < component->parameterCount; i++) {
 		char *name = component->strParameters[i];
 		if (component->strTypes[i][0] == 'S') {
-			slider.control_type = SLIDER;
+			slider->control_type = SLIDER;
 			int index = atoi(&component->strTypes[i][1]);
-			slider.slider_fmt_number = index;
+			slider->slider_fmt_number = index;
 			EFFECT_PARAMS *parameter = component->parameters + i;
 			setupSlidersComponent(gui, parameter, channel);
-			slider.name = name;
+			slider->name = name;
 			gui->slider_count++;
 		} else if (component->strTypes[i][0] == 'C') {
 			EFFECT_PARAMS *parameter = component->parameters + i;
 			uint8_t count = gui->slider_count;
-			slider.myParameter = parameter;
-			slider.control_type = CHECKBOX;
-			slider.name = name;
-			slider.chkOutput = (int*) parameter->currentValue;
-			*(slider.chkOutput) = parameter->intParameter[0] & 0xFF;
+			slider->myParameter = parameter;
+			slider->control_type = CHECKBOX;
+			slider->name = name;
+			slider->chkOutput = (int*) parameter->currentValue;
+			*(slider->chkOutput) = parameter->intParameter[0] & 0xFF;
 			slider.previousCheck = 15;
 			gui->slider_count++;
 		} else if (component->strTypes[i][0] == 'R') {
 			EFFECT_PARAMS *parameter = component->parameters + i;
 			uint8_t count = gui->slider_count;
-			slider.myParameter = parameter;
-			slider.control_type = RADIOBUTTON;
+			slider->myParameter = parameter;
+			slider->control_type = RADIOBUTTON;
 			slider.name = name;
 			char buf[80];
 			strcpy(buf, name);
 			char *ptr = strtok(buf, ",");
 			slider.name0 = strSave(ptr);
 			ptr = strtok(NULL, ",");
-			slider.name1 = strSave(ptr);
-			slider.chkOutput = (int*) parameter->currentValue;
-			slider.previousCheck = 15;
+			slider->name1 = strSave(ptr);
+			slider->chkOutput = (int*) parameter->currentValue;
+			slider->previousCheck = 15;
 			gui->slider_count++;
 		}
 	}
