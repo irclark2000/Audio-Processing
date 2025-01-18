@@ -178,6 +178,7 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 			MOORER_REVERB *mr = component->effect;
 			gui_initialize_MOORER_REVERB(mr, sampleRate);
 		}
+		break;
 		case Noisegate:
 			{
 				NOISEGATE *ng = component->effect;

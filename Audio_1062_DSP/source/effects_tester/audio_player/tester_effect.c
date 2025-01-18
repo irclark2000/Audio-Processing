@@ -72,7 +72,9 @@ int play_music (char *fileName, AUDIO_COMPONENT *ac) {
 
 		channels   = ma_engine_get_channels(&g_engine);
 		sampleRate = ma_engine_get_sample_rate(&g_engine);
-		gui_initialize(ac, 0, sampleRate);
+		for (unsigned int chan = 0; chan < ac->channel_count; ++chan) {
+			gui_initialize(ac->channel[chan], 0, sampleRate);
+		}
 
 		// the third parameter should be of type EFFECT_COMPONENT *
 		effectsNodeConfig = ma_effects_node_config_init(channels, sampleRate, ac);

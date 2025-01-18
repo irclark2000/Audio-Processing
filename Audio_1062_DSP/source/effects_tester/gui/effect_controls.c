@@ -130,7 +130,7 @@ static void setupSlidersComponent(DISPLAY_STATE *gui, EFFECT_PARAMS *parameter,
 	slider->slope = parameter->floatParameter[2] - parameter->floatParameter[0];
 	slider->intercept = parameter->floatParameter[0];
 	slider->slider_value = (parameter->floatParameter[1]
-			- parameter->floatParameter[0]) / slider.slope;
+			- parameter->floatParameter[0]) / slider->slope;
 	slider->slOutput = parameter->currentValue;
 	*(parameter->currentValue) = parameter->floatParameter[1];
 	slider->previousOutput = INITIAL_FLOAT_VALUE;
@@ -152,24 +152,24 @@ void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT *component,
 			gui->slider_count++;
 		} else if (component->strTypes[i][0] == 'C') {
 			EFFECT_PARAMS *parameter = component->parameters + i;
-			uint8_t count = gui->slider_count;
+			//uint8_t count = gui->slider_count;
 			slider->myParameter = parameter;
 			slider->control_type = CHECKBOX;
 			slider->name = name;
 			slider->chkOutput = (int*) parameter->currentValue;
 			*(slider->chkOutput) = parameter->intParameter[0] & 0xFF;
-			slider.previousCheck = 15;
+			slider->previousCheck = 15;
 			gui->slider_count++;
 		} else if (component->strTypes[i][0] == 'R') {
 			EFFECT_PARAMS *parameter = component->parameters + i;
-			uint8_t count = gui->slider_count;
+			//uint8_t count = gui->slider_count;
 			slider->myParameter = parameter;
 			slider->control_type = RADIOBUTTON;
-			slider.name = name;
+			slider->name = name;
 			char buf[80];
 			strcpy(buf, name);
 			char *ptr = strtok(buf, ",");
-			slider.name0 = strSave(ptr);
+			slider->name0 = strSave(ptr);
 			ptr = strtok(NULL, ",");
 			slider->name1 = strSave(ptr);
 			slider->chkOutput = (int*) parameter->currentValue;
