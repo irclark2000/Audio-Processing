@@ -24,7 +24,6 @@
 #define MAX(a,b) ((a) < (b) ? (b) : (a))
 #define LEN(a) (sizeof(a)/sizeof(a)[0])
 
-#define NUM_CHANNELS 1
 
 #ifdef __APPLE__
   #define NK_SHADER_VERSION "#version 150\n"

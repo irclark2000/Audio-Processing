@@ -65,6 +65,8 @@ typedef struct {
 	AUDIO_COMPONENT channels;
 } DISPLAY_STATE;
 
+#define NUM_CHANNELS 1
+
 extern DISPLAY_STATE gGUI;
 extern EFFECT_ITEM *g_effect_list;
 extern uint8_t g_effects_count;

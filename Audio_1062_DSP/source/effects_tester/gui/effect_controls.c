@@ -68,7 +68,7 @@ void update_effect_state(SLIDER_VALUES *sliders, uint8_t slider_count) {
 
 void update_state_periodically() {
 	static uint32_t count = 0;
-	uint8_t index = count % gGUI.slider_count;
+	uint8_t index = count % gGUI.slider_count[0];
 	for (uint8_t channel = 0; channel < gGUI.channels.channel_count[channel];
 			++channel) {
 		update_effect_state_for_slider(gGUI.sliders[channel], index);
