@@ -69,7 +69,7 @@ void update_effect_state(SLIDER_VALUES *sliders, uint8_t slider_count) {
 void update_state_periodically() {
 	static uint32_t count = 0;
 	uint8_t index = count % gGUI.slider_count;
-	for (uint8_t channel = 0; channel < gGUI.channels.channel_count;
+	for (uint8_t channel = 0; channel < gGUI.channels.channel_count[channel];
 			++channel) {
 		update_effect_state_for_slider(gGUI.sliders[channel], index);
 		if (index == 0) {
@@ -85,7 +85,9 @@ void update_state_periodically() {
 
 void clearDisplayState(DISPLAY_STATE *gui) {
 	gui->display_sliders = 0;
-	gui->slider_count = 0;
+	for (uint8_t ch = 0; ch < NUM_CHANNELS; ch++) {
+		gui->slider_count[ch] = 0;
+	}
 	gui->effect_selected = -1;
 	gui->previous_effect = -1;
 #if 0
@@ -122,7 +124,7 @@ void initializeDisplayState(DISPLAY_STATE *gui, uint8_t selection,
 
 static void setupSlidersComponent(DISPLAY_STATE *gui, EFFECT_PARAMS *parameter,
 		uint8_t channel) {
-	uint8_t count = gui->slider_count;
+	uint8_t count = gui->slider_count[channel];
 	SLIDER_VALUES *slider = &(gui->sliders[channel][count]);
 	slider->control_type = SLIDER;
 	assert(parameter->currentValue != 0);
@@ -139,8 +141,9 @@ static void setupSlidersComponent(DISPLAY_STATE *gui, EFFECT_PARAMS *parameter,
 
 void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT *component,
 		uint8_t channel) {
-	SLIDER_VALUES *slider = &(gui->sliders[channel][gui->slider_count]);
+
 	for (int i = 0; i < component->parameterCount; i++) {
+		SLIDER_VALUES *slider = &(gui->sliders[channel][i]);
 		char *name = component->strParameters[i];
 		if (component->strTypes[i][0] == 'S') {
 			slider->control_type = SLIDER;
@@ -149,7 +152,7 @@ void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT *component,
 			EFFECT_PARAMS *parameter = component->parameters + i;
 			setupSlidersComponent(gui, parameter, channel);
 			slider->name = name;
-			gui->slider_count++;
+			gui->slider_count[channel]++;
 		} else if (component->strTypes[i][0] == 'C') {
 			EFFECT_PARAMS *parameter = component->parameters + i;
 			//uint8_t count = gui->slider_count;
@@ -159,7 +162,7 @@ void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT *component,
 			slider->chkOutput = (int*) parameter->currentValue;
 			*(slider->chkOutput) = parameter->intParameter[0] & 0xFF;
 			slider->previousCheck = 15;
-			gui->slider_count++;
+			gui->slider_count[channel]++;
 		} else if (component->strTypes[i][0] == 'R') {
 			EFFECT_PARAMS *parameter = component->parameters + i;
 			//uint8_t count = gui->slider_count;
@@ -174,7 +177,7 @@ void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT *component,
 			slider->name1 = strSave(ptr);
 			slider->chkOutput = (int*) parameter->currentValue;
 			slider->previousCheck = 15;
-			gui->slider_count++;
+			gui->slider_count[channel]++;
 		}
 	}
 	for (int i = 0; i < component->childrenCount; i++) {

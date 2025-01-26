@@ -60,7 +60,7 @@ typedef struct {
 	float effect_volume;
 	int effect_enabled;
 	//EFFECT_COMPONENT *component;
-	uint8_t slider_count;
+	uint8_t slider_count[MAX_NUMBER_CHANNELS];
 	SLIDER_VALUES sliders[MAX_NUMBER_CHANNELS][MAX_SLIDER_COUNT];
 	AUDIO_COMPONENT channels;
 } DISPLAY_STATE;
