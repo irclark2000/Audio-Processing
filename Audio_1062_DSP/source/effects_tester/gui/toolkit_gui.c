@@ -1037,7 +1037,7 @@ void generate_gui(EFFECT_ITEM *eList) {
 				&& !gMUSIC.music_is_playing && gGUI.channels.channel_count != 0) {
 			int success = play_music(gMUSIC.fileName, &(gGUI.channels));
 			if (success == 0) {
-				update_effect_state(gGUI.sliders[0], gGUI.slider_count);
+				update_effect_state(gGUI.sliders[0], gGUI.slider_count[0]);
 				gMUSIC.music_is_playing = 1;
 			}
 			gMUSIC.start_music = 0;
