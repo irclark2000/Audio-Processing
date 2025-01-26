@@ -220,7 +220,7 @@ static void effect_controls(struct nk_context *ctx, struct media *media) {
 	//static int check = 1;
 	static char value_text[64];
 	static float row_widths[] = { 0.25, 0.55, 0.20 };
-	int length = (gGUI.slider_count > 10) ? 550 : 450;
+	int length = (gGUI.slider_count[0] > 10) ? 550 : 450;
 	enum {EASY, HARD};
 	//static int op = EASY;
 
@@ -239,7 +239,7 @@ static void effect_controls(struct nk_context *ctx, struct media *media) {
 		}
 		sprintf(value_text, "%5.2f", gGUI.effect_volume);
 		nk_label(ctx, value_text, NK_TEXT_LEFT);
-		for (int j = 0; j < gGUI.slider_count; j++) {
+		for (int j = 0; j < gGUI.slider_count[0]; j++) {
 			if (gGUI.sliders[0][j].control_type == SLIDER) {
 				SLIDER_FORMAT sliderFormat = gFormats[gGUI.sliders[0][j].slider_fmt_number];
 				nk_layout_row(ctx, NK_DYNAMIC, 30, 3, row_widths);
@@ -844,7 +844,9 @@ void generate_gui(EFFECT_ITEM *eList) {
 	gGUI.display_sliders = 0;
 	//gGUI.component = NULL;
 	clear_AUDIO_COMPONENT(&(gGUI.channels));
-	gGUI.slider_count = 0;
+	for (uint8_t ch=0; ch < NUM_CHANNELS; ++ch) {
+		gGUI.slider_count[0] = 0;
+	}
 
 	g_effect_list = eList;
 	uint8_t eCount;
