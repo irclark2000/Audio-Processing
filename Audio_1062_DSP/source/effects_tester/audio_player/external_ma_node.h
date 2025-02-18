@@ -25,14 +25,16 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "miniaudio.h"
 #include "apply_effect.h"
 //#include "effect_component.h"
-#include "audio_component.h"
+//#include "audio_component.h"
+#include "effects_chain.h"
 #include <stdint.h>
 
 typedef struct {
 	ma_uint32 channels;
 	ma_uint32 sampleRate;
 	//EFFECT_COMPONENT *component;
-	AUDIO_COMPONENT *aChannels;
+	//AUDIO_COMPONENT *aChannels;
+	EFFECTS_CHAIN *chain;
 }ma_effects_config;
 
 typedef struct {
@@ -50,11 +52,11 @@ typedef struct {
 	ma_effects effects;
 } ma_effects_node;
 
-MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sampleRate, AUDIO_COMPONENT *aChannels);
+MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sampleRate, EFFECTS_CHAIN *chain);
 MA_API ma_result ma_effects_init(const ma_effects_config* pConfig, const ma_allocation_callbacks* pAllocationCallbacks, ma_effects *pEffect);
 MA_API void ma_effects_uninit(ma_effects* pEffect, const ma_allocation_callbacks* pAllocationCallbacks);
-MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sampleRate, AUDIO_COMPONENT *aChannels);
-MA_API ma_effects_node_config ma_effects_node_config_init(ma_uint32 channels, ma_uint32 sampleRate, AUDIO_COMPONENT *aChannels);
+MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sampleRate, EFFECTS_CHAIN *chain);
+MA_API ma_effects_node_config ma_effects_node_config_init(ma_uint32 channels, ma_uint32 sampleRate, EFFECTS_CHAIN *chain);
 MA_API ma_result ma_effects_node_init(ma_node_graph* pNodeGraph, const ma_effects_node_config* pConfig, const ma_allocation_callbacks* pAllocationCallbacks, ma_effects_node* pEffectsNode);
 MA_API void ma_effects_node_uninit(ma_effects_node* pEffectsNode, const ma_allocation_callbacks* pAllocationCallbacks);
 MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFramesOut, const void* pFramesIn, ma_uint32 frameCount);

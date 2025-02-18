@@ -49,23 +49,23 @@ MA_API void ma_effects_set_parameter(ma_effects* pEffect, AUDIO_COMPONENT *aChan
 MA_API float ma_effects_get_parameter(const ma_effects* pEffect, AUDIO_COMPONENT *aChannels) {
 	return 0.0f;
 }
-MA_API ma_effects_node_config ma_effects_node_config_init(ma_uint32 channels, ma_uint32 sampleRate, AUDIO_COMPONENT *aChannels)
+MA_API ma_effects_node_config ma_effects_node_config_init(ma_uint32 channels, ma_uint32 sampleRate, EFFECTS_CHAIN *chain)
 {
     ma_effects_node_config config;
 
     config.nodeConfig = ma_node_config_init();
-    config.effect = ma_effects_config_init(channels, sampleRate, aChannels);
+    config.effect = ma_effects_config_init(channels, sampleRate, chain);
 
     return config;
 }
-MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sampleRate, AUDIO_COMPONENT *aChannels)
+MA_API ma_effects_config ma_effects_config_init(ma_uint32 channels, ma_uint32 sampleRate, EFFECTS_CHAIN *chain)
 {
     ma_effects_config config;
 
     MA_ZERO_OBJECT(&config);
     config.channels      = channels;
     config.sampleRate    = sampleRate;
-    config.aChannels = aChannels;
+    config.chain = chain;
    /*
     config.delayStart    = (decay == 0) ? MA_TRUE : MA_FALSE;
     config.wet           = 1;
@@ -101,8 +101,8 @@ MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFram
     ma_uint32 iChannel;
     float* pFramesOutF32 = (float*)pFramesOut;
     const float* pFramesInF32 = (const float*)pFramesIn;
-    AUDIO_COMPONENT *aChannels = pEffects->config.aChannels;
-
+    //AUDIO_COMPONENT *aChannels = pEffects->config.aChannels;
+    EFFECTS_CHAIN *chain = pEffects->config.chain;
     if (pEffects == NULL || pFramesOut == NULL || pFramesIn == NULL) {
         return MA_INVALID_ARGS;
     }

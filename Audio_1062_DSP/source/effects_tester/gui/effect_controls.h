@@ -23,9 +23,10 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define EFFECTS_TESTER_GUI_EFFECT_CONTROLS_H_
 #include <stdint.h>
 //#include "effects_tester/audio_player/effect_component.h"
-#include "effects_tester/audio_player/audio_component.h"
+//#include "effects_tester/audio_player/audio_component.h"
+#include "effects_tester/audio_player/effects_chain.h"
 #include "effects_gui_interface.h"
-
+#if 0
 // effects slider parameters
 typedef struct SLIDER_FORMAT {
 	char *slider_fmt;
@@ -52,7 +53,7 @@ typedef struct SLIDER_VALUES {
 } SLIDER_VALUES;
 
 #define MAX_SLIDER_COUNT 15
-
+#endif
 typedef struct {
 	int display_sliders;
 	int effect_selected;
@@ -60,9 +61,10 @@ typedef struct {
 	float effect_volume;
 	int effect_enabled;
 	//EFFECT_COMPONENT *component;
-	uint8_t slider_count[MAX_NUMBER_CHANNELS];
-	SLIDER_VALUES sliders[MAX_NUMBER_CHANNELS][MAX_SLIDER_COUNT];
-	AUDIO_COMPONENT channels;
+	//uint8_t slider_count[MAX_NUMBER_CHANNELS];
+	//SLIDER_VALUES sliders[MAX_NUMBER_CHANNELS][MAX_SLIDER_COUNT];
+	//AUDIO_COMPONENT channels;
+	EFFECTS_CHAIN chain;
 } DISPLAY_STATE;
 
 #define NUM_CHANNELS 1
@@ -77,7 +79,9 @@ void generate_gui(EFFECT_ITEM *effects_list);
 void update_state_by_counter (uint16_t counter, uint16_t max_counter);
 void update_state_periodically ();
 void update_effect_state_for_slider(SLIDER_VALUES *sliders, uint8_t index);
-void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT *component, uint8_t channel);
+//void setupSliders(DISPLAY_STATE *gui, EFFECT_COMPONENT *component, uint8_t channel);
+void setupSliders(EFFECT_COMPONENT *component, SLIDER_VALUES *sliders, uint8_t *slider_count);
+
 void clearDisplayState(DISPLAY_STATE *gui);
 void initializeDisplayState(DISPLAY_STATE *gui, uint8_t selection, uint8_t channel);
 

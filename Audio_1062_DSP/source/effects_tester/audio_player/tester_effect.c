@@ -29,7 +29,8 @@ static ma_engine g_engine;
 static ma_sound g_sound;            /* This example will play only a single sound at once, so we only need one `ma_sound` object. */
 static ma_effects_node g_effects_node;   /* The echo effect is achieved using a delay node. */
 
-int play_music (char *fileName, AUDIO_COMPONENT *ac);
+//int play_music (char *fileName, AUDIO_COMPONENT *ac);
+//int play_music (char *fileName, EFFECT_CHAIN *chain);
 
 int apply_effect(int source) {
     /* The engine needs to be initialized first. */
@@ -58,7 +59,7 @@ int apply_effect(int source) {
     return 0;
 }
 
-int play_music (char *fileName, AUDIO_COMPONENT *ac) {
+int play_music (char *fileName, EFFECT_CHAIN *chain) {
 	ma_result result;
 	result = ma_engine_init(NULL, &g_engine);
 	if (result != MA_SUCCESS) {
@@ -72,12 +73,15 @@ int play_music (char *fileName, AUDIO_COMPONENT *ac) {
 
 		channels   = ma_engine_get_channels(&g_engine);
 		sampleRate = ma_engine_get_sample_rate(&g_engine);
+		for (uint8_t chan_num = 0; chan_num < chain->length; ++chan_num) {
+			AUDIO_COMPONENT * ac = chain->audio_components[chan_num];
 		for (unsigned int chan = 0; chan < ac->channel_count; ++chan) {
 			gui_initialize(ac->channel[chan], 0, sampleRate);
 		}
+		}
 
 		// the third parameter should be of type EFFECT_COMPONENT *
-		effectsNodeConfig = ma_effects_node_config_init(channels, sampleRate, ac);
+		effectsNodeConfig = ma_effects_node_config_init(channels, sampleRate, chain);
 
 		result = ma_effects_node_init(ma_engine_get_node_graph(&g_engine), &effectsNodeConfig, NULL, &g_effects_node);
 		if (result != MA_SUCCESS) {

@@ -23,10 +23,40 @@
 #define EFFECTS_TESTER_AUDIO_PLAYER_AUDIO_COMPONENT_H_
 
 #include "effect_component.h"
-#define MAX_NUMBER_CHANNELS 4
+
+#define MAX_SLIDER_COUNT 15
+#define MAX_NUMBER_CHANNELS 6
+
+// effects slider parameters
+typedef struct SLIDER_FORMAT {
+	char *slider_fmt;
+	float slider_increment;
+} SLIDER_FORMAT;
+
+typedef enum CONTROL_TYPE {
+	SLIDER, CHECKBOX, RADIOBUTTON
+} CONTROL_TYPE;
+
+typedef struct SLIDER_VALUES {
+	EFFECT_PARAMS *myParameter;
+	char *name;
+	char *name0, *name1;
+	CONTROL_TYPE control_type;
+	int previousCheck;
+	int slider_fmt_number;
+	int *chkOutput;
+	float slope;
+	float intercept;
+	float *slOutput;
+	float previousOutput;
+	float slider_value;  // 0.0->1.0;
+} SLIDER_VALUES;
+
 typedef struct AUDIO_COMPONENT {
 	EFFECT_COMPONENT *channel[MAX_NUMBER_CHANNELS];
 	uint8_t channel_count;
+	uint8_t slider_count[MAX_NUMBER_CHANNELS];
+	SLIDER_VALUES sliders[MAX_NUMBER_CHANNELS][MAX_SLIDER_COUNT];
 }AUDIO_COMPONENT;
 
 void initialize_AUDIO_COMPONENT (AUDIO_COMPONENT * ac);
