@@ -39,7 +39,7 @@ void addComponent_EFFECTS_CHAIN (EFFECTS_CHAIN * chain, AUDIO_COMPONENT * ac) {
 		chain->length++;
 	}
 }
-float play_audio_EFFECTS_CHAIN (EFFECTS_CHAIN * chain, float input, uint8_t channel) {
+float play_audio_EFFECTS_CHAIN (EFFECTS_CHAIN * chain, float input, float prevChanInput, uint8_t channel) {
 	float out = input;
 	for (uint8_t i = 0; i < chain->length; i++) {
 
