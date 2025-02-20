@@ -104,38 +104,40 @@ MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFram
     //AUDIO_COMPONENT *aChannels = pEffects->config.aChannels;
     EFFECTS_CHAIN *chain = pEffects->config.chain;
     if (pEffects == NULL || pFramesOut == NULL || pFramesIn == NULL) {
-        return MA_INVALID_ARGS;
+	    return MA_INVALID_ARGS;
     }
-	if (aChannels == 0 || aChannels->channel_count == 0) {
-        return MA_INVALID_ARGS;
-	}
+    if (chain == 0 || chain->length == 0) {
+	    return MA_INVALID_ARGS;
+    }
 
-	uint8_t bypass = 0;
+    uint8_t bypass = 0;
+#if 0
     for (iFrame = 0; iFrame < frameCount; iFrame += 1) {
 	    for (iChannel = 0; iChannel < pEffects->config.channels; iChannel += 1) {
-	    	EFFECT_COMPONENT *component = NULL;
-	    	if (iChannel < aChannels->channel_count) {
-	    		component = aChannels->channel[iChannel];
-	    	}
-	    	if (iChannel == 0 && component != 0) {
-	    		bypass = component->effect_bypass;
-	    	}
-	    	if (bypass != 0) {
+		    EFFECT_COMPONENT *component = NULL;
+		    if (iChannel < aChannels->channel_count) {
+			    component = aChannels->channel[iChannel];
+		    }
+		    if (iChannel == 0 && component != 0) {
+			    bypass = component->effect_bypass;
+		    }
+		    if (bypass != 0) {
 			    pFramesOutF32[iChannel] = pFramesInF32[iChannel];
 
-	    	}
-	    	else if (component !=0) {
-		    		float out = component->apply(component->effect, pFramesInF32[iChannel]) * component->volume;
-		    		pFramesOutF32[iChannel] = out;
+		    }
+		    else if (component !=0) {
+			    float out = component->apply(component->effect, pFramesInF32[iChannel]) * component->volume;
+			    pFramesOutF32[iChannel] = out;
 		    }
 		    else {
-		    	// Just from previous channel
+			    // Just from previous channel
 			    pFramesOutF32[iChannel] = pFramesOutF32[iChannel - 1];
 		    }
 	    }
 	    pFramesOutF32 += pEffects->config.channels;
 	    pFramesInF32  += pEffects->config.channels;
     }
+#endif
     update_state_periodically ();
     return MA_SUCCESS;
 }

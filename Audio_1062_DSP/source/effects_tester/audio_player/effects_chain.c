@@ -31,6 +31,7 @@ void clear_EFFECTS_CHAIN (EFFECTS_CHAIN * chain) {
 	for (uint8_t i=0; i < chain->length; ++i) {
 		uninitialize_AUDIO_COMPONENT(chain->audio_components[i]);
 	}
+	chain->length = 0;
 }
 void addComponent_EFFECTS_CHAIN (EFFECTS_CHAIN * chain, AUDIO_COMPONENT * ac) {
 	if (chain->length < MAX_CHAIN_LENGTH) {

@@ -215,11 +215,16 @@ static int ui_piemenu(struct nk_context *ctx, struct nk_vec2 pos, float radius,
 
 static void effect_controls(struct nk_context *ctx, struct media *media) {
 	//char *title = gGUI.component->effectName;
-	char *title = gGUI.channels.channel[0]->effectName;
+	AUDIO_COMPONENT *ac = gGUI.chain.audio_components[0];
+	EFFECT_COMPONENT *effect = ac->channel[0];
+	//char *title = gGUI.channels.channel[0]->effectName;
+	char * title = effect->effectName;
+	SLIDER_VALUES *sliders = ac->sliders[0];
+	uint8_t slider_count = ac->slider_count[0];
 	//static int check = 1;
 	static char value_text[64];
 	static float row_widths[] = { 0.25, 0.55, 0.20 };
-	int length = (gGUI.slider_count[0] > 10) ? 550 : 450;
+	int length = (slider_count > 10) ? 550 : 450;
 	enum {EASY, HARD};
 	//static int op = EASY;
 
@@ -238,28 +243,28 @@ static void effect_controls(struct nk_context *ctx, struct media *media) {
 		}
 		sprintf(value_text, "%5.2f", gGUI.effect_volume);
 		nk_label(ctx, value_text, NK_TEXT_LEFT);
-		for (int j = 0; j < gGUI.slider_count[0]; j++) {
-			if (gGUI.sliders[0][j].control_type == SLIDER) {
-				SLIDER_FORMAT sliderFormat = gFormats[gGUI.sliders[0][j].slider_fmt_number];
+		for (int j = 0; j < slider_count; j++) {
+			if (sliders[j].control_type == SLIDER) {
+				SLIDER_FORMAT sliderFormat = gFormats[sliders[j].slider_fmt_number];
 				nk_layout_row(ctx, NK_DYNAMIC, 30, 3, row_widths);
-				nk_label(ctx, gGUI.sliders[0][j].name, NK_TEXT_LEFT);
-				if (nk_slider_float(ctx, 0, &gGUI.sliders[0][j].slider_value, 1.0f,
+				nk_label(ctx, sliders[j].name, NK_TEXT_LEFT);
+				if (nk_slider_float(ctx, 0, &sliders[j].slider_value, 1.0f,
 						sliderFormat.slider_increment)) {
 				}
-				*(gGUI.sliders[0][j].slOutput) = gGUI.sliders[0][j].slider_value
-						* gGUI.sliders[0][j].slope + gGUI.sliders[0][j].intercept;
-				sprintf(value_text, sliderFormat.slider_fmt, *(gGUI.sliders[0][j].slOutput));
+				*(sliders[j].slOutput) = sliders[j].slider_value
+						* sliders[j].slope + sliders[j].intercept;
+				sprintf(value_text, sliderFormat.slider_fmt, *(sliders[j].slOutput));
 				nk_label(ctx, value_text, NK_TEXT_LEFT);
-			} else if (gGUI.sliders[0][j].control_type == CHECKBOX) {
+			} else if (sliders[j].control_type == CHECKBOX) {
 				nk_layout_row(ctx, NK_DYNAMIC, 30, 1, row_widths);
-				nk_checkbox_label(ctx, gGUI.sliders[0][j].name, gGUI.sliders[0][j].chkOutput);
+				nk_checkbox_label(ctx, sliders[j].name, sliders[j].chkOutput);
 				//nk_layout_row_dynamic(ctx, 30, 2);
 				//if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;
 				//if (nk_option_label(ctx, "hard", op == HARD)) op = HARD;
-			} else if (gGUI.sliders[0][j].control_type == RADIOBUTTON) {
-				char *name0 = gGUI.sliders[0][j].name0;
-				char *name1 = gGUI.sliders[0][j].name1;
-				int *intPtr = gGUI.sliders[0][j].chkOutput;
+			} else if (sliders[j].control_type == RADIOBUTTON) {
+				char *name0 = sliders[j].name0;
+				char *name1 = sliders[j].name1;
+				int *intPtr = sliders[j].chkOutput;
 				nk_layout_row_dynamic(ctx, 30, 2);
 				if (nk_option_label(ctx, name0, *intPtr == 0)) *intPtr = 0;
 				if (nk_option_label(ctx, name1, *intPtr == 1)) *intPtr = 1;
@@ -842,9 +847,11 @@ void generate_gui(EFFECT_ITEM *eList) {
 
 	gGUI.display_sliders = 0;
 	//gGUI.component = NULL;
-	clear_AUDIO_COMPONENT(&(gGUI.channels));
+	//clear_AUDIO_COMPONENT(&(gGUI.channels));
+	clear_EFFECTS_CHAIN (&(gGUI.chain));
+	
 	for (uint8_t ch=0; ch < NUM_CHANNELS; ++ch) {
-		gGUI.slider_count[0] = 0;
+		//gGUI.slider_count[0] = 0;
 	}
 
 	g_effect_list = eList;
@@ -1034,10 +1041,16 @@ void generate_gui(EFFECT_ITEM *eList) {
 
 		// can we start the music here?
 		if (gGUI.effect_selected != -1 && (gGUI.effect_selected == gGUI.previous_effect) && gMUSIC.start_music && !gMUSIC.stop_music
-				&& !gMUSIC.music_is_playing && gGUI.channels.channel_count != 0) {
-			int success = play_music(gMUSIC.fileName, &(gGUI.channels));
+				&& !gMUSIC.music_is_playing && gGUI.chain.length != 0) {
+			int success = play_music(gMUSIC.fileName, &(gGUI.chain));
 			if (success == 0) {
-				update_effect_state(gGUI.sliders[0], gGUI.slider_count[0]);
+				for (uint8_t chain_num; chain_num < gGUI.chain.length; ++chain_num) {
+					AUDIO_COMPONENT *ac = gGUI.chain.audio_components[chain_num];
+					for (uint8_t channel  = 0; channel < ac->channel_count; ++channel) {
+						SLIDER_VALUES *sliders = ac->sliders[channel];
+						update_effect_state(sliders, ac->slider_count[channel]);
+					}
+				}
 				gMUSIC.music_is_playing = 1;
 			}
 			gMUSIC.start_music = 0;

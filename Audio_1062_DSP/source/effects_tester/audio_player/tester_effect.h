@@ -29,7 +29,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 int apply_effect(int source);
 //int play_music (char *fileName, AUDIO_COMPONENT *aChannels);
-int play_music (char *fileName, EFFECT_CHAIN *chain);
+int play_music (char *fileName, EFFECTS_CHAIN *chain);
 
 void stop_music_playing ();
 #endif /* EFFECTS_TESTER_AUDIO_PLAYER_TESTER_EFFECT_H_ */

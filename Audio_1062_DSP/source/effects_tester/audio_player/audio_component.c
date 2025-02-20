@@ -36,6 +36,7 @@ void uninitialize_AUDIO_COMPONENT(AUDIO_COMPONENT *ac) {
 void clear_AUDIO_COMPONENT(AUDIO_COMPONENT *ac) {
 	for (uint8_t i = 0; i < ac->channel_count; ++i) {
 		freeComponent(ac->channel[i]);
+		ac->slider_count[i] = 0;
 	}
 	ac->channel_count = 0;
 }

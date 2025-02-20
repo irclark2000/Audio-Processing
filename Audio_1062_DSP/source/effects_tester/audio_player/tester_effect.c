@@ -59,7 +59,7 @@ int apply_effect(int source) {
     return 0;
 }
 
-int play_music (char *fileName, EFFECT_CHAIN *chain) {
+int play_music (char *fileName, EFFECTS_CHAIN *chain) {
 	ma_result result;
 	result = ma_engine_init(NULL, &g_engine);
 	if (result != MA_SUCCESS) {
