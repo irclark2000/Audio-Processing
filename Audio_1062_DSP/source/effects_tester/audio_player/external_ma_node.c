@@ -109,11 +109,16 @@ MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFram
     if (chain == 0 || chain->length == 0) {
 	    return MA_INVALID_ARGS;
     }
+    AUDIO_COMPONENT *ac0 = chain->audio_components[0];
+    EFFECT_COMPONENT *comp0 = ac0->channel[0];
 
-    uint8_t bypass = 0;
-#if 0
+    uint8_t bypass = comp0->effect_bypass;
+    float volume = comp0->volume;
+
+
     for (iFrame = 0; iFrame < frameCount; iFrame += 1) {
 	    for (iChannel = 0; iChannel < pEffects->config.channels; iChannel += 1) {
+#if 0
 		    EFFECT_COMPONENT *component = NULL;
 		    if (iChannel < aChannels->channel_count) {
 			    component = aChannels->channel[iChannel];
@@ -133,11 +138,12 @@ MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFram
 			    // Just from previous channel
 			    pFramesOutF32[iChannel] = pFramesOutF32[iChannel - 1];
 		    }
+#endif
 	    }
 	    pFramesOutF32 += pEffects->config.channels;
 	    pFramesInF32  += pEffects->config.channels;
     }
-#endif
+
     update_state_periodically ();
     return MA_SUCCESS;
 }
