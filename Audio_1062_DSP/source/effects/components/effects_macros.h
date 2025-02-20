@@ -23,6 +23,8 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #define EFFECTS_COMPONENTS_EFFECTS_MACROS_H_
 
 #define MIN_MAX(x,min,max) ((x) < (min) ? (min) : (x) > (max) ? (max) : (x))
+#define MIN(x,y) ((x < y) ? (x) : (y))
+#define MAX(x,y) ((x > y) ? (x) : (y))
 #define SQUARED(x) ((x) * (x))
 
 
