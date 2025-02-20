@@ -25,6 +25,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #include "external_ma_node.h"
 #include "toolkit_gui.h"
+#include "components/effects_macros.h"
 
 MA_API ma_result ma_effects_init(const ma_effects_config* pConfig, const ma_allocation_callbacks* pAllocationCallbacks, ma_effects *pEffect) {
     if (pEffect == NULL) {
