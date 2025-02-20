@@ -119,7 +119,7 @@ MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFram
 
     for (iFrame = 0; iFrame < frameCount; iFrame += 1) {
 	    for (iChannel = 0; iChannel < pEffects->config.channels; iChannel += 1) {
-	    	float prevChanInput32 = pFramesInF32[MIN(MAX(0, iChannel - 1), pEffects->config.channels - 1)];
+	    	float prevChanInput32 = pFramesInF32[MIN(MAX(0, (int8_t)iChannel - 1), (int8_t)pEffects->config.channels - 1)];
 	    	float out = play_audio_EFFECTS_CHAIN (chain, pFramesInF32[iChannel], prevChanInput32, iChannel);
 #if 0
 		    EFFECT_COMPONENT *component = NULL;
