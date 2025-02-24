@@ -24,6 +24,7 @@
 
 void initialize_EFFECTS_CHAIN (EFFECTS_CHAIN * chain) {
 	chain->length = 0;
+	chain->min_channels = -1;
 }
 
 
@@ -32,18 +33,30 @@ void clear_EFFECTS_CHAIN (EFFECTS_CHAIN * chain) {
 		uninitialize_AUDIO_COMPONENT(chain->audio_components[i]);
 	}
 	chain->length = 0;
+	chain->min_channels = -1;
 }
 void addComponent_EFFECTS_CHAIN (EFFECTS_CHAIN * chain, AUDIO_COMPONENT * ac) {
 	if (chain->length < MAX_CHAIN_LENGTH) {
 		chain->audio_components[chain->length] = ac;
 		chain->length++;
 	}
-}
-float play_audio_EFFECTS_CHAIN (EFFECTS_CHAIN * chain, float input, float prevChanInput, uint8_t channel) {
-	float out = input;
-	for (uint8_t i = 0; i < chain->length; i++) {
-
+	if (chain->min_channels == -1) {
+		chain->min_channels = ac->channel_count;
 	}
-	return out;
+	else if (ac->channel_count < chain->min_channels){
+		chain->min_channels = ac->channel_count;
+	}
+}
+float play_audio_EFFECTS_CHAIN (EFFECTS_CHAIN * chain, float input, float prevChanInput, float prevChanOutput, uint8_t channel) {
+	if (chain->min_channels <= channel) {
+		return prevChanOutput;
+	}
+	float output = input;
+	for (uint8_t chain_number = 0; chain_number < chain->length; ++chain_number) {
+		AUDIO_COMPONENT * ac = chain->audio_components[chain_number];
+		EFFECT_COMPONENT *ec = ac->channel[channel];
+		output = ec->apply(ec, output);
+	}
+	return output;
 }
 

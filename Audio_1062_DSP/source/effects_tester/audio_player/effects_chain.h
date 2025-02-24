@@ -32,11 +32,12 @@
 typedef struct EFFECTS_CHAIN {
 	AUDIO_COMPONENT * audio_components[MAX_CHAIN_LENGTH];
 	uint8_t length;
+	int8_t min_channels;
 } EFFECTS_CHAIN;
 
 void initialize_EFFECTS_CHAIN (EFFECTS_CHAIN * chain);
 void clear_EFFECTS_CHAIN (EFFECTS_CHAIN * chain);
 void addComponent_EFFECTS_CHAIN (EFFECTS_CHAIN * chain, AUDIO_COMPONENT * ac);
-float play_audio_EFFECTS_CHAIN (EFFECTS_CHAIN * chain, float input, float prevChanInput, uint8_t channel);
+float play_audio_EFFECTS_CHAIN (EFFECTS_CHAIN * chain, float input, float prevChanInput, float prevChanOutput, uint8_t channel);
 
 #endif /* EFFECTS_TESTER_AUDIO_PLAYER_EFFECTS_CHAIN_H_ */

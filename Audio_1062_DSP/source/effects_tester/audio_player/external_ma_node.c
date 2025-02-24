@@ -116,32 +116,17 @@ MA_API ma_result ma_effects_process_pcm_frames(ma_effects* pEffects, void* pFram
     uint8_t bypass = comp0->effect_bypass;
     float volume = comp0->volume;
 
-
     for (iFrame = 0; iFrame < frameCount; iFrame += 1) {
+    	float prevChanOuput = -1000.0f
 	    for (iChannel = 0; iChannel < pEffects->config.channels; iChannel += 1) {
 	    	float prevChanInput32 = pFramesInF32[MIN(MAX(0, (int8_t)iChannel - 1), (int8_t)pEffects->config.channels - 1)];
-	    	float out = play_audio_EFFECTS_CHAIN (chain, pFramesInF32[iChannel], prevChanInput32, iChannel);
-#if 0
-		    EFFECT_COMPONENT *component = NULL;
-		    if (iChannel < aChannels->channel_count) {
-			    component = aChannels->channel[iChannel];
-		    }
-		    if (iChannel == 0 && component != 0) {
-			    bypass = component->effect_bypass;
-		    }
-		    if (bypass != 0) {
-			    pFramesOutF32[iChannel] = pFramesInF32[iChannel];
-
-		    }
-		    else if (component !=0) {
-			    float out = component->apply(component->effect, pFramesInF32[iChannel]) * component->volume;
-			    pFramesOutF32[iChannel] = out;
-		    }
-		    else {
-			    // Just from previous channel
-			    pFramesOutF32[iChannel] = pFramesOutF32[iChannel - 1];
-		    }
-#endif
+	    	float out = play_audio_EFFECTS_CHAIN (chain, pFramesInF32[iChannel], prevChanInput32, prevChanOuput, iChannel);
+	    	prevChanOuput = out;
+	    	if (bypass) {
+	    		out = pFramesInF32[iChannel];
+	    	}
+	    	out *= volume;
+	    	pFramesOutF32[iChannel] = out;
 	    }
 	    pFramesOutF32 += pEffects->config.channels;
 	    pFramesInF32  += pEffects->config.channels;
