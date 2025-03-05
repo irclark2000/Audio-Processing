@@ -115,7 +115,6 @@ void initializeDisplayState(DISPLAY_STATE *gui, uint8_t selection,
 
 	gui->effect_selected = selection;
 	AUDIO_COMPONENT *ac = (AUDIO_COMPONENT*) MALLOC(sizeof(AUDIO_COMPONENT));
-	addComponent_EFFECTS_CHAIN (&(gGUI.chain), ac);
 	initialize_AUDIO_COMPONENT(ac);
 	for (uint8_t channel = 0; channel < num_channels; ++channel) {
 		EFFECT_COMPONENT *component = createComponent(
@@ -128,6 +127,7 @@ void initializeDisplayState(DISPLAY_STATE *gui, uint8_t selection,
 			gui->display_sliders = 1;
 		}
 	}
+	addComponent_EFFECTS_CHAIN (&(gGUI.chain), ac);
 }
 
 #define INITIAL_FLOAT_VALUE -1888.8888f
