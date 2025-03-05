@@ -753,7 +753,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		*(component->parameters[index].currentValue) = value;
 		component->parameters[index].recalculate =
 				(RECALCULATE) gui_overdriveSetHPF;
-		component->parameterCount = index;
+		component->parameterCount = 5;
 		component->childrenCount = 0;
 		component->apply = (APPLY) update_ASYMMETRIC_OVERDRIVE;
 		component->effect_bypass = 0;
