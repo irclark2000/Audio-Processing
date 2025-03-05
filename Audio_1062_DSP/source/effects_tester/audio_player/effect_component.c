@@ -22,6 +22,7 @@
 #include "effect_component.h"
 #include "effects/tremolo.h"
 #include "effects/overdrive.h"
+#include "effects/asymmetric_overdrive.h"
 #include "effects/delay_based/echo.h"
 #include "effects/delay_based/flanger.h"
 #include "effects/delay_based/chorus.h"
@@ -706,6 +707,55 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		component->parameterCount = 4;
 		component->childrenCount = 0;
 		component->apply = (APPLY) update_OVERDRIVE;
+		component->effect_bypass = 0;
+	} else if (strcmp(effectName, "Asymmetric Overdrive") == 0) {
+		ASYMMETRIC_OVERDRIVE *aod = (ASYMMETRIC_OVERDRIVE*) MALLOC(sizeof(ASYMMETRIC_OVERDRIVE));
+		component->effect = aod;
+		OVERDRIVE *od = &(aod->od)l
+		component->type = Asymmetric_Overdrive;
+		component->main_effect = 1;
+		component->parameters = makeBlankParameters(5, component->effect);
+		char temp[480];
+		if (strParameters == 0) {
+			char *elements =
+					"PreGain:S2*0.01,1,10\tQ:S2*-1.5,-0.2,-0.1\tLow Pass Cutoff Freq:S2*2500,3000,10000\tDamping:X*1.0\tHigh Pass Cutoff Freq:S2*2000,2000,3000";
+			strcpy(temp, elements);
+		} else {
+			strcpy(temp, strParameters);
+		}
+		char *ptrGain = strtok(temp, "\t");
+		char *ptrQ = strtok(temp, "\t");
+		char *ptrLPFFreq = strtok(NULL, "\t");
+		char *ptrDamp = strtok(NULL, "\t");
+		char *ptrHPFFreq = strtok(NULL, "\t");
+
+		uint8_t index = 0;
+		float value = setName_Type_Parse_Variables(component, index, ptrGain);
+		component->parameters[index].currentValue = &(od->preGain);
+		*(component->parameters[index].currentValue) = value;
+		index++;
+		value = setName_Type_Parse_Variables(component, index, ptrQ);
+		component->parameters[index].currentValue = &(aod->Q);
+		*(component->parameters[index].currentValue) = value;
+		index++;
+		value = setName_Type_Parse_Variables(component, index, ptrLPFFreq);
+		component->parameters[index].currentValue = &(od->gui_LPFFreq);
+		*(component->parameters[index].currentValue) = value;
+		component->parameters[index].recalculate =
+				(RECALCULATE) gui_overdriveSetLPF;
+		index++;
+		value = setName_Type_Parse_Variables(component, index, ptrDamp);
+		component->parameters[index].currentValue = &(od->lpfOutDamp);
+		*(component->parameters[index].currentValue) = value;
+		index++;
+		value = setName_Type_Parse_Variables(component, index, ptrHPFFreq);
+		component->parameters[index].currentValue = &(od->gui_HPFFreq);
+		*(component->parameters[index].currentValue) = value;
+		component->parameters[index].recalculate =
+				(RECALCULATE) gui_overdriveSetHPF;
+		component->parameterCount = index;
+		component->childrenCount = 0;
+		component->apply = (APPLY) update_ASYMMETRIC_OVERDRIVE;
 		component->effect_bypass = 0;
 	} else if (strcmp(effectName, "Schroeder Reverb") == 0) {
 		SCHROEDERVERB *fv = (SCHROEDERVERB*) MALLOC(sizeof(SCHROEDERVERB));

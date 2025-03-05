@@ -55,6 +55,7 @@ typedef struct {
 	float preGain;
 	float threshold;
 
+
 	// Output IIR low pass filter
 	float lpfOutBufIn[3];
 	float lpfOutBufOut[3];

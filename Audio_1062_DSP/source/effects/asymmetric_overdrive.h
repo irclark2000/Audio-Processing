@@ -1,11 +1,14 @@
 /*
- * effects_macros.h
+ * asymmetric_overdrive.h
  *
- *  Created on: Sep 29, 2024
+ *  Created on: Mar 4, 2025
  *      Author: isaac
- */
+ *
+ *      Based on code written by Philip Salmony
+ *      See YouTube Phil's Lab Episode #153
+*/
 /*
-Copyright 2024 Isaac R. Clark, Jr.
+Copyright 2025 Isaac R. Clark, Jr.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation
 files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy,
@@ -19,20 +22,21 @@ BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CON
 OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#ifndef EFFECTS_COMPONENTS_EFFECTS_MACROS_H_
-#define EFFECTS_COMPONENTS_EFFECTS_MACROS_H_
+#ifndef EFFECTS_ASYMMETRIC_OVERDRIVE_H_
+#define EFFECTS_ASYMMETRIC_OVERDRIVE_H_
 
-#define MIN_MAX(x,min,max) ((x) < (min) ? (min) : (x) > (max) ? (max) : (x))
-#ifdef MIN
-#undef MIN
-#endif
-#define MIN(x,y) (((x) < (y)) ? (x) : (y))
+#include "overdrive.h"
 
-#ifdef MAX
-#undef MAX
-#endif
-#define MAX(x,y) (((x) > (y)) ? (x) : (y))
-#define SQUARED(x) ((x) * (x))
+typedef struct ASYMMETRIC_OVERDRIVE {
+	OVERDRIVE od;
+	float postGain;
+	float Q;
+	float out;
+} ASYMMETRIC_OVERDRIVE;
+
+void initialize_ASYMMETRIC_OVERDRIVE(ASYMMETRIC_OVERDRIVE *aod, float samplingFreq, float hpfCutoffFreq,
+		float preGain, float lpfOutCutoffFreq, float lpfOutDamp);
+float update_ASYMMETRIC_OVERDRIVE(ASYMMETRIC_OVERDRIVE *aod, float input);
 
 
-#endif /* EFFECTS_COMPONENTS_EFFECTS_MACROS_H_ */
+#endif /* EFFECTS_ASYMMETRIC_OVERDRIVE_H_ */

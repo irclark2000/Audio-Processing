@@ -21,6 +21,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "effects_gui_interface.h"
 #include "effects/tremolo.h"
 #include "effects/overdrive.h"
+#include "effects/asymmetric_overdrive.h"
 #include "effects/delay_based/echo.h"
 #include "effects/dynamic_range_control/noise_gate.h"
 #include "effects/dynamic_range_control/compressor.h"
@@ -48,7 +49,7 @@ EFFECT_ITEM dynamic_range_control_effect[] = {
 		{"Limiter", Limiter}, {"Noise Gate", Noisegate}
 };
 EFFECT_ITEM misc_effect[] = {
-		{"Phaser", Phaser}, {"Overdrive", Overdrive},
+		{"Phaser", Phaser}, {"Overdrive", Overdrive}, {"Asymmetric Overdrive", Asymmetric_Overdrive},
 		{"Pitch Shifter", PitchShift}, {"Tremolo", Tremolo},{"Wah Wah", WahWah},
 		{"Auto Wah", AutoWah}
 };
@@ -57,7 +58,7 @@ EFFECT_ITEM effects_list[] = {
 	{"Auto Wah", AutoWah}, {"Chorus", Chorus}, {"Echo", Echo}, {"Flanger", Flanger}, {"Vibrato", Vibrato},
 	{"Freeverb", Freeverb}, {"Schroeder Reverb", Schroeder}, {"Moorer Reverb", Moorer},
 	{"Equalizer", Equalizer},
-	{"Tremolo", Tremolo}, {"Noise Gate", Noisegate}, {"Overdrive", Overdrive},
+	{"Tremolo", Tremolo}, {"Noise Gate", Noisegate}, {"Overdrive", Overdrive},{"Asymmetric Overdrive", Asymmetric_Overdrive},
 	{"Compressor", Compressor}, {"Limiter", Limiter}, {"Expander", Expander}, {"", None}
 };
 
@@ -187,6 +188,14 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 				ng->sampleTimeMs = 1000.0f/sampleRate;
 				ng->attack_time_accumulator = 0.0f;
 				ng->release_time_accumulator = 0.0f;
+			}
+			break;
+		case Asymmetric_Overdrive:
+			{
+				ASYMMETRIC_OVERDRIVE *aod = component->effect;
+				OVERDRIVE *od = &(aod->od);
+				initialize_ASYMMETRIC_OVERDRIVE(aod, sampleRate, od->gui_HPFFreq,
+						od->preGain, od->gui_LPFFreq, od->lpfOutDamp);
 			}
 			break;
 		case Overdrive:
