@@ -711,7 +711,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 	} else if (strcmp(effectName, "Asymmetric Overdrive") == 0) {
 		ASYMMETRIC_OVERDRIVE *aod = (ASYMMETRIC_OVERDRIVE*) MALLOC(sizeof(ASYMMETRIC_OVERDRIVE));
 		component->effect = aod;
-		OVERDRIVE *od = &(aod->od)l
+		OVERDRIVE *od = &(aod->od);
 		component->type = Asymmetric_Overdrive;
 		component->main_effect = 1;
 		component->parameters = makeBlankParameters(5, component->effect);
