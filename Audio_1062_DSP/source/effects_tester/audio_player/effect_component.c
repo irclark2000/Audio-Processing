@@ -724,7 +724,7 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 			strcpy(temp, strParameters);
 		}
 		char *ptrGain = strtok(temp, "\t");
-		char *ptrQ = strtok(temp, "\t");
+		char *ptrQ = strtok(NULL, "\t");
 		char *ptrLPFFreq = strtok(NULL, "\t");
 		char *ptrDamp = strtok(NULL, "\t");
 		char *ptrHPFFreq = strtok(NULL, "\t");
