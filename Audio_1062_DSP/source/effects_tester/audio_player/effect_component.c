@@ -331,6 +331,31 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		component->childrenCount = componentCount;
 		component->apply = (APPLY) update_CHORUS;
 		component->effect_bypass = 0;
+	} else if (strcmp(effectName, "RmsCompressor") == 0) {
+		RMS_COMPRESSOR *dr = (RMS_COMPRESSOR*) MALLOC(sizeof(RMS_COMPRESSOR));
+		component->effect = dr;
+		component->type = RmsCompressor;
+		component->parameterCount = 0;
+		char temp[180];
+		// forced order: base delay, then Lfo, then Lfo Driven Delay
+		if (strParameters == 0) {
+			char *elements =
+					"RMS Window (mSec):S2*0.0,40,50//Threshold (db):S2*-50,-10,0\tRatio:S2*1,5,50\tAttack Time (sec):S2*0,0.05,4\tRelease Time (sec):S2*0,0.20,4\tHard Knee:C*1\tKnee Width (db):S2*0,0,20\tMakeupMode:C*0\tMakeup Gain:S2*-10,0,24";
+			strcpy(temp, elements);
+		} else {
+			strcpy(temp, strParameters);
+		}
+		uint8_t index = 0;
+		char *ptrRMS = strtok(temp, "//");
+		char *ptrCompressor = strtok(NULL, "//");
+		component->childComponents[index++] = createComponent("Rms", 0,
+				&(dr->rms));
+		component->childComponents[index++] = createComponent("Compressor", 0,
+				&(dr->comp));
+		component->childrenCount = index;
+		component->apply = (APPLY) update_RMSCOMPRESSOR;
+		component->effect_bypass = 0;
+
 	} else if (strcmp(effectName, "Compressor") == 0) {
 		COMPRESSOR *dr = (COMPRESSOR*) MALLOC(sizeof(COMPRESSOR));
 		component->effect = dr;
@@ -757,6 +782,27 @@ EFFECT_COMPONENT* createComponent(char *effectName, char *strParameters,
 		component->childrenCount = 0;
 		component->apply = (APPLY) update_ASYMMETRIC_OVERDRIVE;
 		component->effect_bypass = 0;
+	} else if (strcmp(effectName, "Rms") == 0) {
+		RMS *rms = (RMS*) MALLOC(sizeof(RMS));
+		component->effect = rms;
+		component->type = Rms;
+		component->main_effect = 1;
+		component->parameters = makeBlankParameters(1, component->effect);
+		component->parameterCount = 1;
+		char temp[480];
+		if (strParameters == 0) {
+			char *elements = "RMS Window (mSec):S2*0.0,40,50";
+			strcpy(temp, elements);
+		} else {
+			strcpy(temp, strParameters);
+		}
+		float value = setName_Type_Parse_Variables(component, 0, temp);
+		component->parameters[0].currentValue = &(rms->gui_window_length_mSec);
+		*(component->parameters[0].currentValue) = value;
+		component->apply = (APPLY) apply_RMS;
+		component->effect_bypass = 0;
+		component->parameters[0].recalculate = (RECALCULATE)gui_set_window_mSec_RMS;
+		component->childrenCount = 0;
 	} else if (strcmp(effectName, "Schroeder Reverb") == 0) {
 		SCHROEDERVERB *fv = (SCHROEDERVERB*) MALLOC(sizeof(SCHROEDERVERB));
 		component->effect = fv;

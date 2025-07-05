@@ -15,6 +15,7 @@
 #include "effects/delay_based/vibrato.h"
 #include "effects/variable_filter_effects/auto_wah.h"
 #include "effects/variable_filter_effects/wah_wah.h"
+#include "effects/components/rms_calculator.h"
 
 typedef struct {
 	char *name;

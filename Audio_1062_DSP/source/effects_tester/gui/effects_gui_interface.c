@@ -24,6 +24,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "effects/asymmetric_overdrive.h"
 #include "effects/delay_based/echo.h"
 #include "effects/dynamic_range_control/noise_gate.h"
+#include "effects/dynamic_range_control/rms_compressor.h"
 #include "effects/dynamic_range_control/compressor.h"
 #include "effects/dynamic_range_control/expander.h"
 #include "effects/dynamic_range_control/limiter.h"
@@ -31,6 +32,7 @@ OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include "effects/reverbs/schroeder_verb.h"
 #include "effects/reverbs/moorer_reverb.h"
 #include "effects/variable_filter_effects/equalizer.h"
+#include "effects/components/rms_calculator.h"
 #include "fast_math/fast_math.h"
 #include <string.h>
 #if AUDIO_EFFECTS_TESTER
@@ -45,8 +47,8 @@ EFFECT_ITEM reverb_effect[] = {
 		{"Freeverb", Freeverb}, {"Schroeder Reverb", Schroeder}, {"Moorer Reverb", Moorer}
 };
 EFFECT_ITEM dynamic_range_control_effect[] = {
-		{"Compressor", Compressor}, {"Expander", Expander},
-		{"Limiter", Limiter}, {"Noise Gate", Noisegate}
+		{"Compressor", Compressor}, {"RMS Compressor", RmsCompressor}, {"Expander", Expander},
+		{"Limiter", Limiter}, {"Noise Gate", Noisegate}, {"RMS", Rms}
 };
 EFFECT_ITEM misc_effect[] = {
 		{"Phaser", Phaser}, {"Overdrive", Overdrive}, {"Asymmetric Overdrive", Asymmetric_Overdrive},
@@ -59,7 +61,7 @@ EFFECT_ITEM effects_list[] = {
 	{"Freeverb", Freeverb}, {"Schroeder Reverb", Schroeder}, {"Moorer Reverb", Moorer},
 	{"Equalizer", Equalizer},
 	{"Tremolo", Tremolo}, {"Noise Gate", Noisegate}, {"Overdrive", Overdrive},{"Asymmetric Overdrive", Asymmetric_Overdrive},
-	{"Compressor", Compressor}, {"Limiter", Limiter}, {"Expander", Expander}, {"", None}
+	{"Compressor", Compressor}, {"RMS Compressor", RmsCompressor}, {"Limiter", Limiter}, {"Expander", Expander}, {"RMS", Rms}, {"", None}
 };
 
 
@@ -94,6 +96,14 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 				}
 			}
 			break;
+		case RmsCompressor:
+		{
+			RMS_COMPRESSOR *rComp = component->effect;
+			for(int i=0; i < component->childrenCount; ++i) {
+				gui_initialize(component->childComponents[i], 0, sampleRate);
+			}
+		}
+		break;
 		case Compressor:
 				{
 					COMPRESSOR *dr = component->effect;
@@ -205,6 +215,12 @@ void gui_initialize(EFFECT_COMPONENT *component, uint32_t size, float sampleRate
 						od->preGain, od->gui_LPFFreq, od->lpfOutDamp);
 			}
 			break;
+		case Rms:
+		{
+			RMS *rms = component->effect;
+			gui_initialize_RMS (rms, sampleRate);
+		}
+		break;
 		case Schroeder:
 			{
 				SCHROEDERVERB *fv = component->effect;

@@ -35,8 +35,8 @@ typedef enum {
 	FirstOrderAllPass, CircularBuffer, FeedBackCombFilter, StateVariableFilter,
 	EnvelopeFollower, Volume, EqualizingFilter,
 	AutoWah, Echo, WahWah, Chorus, Flanger, Vibrato, ChorusElement,
-	Freeverb, Schroeder, Asymmetric_Overdrive, Moorer, Compressor, Expander, Limiter, Noisegate,
-	Phaser, Overdrive, PitchShift, Tremolo, Equalizer, None
+	Freeverb, Schroeder, Asymmetric_Overdrive, Moorer, RmsCompressor, Compressor, Expander, Limiter, Noisegate,
+	Phaser, Overdrive, PitchShift, Tremolo, Equalizer, Rms, None
 
 } EFFECT_TYPE;
 

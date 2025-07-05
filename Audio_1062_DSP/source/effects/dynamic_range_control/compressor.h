@@ -52,4 +52,6 @@ void setKneeWidth_COMPRESSOR(COMPRESSOR * comp, float knee_width);
 void setMakeupDBGain_COMPRESSOR(COMPRESSOR * comp, float makeup_gain);
 void gui_setHardKnee_COMPRESSOR (COMPRESSOR *comp);
 void gui_setMakeupPropertyKnee_COMPRESSOR (COMPRESSOR *comp);
+
+float compressor_gain_calc_smoothing(COMPRESSOR *comp, float xdb, float *xscOut, float * gcOut);
 #endif /* EFFECTS_DYNAMIC_RANGE_CONTROL_COMPRESSOR_H_ */

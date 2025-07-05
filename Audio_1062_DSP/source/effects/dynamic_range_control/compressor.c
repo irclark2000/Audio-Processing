@@ -49,7 +49,7 @@ static const float ln9 = 2.19722457734f;
 #endif
 
 
-float compressor_gain_calc_smoothing(COMPRESSOR *comp, float xdb, float *xscOut, float * gcOut);
+//float compressor_gain_calc_smoothing(COMPRESSOR *comp, float xdb, float *xscOut, float * gcOut);
 
 void initialize_COMPRESSOR(COMPRESSOR *comp, float sample_rate) {
 	comp->sample_time = 1.0f / sample_rate;
